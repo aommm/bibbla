@@ -11,6 +11,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.utils.Book;
 
 public class MainActivity extends Activity {
 
@@ -29,7 +30,7 @@ public class MainActivity extends Activity {
 		
 
 		TabSpec spec2=tabHost.newTabSpec("Mitt konto");
-		spec2.setIndicator("Mina konto");
+		spec2.setIndicator("Mitt konto");
 		spec2.setContent(R.id.tab2);
 
 		TabSpec spec3=tabHost.newTabSpec("Bibliotek");
@@ -57,15 +58,34 @@ public class MainActivity extends Activity {
 		// Calls backend search, using callbacks.
 		backend.search(s, new Callback() {
 			public boolean handleMessage(Message msg) {
-				MainActivity.this.searchDone(msg.getData().getStringArrayList("results"));
-				return true; // TODO ?
+				MainActivity.this.searchDone(msg);
+				return true;
 			}
 		});
 	}
-	/** Is called when backend searching is done. **/
-	public void searchDone(ArrayList<String> results) {
-		Log.i("debug", results.get(0));
+	
+	/** Is called when backend searching is done.**/
+	public void searchDone(Message msg) {
+		// Null implies an error. Todo: Display error nicely.
+		if (msg.obj == null) {
+			return;
+		}
+		
+		ArrayList<Book> results = (ArrayList<Book>) msg.obj; // Can we assume type is correct?
+		
+		// Did we get no results? 
+		if (results.size() == 0) {
+			// Show special message?
+			return;
+		}
+		
+		// Otherwise, print all books.
+		for (Book book : results) {
+			Log.i("debug: searchDone():", book.toString());
+		}
+		
+		// Display first book in label.
 		TextView tv = (TextView) findViewById(R.id.txt1);
-		tv.setText(results.get(0));
+		tv.setText(results.get(0).toString());
 	}
 }

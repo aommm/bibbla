@@ -1,53 +1,69 @@
 package dat255.grupp06.bibbla.backend;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
+import dat255.grupp06.bibbla.backend.tasks.Login;
+import dat255.grupp06.bibbla.backend.tasks.Search;
 
+/**
+ * Performs tasks like searching, reserving and logging in.
+ * Does all the heavy lifting.
+ * 
+ * @author Niklas Logren
+ */
 public class Backend {
 	
-	NetworkHandler network;
-	Jsoup parser; // TODO: MIT license. needs to include notice?
+	//private NetworkHandler network;
+	//private Jsoup parser; // TODO: MIT license. needs to include notice?
+	private Settings settings;
 	
 	public Backend() {
-		 network = new NetworkHandler();
+		 //network = new NetworkHandler(); // Don't need networkHandler?
+		 settings = new Settings("logren","12345567643","1336");
 	}
 	
 	/** Searches backend for the supplied string, and calls callback when done. **/
-	public void search(String s, Callback c) {
+	public void search(final String s, final Callback c) {
 		
-		/**
-		 * Todo: Implement "Job" structure?
-		 * If so, this search() method will merely do
-		 * new Search(s,c);
-		 * and all this code should be moved to Search (or to its parent).
-		 * All jobs should extend AsyncTask, and do callback when done.
-		 */
-		
-		// Does not work.
-		//String html = network.sendGetRequest("http://www.google.com");
-		//Document doc = Jsoup.parse(html);
-		// Get all tags with attribute href.
-		//Elements links = doc.select("a[href]");
-		
-		// Create list of results.
-		ArrayList<String> results = new ArrayList<String>();
-		results.add("Resultat #1"); // Add example text.
-		// Create bundle.
-		Bundle bundle = new Bundle();
-		bundle.putStringArrayList("results", results);
-		// Create message.
-		Message msg = Message.obtain();
-		msg.setData(bundle);
-		
-		// Submit callback.
-		c.handleMessage(msg);
+		// Creates a new search.
+		// Runs in a separate thread, reports via callback.
+		new Search(s, new Callback() {
+
+			// Handle the search results.
+			public boolean handleMessage(Message msg) {
+				// Did we need to login? (using arg1==1 for this, but it's arbitrary)
+				if (msg.arg1 == 1) {
+					// Create a new Login task, without launching it in a new thread.
+					Login l = new Login(settings.getName(), settings.getCode(), settings.getPin());
+					// Try to login.
+					if (l.start()) {
+						// Success! Try the search again.
+						Backend.this.search(s, c);
+					}
+					else {
+						// Login failed. Handle?
+					}
+					
+				}
+				// Unspecified error.
+				if (msg.obj == null) {
+					// Do we need to do anything special, or just forward?
+				}
+				
+				// We're all clear! Forward to frontend.
+				else {
+					c.handleMessage(msg);
+				}
+				
+				return true; // The message is handled.
+			}
+			
+		});
+
 	}
 }
