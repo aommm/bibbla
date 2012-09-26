@@ -31,17 +31,19 @@ public class Backend {
 	public void search(final String s, final Callback c) {
 		
 		// Creates a new search.
-		// Runs in a separate thread, reports via callback.
+		// This runs in a separate thread, reports via callback.
 		new Search(s, new Callback() {
 
 			// Handle the search results.
 			public boolean handleMessage(Message msg) {
 				// Did we need to login? (using arg1==1 for this, but it's arbitrary)
 				if (msg.arg1 == 1) {
-					// Create a new Login task, without launching it in a new thread.
+					// Create a new Login task.
 					Login l = new Login(settings.getName(), settings.getCode(), settings.getPin());
 					// Try to login.
-					if (l.start()) {
+					l.execute();
+					// Did we succeed?
+					if (l.getSuccess()) {
 						// Success! Try the search again.
 						Backend.this.search(s, c);
 					}
@@ -63,7 +65,8 @@ public class Backend {
 				return true; // The message is handled.
 			}
 			
-		});
+		// Finally, run the search.  
+		}).execute();
 
 	}
 }

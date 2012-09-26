@@ -20,9 +20,6 @@ public abstract class Task extends AsyncTask<String, String, Void> {
 	protected Callback callback;
 	protected Message message;
 	
-	/** Empty default constructor. **/
-	public Task() {}
-	
 	/** Creates a new Task.
 	 *  Saves the supplied callback, and initialises the internal message.
 	 */
@@ -34,5 +31,17 @@ public abstract class Task extends AsyncTask<String, String, Void> {
 		running = false;
 	}
 	
+	public Task() {
+		message = Message.obtain();
+		running = false;
+	}
+	
+	@Override
+	protected void onPostExecute(Void result) {
+		// Send message to callback object.
+		if (callback != null) {
+			callback.handleMessage(message);
+		}
+	}
 	
 }
