@@ -2,7 +2,6 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.concurrent.ExecutionException;
 
-import android.os.Message;
 import android.os.Handler.Callback;
 
 /** Logs the user in.
@@ -26,13 +25,27 @@ public class Login extends Task {
 	}
 	
 	/** Creates a new Login job, without callback.
-	 *  Get results using getMessage().
+	 * 
+	 *  Usage: Start using the blocking method start(), 
+	 *  then get results using getMessage().
 	 */
 	public Login(String name, String code, String pin) {
 		super();
 		this.name = name;
 		this.code = code;
 		this.pin  = pin;
+	}
+
+	/**
+	 * Runs the login job, and blocks until completion.
+	 */
+	public void startAndFinish() {
+		try {
+			execute().get();
+		} catch (InterruptedException e) {}
+		  catch (ExecutionException e) {}
+		
+		return;
 	}
 	
 	/** Returns the result of the job.
@@ -41,6 +54,8 @@ public class Login extends Task {
 	public Boolean getSuccess() {
 		// Abort if already running.
 		if (running) { return null; }
+		// Abort if we haven't yet been started.
+		if (message.obj == null) { return null; }
 		else {
 			return (Boolean)message.obj;
 		}
@@ -54,7 +69,7 @@ public class Login extends Task {
 		if (running) { return null; }
 		running = true;
 		
-		// Actual time-consuming code.
+		// Log in.
 		// Network requests,
 		// parsing,
 		// etc? ... Hard work.
@@ -64,6 +79,7 @@ public class Login extends Task {
 		message.obj = b;
 		// TODO: should return something cookie-like, not bool?
 		
+		running = false;
 		return null;
 	}
 

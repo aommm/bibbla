@@ -25,22 +25,27 @@ public class Search extends Task {
 		if (running) { return null; }
 		running = true;
 		
-		// If not logged in: (made this up myself, not standardised)
-		// message.arg1 = 1;
+		// Assume we're logged in for now.
+		boolean loggedIn = true;
 		
-		// Else, put results into list,
-		ArrayList<Book> results = new ArrayList<Book>();
-		results.add(new Book("Book of Life", "Niklas Logren"));
-		results.add(new Book("Dassboken #39", "Jonathan Orrö"));
-		// And add this list to our Message. 
-		message.obj = results;
-		
-		// Trying if threading works.
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!loggedIn) {
+			message.arg1 = 1; // Arbitrary
+		}
+		else {
+			// Assume some example results,
+			ArrayList<Book> results = new ArrayList<Book>();
+			results.add(new Book("Book of Life", "Niklas Logren"));
+			results.add(new Book("Dassboken #39", "Jonathan Orrö"));
+			// And add this list to our Message. 
+			message.obj = results;
+			
+			// Test code, for seeing if threading works. It does!
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return null;
