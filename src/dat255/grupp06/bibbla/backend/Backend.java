@@ -1,12 +1,8 @@
 package dat255.grupp06.bibbla.backend;
 
-import java.util.ArrayList;
-
-import org.jsoup.Jsoup;
-
-import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import dat255.grupp06.bibbla.backend.tasks.Login;
 import dat255.grupp06.bibbla.backend.tasks.Search;
 
@@ -31,39 +27,39 @@ public class Backend {
 	public void search(final String s, final Callback c) {
 		
 		// Creates a new search.
-		// Runs in a separate thread, reports via callback.
-		new Search(s, new Callback() {
-
-			// Handle the search results.
+		// Search is then run in a separate thread.
+		new Search(s, 
+				
+			// Is called when searching is done.
+			new Callback() {
 			public boolean handleMessage(Message msg) {
-				// Did we need to login? (using arg1==1 for this, but it's arbitrary)
+
+				// Did we need to login? (using arg1==1 is arbitrary)
 				if (msg.arg1 == 1) {
-					// Create a new Login task, without launching it in a new thread.
-					Login l = new Login(settings.getName(), settings.getCode(), settings.getPin());
-					// Try to login.
-					if (l.start()) {
-						// Success! Try the search again.
-						Backend.this.search(s, c);
-					}
-					else {
-						// Login failed. Handle?
-					}
 					
+					// If so, login automatically.
+					Login l = new Login(settings.getName(), settings.getCode(), settings.getPin());
+					l.startAndFinish(); // Blocks until job is done.
+					if (l.getSuccess()) {
+						Backend.this.search(s, c); // Try search again.
+					} else {
+						// Login failed. Handle?
+					}	
 				}
-				// Unspecified error.
+				// Unspecified error while searching.
 				if (msg.obj == null) {
 					// Do we need to do anything special, or just forward?
 				}
-				
-				// We're all clear! Forward to frontend.
-				else {
+
+				else { // We're all clear! Forward to frontend.
 					c.handleMessage(msg);
 				}
 				
-				return true; // The message is handled.
+				return true;
 			}
 			
-		});
+		// Finally, run the search task. (starts a new thread)  
+		}).execute();
 
 	}
 }

@@ -2,7 +2,6 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.concurrent.ExecutionException;
 
-import android.os.Message;
 import android.os.Handler.Callback;
 
 /** Logs the user in.
@@ -15,7 +14,7 @@ public class Login extends Task {
 
 	String name, code, pin;
 	
-	/** Creates and starts a new Login job.
+	/** Creates a new Login job.
 	 *  Reports result via callback.
 	 */
 	public Login(String name, String code, String pin, Callback c) {
@@ -23,44 +22,43 @@ public class Login extends Task {
 		this.name = name;
 		this.code = code;
 		this.pin  = pin;
-
-		// Run the job.
-		start();
-		
-		// Submit message to callback.
-		c.handleMessage(message);
 	}
 	
-	/** Creates a new Login job, but doesn't start it.
-	 *  The task has to be started manually using the (blocking) method start()!
-	 *  
-	 *  This is the recommended approach for launching Login 'silently'.
-	 *  (Is used in backend, if other tasks reports "not logged in")
+	/** Creates a new Login job, without callback.
+	 * 
+	 *  Usage: Start using the blocking method start(), 
+	 *  then get results using getMessage().
 	 */
 	public Login(String name, String code, String pin) {
+		super();
 		this.name = name;
 		this.code = code;
 		this.pin  = pin;
 	}
-	
-	/** Starts the login job.
-	 *  @returns false if already running.
+
+	/**
+	 * Runs the login job, and blocks until completion.
 	 */
-	public Boolean start() {
-		// Abort if already running.
-		if (running) { return false; }
-		running = true;
-		
+	public void startAndFinish() {
 		try {
-			 this.execute(null,null,null).get(); // TODO timeout?
-		}
-		catch (InterruptedException e) {}
-		catch (ExecutionException e) {} 
+			execute().get();
+		} catch (InterruptedException e) {}
+		  catch (ExecutionException e) {}
 		
-		// Return the result.
-		// (returning like this is an exception; only possible since we want to be able to login silently.		
-		//  usually, all data should flow through the Message object.)
-		return (Boolean)message.obj;
+		return;
+	}
+	
+	/** Returns the result of the job.
+	 *  @returns null if the task is running.
+	 */
+	public Boolean getSuccess() {
+		// Abort if already running.
+		if (running) { return null; }
+		// Abort if we haven't yet been started.
+		if (message.obj == null) { return null; }
+		else {
+			return (Boolean)message.obj;
+		}
 	}
 	
 	@Override
@@ -68,8 +66,10 @@ public class Login extends Task {
 	 *  Puts the results into our Message object.
 	 */
 	protected Void doInBackground(String... params) {
-
-		// Actual time-consuming code.
+		if (running) { return null; }
+		running = true;
+		
+		// Log in.
 		// Network requests,
 		// parsing,
 		// etc? ... Hard work.
@@ -79,6 +79,7 @@ public class Login extends Task {
 		message.obj = b;
 		// TODO: should return something cookie-like, not bool?
 		
+		running = false;
 		return null;
 	}
 
