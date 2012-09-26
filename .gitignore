@@ -21,3 +21,6 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+# Irrelevant settings directory?
+.settings
