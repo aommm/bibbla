@@ -3,8 +3,8 @@ package dat255.grupp06.bibbla;
 import java.util.ArrayList;
 
 import android.os.Bundle;
-import android.os.Handler.Callback;
-import android.os.Message;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 import android.util.Log;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -59,9 +59,8 @@ public class MainActivity extends SherlockActivity {
 	public void search(String s) {
 		// Calls backend search, using callbacks.
 		backend.search(s, new Callback() {
-			public boolean handleMessage(Message msg) {
+			public void handleMessage(Message msg) {
 				MainActivity.this.searchDone(msg);
-				return true;
 			}
 		});
 	}

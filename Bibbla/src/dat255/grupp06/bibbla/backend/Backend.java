@@ -1,8 +1,7 @@
 package dat255.grupp06.bibbla.backend;
 
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.util.Log;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.backend.tasks.Login;
 import dat255.grupp06.bibbla.backend.tasks.Search;
 
@@ -32,7 +31,7 @@ public class Backend {
 				
 			// Is called when searching is done.
 			new Callback() {
-			public boolean handleMessage(Message msg) {
+			public void handleMessage(Message msg) {
 
 				// Did we need to login? (using arg1==1 is arbitrary)
 				if (msg.arg1 == 1) {
@@ -54,8 +53,6 @@ public class Backend {
 				else { // We're all clear! Forward to frontend.
 					c.handleMessage(msg);
 				}
-				
-				return true;
 			}
 			
 		// Finally, run the search task. (starts a new thread)  

@@ -2,7 +2,7 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.ArrayList;
 
-import android.os.Handler.Callback;
+import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Book;
 
 /** Searches for a book.

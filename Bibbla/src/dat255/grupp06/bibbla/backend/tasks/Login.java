@@ -2,7 +2,7 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.concurrent.ExecutionException;
 
-import android.os.Handler.Callback;
+import dat255.grupp06.bibbla.utils.Callback;
 
 /** Logs the user in.
  *  Reports failure/success using callback method.

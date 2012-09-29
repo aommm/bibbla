@@ -1,8 +1,8 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 import android.os.AsyncTask;
-import android.os.Message;
-import android.os.Handler.Callback;
+import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Callback;
 
 /** 
  * An abstract class, representing a task which is run in a new thread.
@@ -27,12 +27,12 @@ public abstract class Task extends AsyncTask<String, String, Void> {
 		// Save callback object.
 		callback = c;
 		// Initialise message.
-		message = Message.obtain();
+		message = new Message();
 		running = false;
 	}
 	
 	public Task() {
-		message = Message.obtain();
+		message = new Message();
 		running = false;
 	}
 	
