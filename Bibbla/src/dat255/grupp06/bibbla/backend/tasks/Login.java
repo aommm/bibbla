@@ -69,14 +69,9 @@ public class Login extends Task {
 		if (running) { return null; }
 		running = true;
 		
-		// Log in.
-		// Network requests,
-		// parsing,
-		// etc? ... Hard work.
+		LoginJob job = new LoginJob();
+		message.obj = job.run();
 		
-		// Assume success.
-		Boolean b = true;
-		message.obj = b;
 		// TODO: should return something cookie-like, not bool?
 		
 		running = false;
