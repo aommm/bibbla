@@ -3,51 +3,60 @@ package dat255.grupp06.bibbla;
 import java.util.ArrayList;
 
 import android.os.Bundle;
-import dat255.grupp06.bibbla.utils.Callback;
-import dat255.grupp06.bibbla.utils.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockActivity;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 
-public class MainActivity extends SherlockActivity {
-
+public class MainActivity extends SherlockActivity implements ActionBar.TabListener {
+	private TextView mSelected;
+	
 	Backend backend;
 	
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		backend = new Backend();
-		TabHost tabHost=(TabHost)findViewById(R.id.tabHost);
-		tabHost.setup();
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
+        super.onCreate(savedInstanceState);
 
-		TabSpec spec1=tabHost.newTabSpec("Sök");
-		spec1.setIndicator("Sök");
-		spec1.setContent(R.id.tab1);
-		
+        backend = new Backend();
+        
+        setContentView(R.layout.activity_main);
+        mSelected = (TextView)findViewById(R.id.text);
 
-		TabSpec spec2=tabHost.newTabSpec("Mitt konto");
-		spec2.setIndicator("Mitt konto");
-		spec2.setContent(R.id.tab2);
-
-		TabSpec spec3=tabHost.newTabSpec("Bibliotek");
-		spec3.setIndicator("Bibliotek");
-		spec3.setContent(R.id.tab3);
-
-		TabSpec spec4=tabHost.newTabSpec("Inställningar");
-		spec4.setIndicator("Inställningar");
-		spec4.setContent(R.id.tab4);		
-		
-		tabHost.addTab(spec1);
-		tabHost.addTab(spec2);
-		tabHost.addTab(spec3);
-		tabHost.addTab(spec4);
-	}
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        
+        ActionBar.Tab searchTab = getSupportActionBar().newTab();
+        ActionBar.Tab profileTab = getSupportActionBar().newTab();
+        ActionBar.Tab librariesTab = getSupportActionBar().newTab();
+        
+        searchTab.setText("Sök");
+        searchTab.setTabListener(this);
+        profileTab.setText("Lån & Reservationer");
+        profileTab.setTabListener(this);
+        librariesTab.setText("Bibliotek");
+        librariesTab.setTabListener(this);
+        
+        getSupportActionBar().addTab(searchTab);
+        getSupportActionBar().addTab(profileTab);
+        getSupportActionBar().addTab(librariesTab);
+        
+        /*
+        for (int i = 1; i <= 3; i++) {
+            ActionBar.Tab tab = getSupportActionBar().newTab();
+            tab.setText("Tab " + i);
+            tab.setTabListener(this);
+            getSupportActionBar().addTab(tab);
+        }
+        */
+    }
 	
 	@Override
 	public void onResume() {
@@ -86,7 +95,24 @@ public class MainActivity extends SherlockActivity {
 		}
 		
 		// Display first book in label.
-		TextView tv = (TextView) findViewById(R.id.txt1);
+		TextView tv = (TextView) findViewById(R.id.text);
 		tv.setText(results.get(0).toString());
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		mSelected.setText("Selected: " + tab.getText());
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
 	}
 }
