@@ -33,17 +33,22 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
-        //Creates the tabs
+        //Create the tabs
         ActionBar.Tab searchTab = getSupportActionBar().newTab();
         ActionBar.Tab profileTab = getSupportActionBar().newTab();
         ActionBar.Tab librariesTab = getSupportActionBar().newTab();
         
-        //Sets properties of tabs
-        searchTab.setText("Sök");
+        //Set tab properties
+        searchTab.setContentDescription("Sök");
+        searchTab.setIcon(android.R.drawable.ic_menu_search);
         searchTab.setTabListener(this);
-        profileTab.setText("Lån & Reservationer");
+        
+        profileTab.setContentDescription("Lån");
+        profileTab.setIcon(android.R.drawable.ic_menu_share);
         profileTab.setTabListener(this);
-        librariesTab.setText("Bibliotek");
+        
+        librariesTab.setContentDescription("Bibliotek");
+        librariesTab.setIcon(android.R.drawable.ic_menu_gallery);
         librariesTab.setTabListener(this);
         
         //Add the tabs to the action bar
@@ -96,7 +101,7 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		mSelected.setText("Selected: " + tab.getText());
+		mSelected.setText("Selected: " + tab.getContentDescription());
 	}
 
 	@Override
