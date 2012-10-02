@@ -29,7 +29,7 @@ public class Search extends Task {
 		boolean loggedIn = true;
 		
 		if (!loggedIn) {
-			message.arg1 = 1; // Arbitrary
+			message.loggedIn = true; // Arbitrary
 		}
 		else {
 			// Assume some example results,

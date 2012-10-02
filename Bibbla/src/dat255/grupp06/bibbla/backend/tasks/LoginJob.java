@@ -4,10 +4,11 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-//import java.net.CookieManager;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+
+import dat255.grupp06.bibbla.utils.Message;
+//import java.net.CookieManager;
 
 /**
  * Logs the user into gotlib.
@@ -27,7 +28,9 @@ public class LoginJob {
 	 * Starts logging in.
 	 * @returns the success of the operation.
 	 */
-	public Object run() {
+	public Message run() {
+		
+		Message msg = new Message();
 		
 		try {
 			step1();
@@ -40,10 +43,10 @@ public class LoginJob {
 			System.out.println("*** step2() failed: "+e.getMessage()+"***");
 		}		
 		
-		
 		// Will eventually return success/failure.
-		Boolean b = true;
-		return b;
+		msg.loggedIn = true;
+		
+		return msg;
 	}
 	
 	/**
