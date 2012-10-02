@@ -13,20 +13,25 @@ import java.net.URLConnection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import dat255.grupp06.bibbla.utils.Message;
+
 import android.net.Uri;
 
 public class SearchJob {
 	
 	private String searchPhrase = null;
 	private String htmlResults = null;
+	private Message message;
 	
 		public SearchJob(String s){
 			searchPhrase = s;
+			message = new Message();
 			
 		}
 		
 		
-		public void runSearch(){
+		public Message runSearch(){
+			
 			try {
 				step1();
 			} catch (MalformedURLException e) {
@@ -45,6 +50,7 @@ public class SearchJob {
 				e.printStackTrace();
 			}
 			
+			return message;
 			
 		}
 		
