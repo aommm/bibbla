@@ -1,6 +1,6 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
-<<<<<<< HEAD
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,6 +19,7 @@ import org.jsoup.nodes.Document;
 import dat255.grupp06.bibbla.utils.Message;
 
 import android.net.Uri;
+import dat255.grupp06.bibbla.utils.Book;
 
 public class SearchJob {
 	
@@ -31,7 +34,7 @@ public class SearchJob {
 		}
 		
 		
-		public Message runSearch(){
+		public Message run(){
 			
 			try {
 				step1();
@@ -50,18 +53,8 @@ public class SearchJob {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			List<Book> results = new ArrayList<Book>();
 			return message;
-			
-		}
-		
-		private boolean step2() {
-		
-			// Check if logged in or not
-			// Set appropriate value in message.loggedIn
-			
-			return false;
-
 			
 		}
 
@@ -82,31 +75,21 @@ public class SearchJob {
 			return false;
 
 			
+		}
+		
+		
+		private boolean step2() {
+		
+			// Check if logged in or not
+			// Set appropriate value in message.loggedIn
+			
+			return false;
+
 			
 		}
-=======
-import java.util.ArrayList;
-import java.util.List;
 
-import dat255.grupp06.bibbla.utils.Book;
-import dat255.grupp06.bibbla.utils.Message;
 
-public class SearchJob {
-	
-	private Message message;
-	
-	public SearchJob(String s) {
-		message = new Message();
-	}
-	
-	public Message run() {
-		List<Book> results = new ArrayList<Book>();
-		results.add(new Book("Book of Life", "Niklas Logren"));
-		
-		message.loggedIn = false;
-		message.obj = results;
-		return message;
-	}
->>>>>>> 9ad0352e4eec5400f3d3f438aeb0d4f5f726e2e9
+
+
 
 }
