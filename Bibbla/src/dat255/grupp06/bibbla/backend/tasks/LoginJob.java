@@ -1,11 +1,15 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import dat255.grupp06.bibbla.utils.Message;
 //import java.net.CookieManager;
@@ -19,10 +23,23 @@ import dat255.grupp06.bibbla.utils.Message;
  * @author Niklas Logren
  */
 public class LoginJob {
-	// TODO use this somehow?
-    //CookieManager cookieManager;
 
-	public LoginJob() {}
+	// Global throughout the whole program. In Session-class later on.
+	Map<String, String> sessionCookies;
+	// Needed only in LoginJob.
+	Map<String, String> sessionVariables;
+	
+	String name, code, pin;
+	
+	public LoginJob(String name, String code, String pin) {
+		this.name = name;
+		this.code = code;
+		this.pin = pin;
+		
+		// Initialise maps.
+		sessionVariables = new HashMap<String, String>();
+		sessionCookies = new HashMap<String, String>();
+	}
 	
 	/**
 	 * Starts logging in.
@@ -30,22 +47,26 @@ public class LoginJob {
 	 */
 	public Message run() {
 		
+		// Create a response object.
 		Message msg = new Message();
 		
 		try {
-			step1();
+			System.out.println("*** getLoginForm(): ");
+			getLoginForm();
+			System.out.println("succeeded! ***");
+			System.out.println("*** postLoginForm(): ");
+			postLoginForm();
+			System.out.println("succeeded! ***");
+			System.out.println("*** loginTest(): ");
+			loginTest("hej");
+			System.out.println("succeeded! ***");			
+			// We made it through.
+			msg.loggedIn = true;
+			
 		} catch (Exception e) {
-			System.out.println("*** step1() failed: "+e.getMessage()+"***");
+			System.out.println("failed: "+e.getMessage()+" ***");
 		}
-		try {
-			step2();
-		} catch (Exception e) {
-			System.out.println("*** step2() failed: "+e.getMessage()+"***");
-		}		
-		
-		// Will eventually return success/failure.
-		msg.loggedIn = true;
-		
+
 		return msg;
 	}
 	
@@ -53,69 +74,87 @@ public class LoginJob {
 	 * Step 1: Gets login form.
 	 * Saves the initial session cookies, and retrieves three values.  
 	 */
-	private void step1() throws Exception {
+	private void getLoginForm() throws Exception {
 
-		// Define new GET request.
-		URL url = new URL("https://www.gotlib.goteborg.se/iii/cas/login?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang=swe");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		String url = "https://www.gotlib.goteborg.se/iii/cas/login?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang=swe";
 
-		// Send request.
-		conn.connect();
-		
-		// Get content.
-		String html = null;
-		InputStream in = new BufferedInputStream(conn.getInputStream());
-		html = readStream(in);
+		// Create a request, and retrieve the response.
+		Response response = Jsoup.connect(url)
+			    .method(Method.GET)
+			    .execute();
 
-		// Terminate connection. Surely we can do this here?
-		conn.disconnect();
+		// Get the cookies from the response.
+		sessionCookies = response.cookies();
 		
-		/**
-		 * TODO: Save cookies.
-		 * Save all session cookies, and save the values of 
-		 * "org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE"
-		 * and "JSESSIONID" manually.
-		 * 
-		 * How to save session cookies? Look up CookieManager.
-		 * How long can it keep up the show? Can it do it across threads?
-		 */ 
+		// Prepare for parsing.
+		Document html = response.parse();
+
+		// Get the value of <input type="hidden" name="lt" value="" />.
+		String lt = html.select("input[name=lt]").first().val();
+		sessionVariables.put("lt", lt);
 		
-		/**
-		 * TODO: Parse HTML.
-		 * Save value of <input type="hidden" name="lt" value="xxx" />.
-		 */
-		
-		System.out.println("*** Login form: "+html);
-		System.out.println("End login form. ***"); // temporary debug text.
+		// Tests.
+		if ((sessionVariables.get("lt") == null) ||
+		   (sessionCookies.get("JSESSIONID") == null) ||
+		   (sessionCookies.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE") == null)) {
+			throw new Exception("missing cookies/variables.");
+		}
 	}
 	
 	
 	/**
 	 * Step 2: POSTs login credentials.
+	 * Saves new session cookies, which will be used in all requests hereafter.
 	 */
-	private void step2() throws Exception {
-		// TODO: implement
-		throw new UnsupportedOperationException("implement me pls");
-	}	
-	
+	private void postLoginForm() throws Exception {
+		
+		// Prepare POST url (spoiler: contains variables!)
+	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE");
+		
+	    // Prepare POST data.
+	    Map<String,String> postData = new HashMap<String,String>() {{
+	    	put("name", name);
+	    	put("code", code);
+	    	put("pin", pin);
+	    	put("lt", sessionVariables.get("lt"));
+	    	put("_eventId", "submit");
+	    }};
+	    
+	    // Send POST request and save response.
+	    Response response = Jsoup.connect(url)
+			    .method(Method.POST)
+			    .data(postData)
+			    .cookies(sessionCookies)
+			    .execute();
+
+	    // These new cookies are all we'll need. 
+	    sessionCookies = response.cookies();
+	}
 	
 	/**
-	 * Reads the supplied stream until the end.
-	 * @returns the String contained in the stream. 
+	 * Performs a test search, to see if login was successful.
 	 */
-	private String readStream(InputStream is) {
-	    try {
-	      ByteArrayOutputStream bo = new ByteArrayOutputStream();
-	      int i = is.read();
-	      while(i != -1) {
-	        bo.write(i);
-	        i = is.read();
-	      }
-	      return bo.toString();
-	    } catch (IOException e) {
-	      return "";
+	private void loginTest(String searchString) throws Exception {
+		
+	    String url = "http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchString+"__Orightresult__U1?lang=swe&suite=pearl";
+	    
+	    // Send a GET request and save response.
+	    Response response = Jsoup.connect(url)
+	    		.method(Method.GET)
+	    		.cookies(sessionCookies)
+	    		.execute();
+	    
+	    // Prepare for parsing.
+	    Document html = response.parse();
+	    
+	    // Is login link present?
+	    if (html.select("a[id=loginLinkComponent]").size() > 0) {
+	    	// Yep. Login failed.
+	    	System.out.println(html.select("a[id=loginLinkComponent]").first().text());
+	    	throw new Exception("Login test failed.");
 	    }
-	}
 
+	    // We made it here without exceptions? Yay!
+	}
 	
 }

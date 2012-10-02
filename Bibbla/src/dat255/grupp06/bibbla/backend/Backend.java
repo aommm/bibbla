@@ -48,7 +48,7 @@ public class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				LoginJob job = new LoginJob();
+				LoginJob job = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
 				message = job.run();
 				return null;
 			}
@@ -75,7 +75,7 @@ public class Backend {
 		// Are we not logged in?
 		if (!loggedIn) {
 			// Then login. (Runs the job directly; no new thread.)
-			LoginJob loginJob = new LoginJob();
+			LoginJob loginJob = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
 			Message msg = loginJob.run();
 			// Did login succeed?
 			if (msg.loggedIn) {
