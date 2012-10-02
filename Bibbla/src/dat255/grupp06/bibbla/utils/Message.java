@@ -6,5 +6,9 @@ public class Message {
 	public Error error;
 	
 	
-	public Message() {}
+	public Message() {
+		obj = null;
+		loggedIn = false;
+		error = null;
+	}
 }
