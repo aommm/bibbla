@@ -11,6 +11,7 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Message;
 //import java.net.CookieManager;
 
@@ -28,13 +29,15 @@ public class LoginJob {
 	Map<String, String> sessionCookies;
 	// Needed only in LoginJob.
 	Map<String, String> sessionVariables;
+	Session session;
 	
 	String name, code, pin;
 	
-	public LoginJob(String name, String code, String pin) {
+	public LoginJob(String name, String code, String pin, Session session) {
 		this.name = name;
 		this.code = code;
 		this.pin = pin;
+		this.session = session;
 		
 		// Initialise maps.
 		sessionVariables = new HashMap<String, String>();
@@ -61,6 +64,7 @@ public class LoginJob {
 			loginTest("hej");
 			System.out.println("succeeded! ***");			
 			// We made it through.
+			session.setCookies(sessionCookies);
 			msg.loggedIn = true;
 			
 		} catch (Exception e) {

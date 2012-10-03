@@ -76,6 +76,9 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
 	
 	/** Is called when backend searching is done.**/
 	public void searchDone(Message msg) {
+		
+		Log.i("debug", "searchDone()");
+		
 		// Null implies an error. Todo: Display error nicely.
 		if (msg.obj == null) {
 			return;

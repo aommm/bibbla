@@ -1,35 +1,29 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import dat255.grupp06.bibbla.utils.Message;
-
-import android.net.Uri;
+import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchJob {
 	
 	private String searchPhrase = null;
 	private String htmlResults = null;
 	private Message message;
+	private Session session;
 	
-		public SearchJob(String s){
+		public SearchJob(String s, Session session){
 			searchPhrase = s;
 			message = new Message();
+			this.session = session;
 			
 		}
 		

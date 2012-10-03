@@ -1,3 +1,4 @@
+import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.backend.tasks.LoginJob;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
@@ -11,7 +12,8 @@ public class LoginTest {
 	
 	public void run() {
 		// PrivateCredentials is an unpublished class in the tasks-package, for debugging purposes.
-		LoginJob job = new LoginJob(PrivateCredentials.name, PrivateCredentials.code, PrivateCredentials.pin);
+		Session session = new Session(PrivateCredentials.name, PrivateCredentials.code, PrivateCredentials.pin);
+		LoginJob job = new LoginJob(PrivateCredentials.name, PrivateCredentials.code, PrivateCredentials.pin, session);
 		Object result = job.run();
 		System.out.println("****** Test finished. Result: "+result.toString());
 	}

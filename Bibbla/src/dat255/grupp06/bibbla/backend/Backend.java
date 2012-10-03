@@ -21,11 +21,13 @@ public class Backend {
 	//private NetworkHandler network;
 	//private Jsoup parser; // TODO: MIT license. needs to include notice?
 	private Settings settings;
+	private Session session;
 	private boolean loggedIn;
 	
 	public Backend() {
 		 //network = new NetworkHandler(); // Don't need networkHandler?
 		 settings = new Settings("logren","12345567643","1336");
+		 session = new Session(settings.getName(), settings.getCode(), settings.getPin());
 	}
 	
 	/**
@@ -42,13 +44,13 @@ public class Backend {
 				Backend.this.loginDone(msg, frontendCallback);
 			}};
 		
-		// Secondly, create a new Task and define its body.
+		// Secondly, create a new Task and define 22its body.
 		// Should call our newly created Callback when done.
 		Task task = new Task(backendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				LoginJob job = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
+				LoginJob job = new LoginJob(settings.getName(), settings.getCode(), settings.getPin(), session);
 				message = job.run();
 				return null;
 			}
@@ -75,7 +77,7 @@ public class Backend {
 		// Are we not logged in?
 		if (!loggedIn) {
 			// Then login. (Runs the job directly; no new thread.)
-			LoginJob loginJob = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
+			LoginJob loginJob = new LoginJob(settings.getName(), settings.getCode(), settings.getPin(), session);
 			Message msg = loginJob.run();
 			// Did login succeed?
 			if (msg.loggedIn) {
@@ -108,7 +110,7 @@ public class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				SearchJob job = new SearchJob(s);
+				SearchJob job = new SearchJob(s, session);
 				message = job.run();
 				
 				return null;
