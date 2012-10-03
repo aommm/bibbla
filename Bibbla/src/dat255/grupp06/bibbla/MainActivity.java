@@ -3,20 +3,21 @@ package dat255.grupp06.bibbla;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
-public class MainActivity extends SherlockActivity implements ActionBar.TabListener {
+public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private TextView mSelected;
 	
 	Backend backend;
@@ -55,6 +56,9 @@ public class MainActivity extends SherlockActivity implements ActionBar.TabListe
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
         getSupportActionBar().addTab(librariesTab);
+        
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         
     }
 	
