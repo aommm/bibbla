@@ -13,6 +13,7 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
@@ -26,12 +27,30 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-
-        backend = new Backend();
         
         setContentView(R.layout.activity_main);
-        mSelected = (TextView)findViewById(R.id.text);
+       
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        
+        SearchFragment fragment = new SearchFragment();
+        fragmentTransaction.add(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
+        
+        mSelected = (TextView)findViewById(R.string.text);
+        
+        Log.d("J", "Hej ?");
+        
+        if(mSelected == null)
+        {
+        	Log.d("J", "Nej =(");
+        } else {
+        	Log.d("J", "Ja ?");
+        }
+        
+        backend = new Backend();
+        
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
         //Create the tabs
@@ -55,11 +74,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         //Add the tabs to the action bar
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
-        getSupportActionBar().addTab(librariesTab);
-        
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        
+        getSupportActionBar().addTab(librariesTab);      
     }
 	
 	@Override
@@ -98,14 +113,16 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			Log.i("debug: searchDone():", book.toString());
 		}
 		
+		
 		// Display first book in label.
 		TextView tv = (TextView) findViewById(R.id.text);
 		tv.setText(results.get(0).toString());
+		
 	}
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		mSelected.setText("Selected: " + tab.getContentDescription());
+		//mSelected.setText("Selected: " + tab.getContentDescription());
 	}
 
 	@Override
