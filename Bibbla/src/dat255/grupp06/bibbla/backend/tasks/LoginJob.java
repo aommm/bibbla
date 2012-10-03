@@ -33,11 +33,11 @@ public class LoginJob {
 	
 	String name, code, pin;
 	
-	public LoginJob(String name, String code, String pin, Session session) {
-		this.name = name;
-		this.code = code;
-		this.pin = pin;
+	public LoginJob(Session session) {
 		this.session = session;
+		name = session.getName();
+		code = session.getCode();
+		pin = session.getPin();
 		
 		// Initialise maps.
 		sessionVariables = new HashMap<String, String>();
@@ -54,21 +54,23 @@ public class LoginJob {
 		Message msg = new Message();
 		
 		try {
-			System.out.println("*** getLoginForm(): ");
+			System.out.print("\n****** LoginJob \n");
+			System.out.print("* getLoginForm(): ");
 			getLoginForm();
-			System.out.println("succeeded! ***");
-			System.out.println("*** postLoginForm(): ");
+			System.out.print("succeeded! *\n");
+			System.out.print("* postLoginForm(): ");
 			postLoginForm();
-			System.out.println("succeeded! ***");
-			System.out.println("*** loginTest(): ");
+			System.out.print("succeeded! *\n");
+			System.out.print("* loginTest(): ");
 			loginTest("hej");
-			System.out.println("succeeded! ***");			
+			System.out.print("succeeded! *\n");
+			System.out.print("****** LoginJob done \n");
 			// We made it through.
 			session.setCookies(sessionCookies);
 			msg.loggedIn = true;
-			
-		} catch (Exception e) {
-			System.out.println("failed: "+e.getMessage()+" ***");
+		}
+		catch (Exception e) {
+			System.out.print("failed: "+e.getMessage()+" ***\n");
 		}
 
 		return msg;

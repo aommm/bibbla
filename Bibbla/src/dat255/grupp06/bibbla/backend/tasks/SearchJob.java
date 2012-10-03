@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,9 +17,9 @@ import dat255.grupp06.bibbla.utils.Message;
 public class SearchJob {
 	
 	private String searchPhrase = null;
-	private String htmlResults = null;
 	private Message message;
 	private Session session;
+	private Map<String,String> sessionCookies;
 	
 		public SearchJob(String s, Session session){
 			searchPhrase = s;
@@ -30,55 +31,53 @@ public class SearchJob {
 		
 		public Message run(){
 			
+			// Create a response object.
+			Message msg = new Message();
+			
 			try {
+				System.out.print("\n****** SearchJob\n");
+				System.out.print("* step1(): ");
 				step1();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.print("succeeded! *\n");
+				System.out.print("* step2(): ");
+				step2();
+				System.out.print("succeeded! *\n*");
+				System.out.print("****** SearchJob done \n");
+				
+				// We made it through.
+				session.setCookies(sessionCookies);
+				msg.loggedIn = true;
 			}
-			
-			try {
-				if (step1())
-					step2();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			catch (Exception e) {
+				System.out.print("failed: "+e.getMessage()+" *** \n");
 			}
-			List<Book> results = new ArrayList<Book>();
+
 			return message;
-			
 		}
 
 
-		private boolean step1() throws IOException{
+		private void step1() throws Exception{
 			
-			/*URL url = new URL("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl");
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			//InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-			htmlResults = (String)connection.getContent();
-			if (connection.getResponseCode() == 200)
-				return true;
-			else
-				return false;
-				*/
-			Document doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl").get();
+			// Check if we're logged in, and if so, get session cookies.
+			if (session.checkLogin()) {
+				sessionCookies = session.getCookies();
+				message.loggedIn = true; // Tell frontend
+			} else { // Abort search.
+				throw new Exception("Session.checkLogin() failed.");
+			}
 			
-			return false;
-
+			Document doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl")
+					.cookies(sessionCookies)
+					.get();
 			
 		}
 		
 		
-		private boolean step2() {
+		private void step2() {
 		
-			// Check if logged in or not
-			// Set appropriate value in message.loggedIn
-			
-			return false;
-
+			List<Book> results = new ArrayList<Book>();
+			results.add(new Book("The Tibethan Book of the Dead", "Dalai Lama"));
+			message.obj = results;
 			
 		}
 

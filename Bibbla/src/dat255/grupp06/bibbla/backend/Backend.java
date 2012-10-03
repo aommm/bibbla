@@ -22,7 +22,6 @@ public class Backend {
 	//private Jsoup parser; // TODO: MIT license. needs to include notice?
 	private Settings settings;
 	private Session session;
-	private boolean loggedIn;
 	
 	public Backend() {
 		 //network = new NetworkHandler(); // Don't need networkHandler?
@@ -50,7 +49,7 @@ public class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				LoginJob job = new LoginJob(settings.getName(), settings.getCode(), settings.getPin(), session);
+				LoginJob job = new LoginJob(session);
 				message = job.run();
 				return null;
 			}
@@ -61,36 +60,9 @@ public class Backend {
 	}
 	
 	public void loginDone(Message msg, Callback frontendCallback) {
-		loggedIn = msg.loggedIn;
-		
 		// No further processing necessary. Forward to frontend.
+		// TODO Can be removed?
 		frontendCallback.handleMessage(msg);
-	}
-	
-	/**
-	 * Checks if the user is logged in. If not, tries to login.
-	 * @param frontendCallback - Frontend is notified if login fails.
-	 * @returns true if the user is logged in.
-	 */
-	private boolean loginCheck(Callback frontendCallback) {
-		
-		// Are we not logged in?
-		if (!loggedIn) {
-			// Then login. (Runs the job directly; no new thread.)
-			LoginJob loginJob = new LoginJob(settings.getName(), settings.getCode(), settings.getPin(), session);
-			Message msg = loginJob.run();
-			// Did login succeed?
-			if (msg.loggedIn) {
-				loggedIn = true;
-			} else {
-				// Login failed. Tell frontend and exit search.
-				loggedIn = false;
-				frontendCallback.handleMessage(msg);
-				return false;
-			}
-		}
-		
-		return true;
 	}
 	
 	/** Searches backend for the supplied string, and calls callback when done. **/
@@ -112,7 +84,6 @@ public class Backend {
 			protected Void doInBackground(String... params) {
 				SearchJob job = new SearchJob(s, session);
 				message = job.run();
-				
 				return null;
 			}
 		};
@@ -122,9 +93,8 @@ public class Backend {
 	}
 	
 	public void searchDone(Message msg, Callback frontendCallback) {
-		loggedIn = msg.loggedIn;
-
 		// No further processing necessary. Forward to frontend.
+		// TODO can be removed?
 		frontendCallback.handleMessage(msg);
 
 	}
