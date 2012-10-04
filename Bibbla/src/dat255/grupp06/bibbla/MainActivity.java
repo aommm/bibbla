@@ -18,9 +18,7 @@ import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
-	private TextView mSelected;
-	
+public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
 	Backend backend;
 	
 	@Override
@@ -114,9 +112,9 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		TextView mSelected = (TextView)findViewById(R.id.text);
 		
 		if(mSelected != null) {
+			Log.d("J","Hej");
 			mSelected.setText("Selected: " + tab.getContentDescription());
 		}
-		
 	}
 
 	@Override
