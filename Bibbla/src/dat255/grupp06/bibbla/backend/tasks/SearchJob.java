@@ -1,14 +1,14 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Book;
@@ -21,6 +21,7 @@ public class SearchJob {
 	private Message message;
 	private Session session;
 	private Map<String,String> sessionCookies;
+	private Document doc;
 	
 		public SearchJob(String s, Session session){
 			searchPhrase = s;
@@ -68,14 +69,23 @@ public class SearchJob {
 				throw new Exception("Session.checkLogin() failed.");
 			}
 			
-			Document doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl")
+			doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl")
 					.cookies(sessionCookies)
 					.get();	
+			
 		}
 		
 		private void step2() {		
 			List<Book> results = new ArrayList<Book>();
-			results.add(new Book("The Tibethan Book of the Dead", "Dalai Lama"));
+			Elements searchResults = doc.select("table.browseResult");
+			for(int i=0;i<searchResults.size();i++){
+				Element currentTable = searchResults.get(i);
+				Book book = new Book();
+				book.setAuthor(currentTable.select("div.dpBibAuthor").text());
+				book.setName(currentTable.select("div.dpBibTitle").text());
+				results.add(book);
+			}
+			
 			message.obj = results;
 		}
 
