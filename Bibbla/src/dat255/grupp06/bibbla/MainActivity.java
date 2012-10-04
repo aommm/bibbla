@@ -38,17 +38,6 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
         
-        mSelected = (TextView)findViewById(R.string.text);
-        
-        Log.d("J", "Hej ?");
-        
-        if(mSelected == null)
-        {
-        	Log.d("J", "Nej =(");
-        } else {
-        	Log.d("J", "Ja ?");
-        }
-        
         backend = new Backend();
         
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -122,7 +111,12 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		//mSelected.setText("Selected: " + tab.getContentDescription());
+		TextView mSelected = (TextView)findViewById(R.id.text);
+		
+		if(mSelected != null) {
+			mSelected.setText("Selected: " + tab.getContentDescription());
+		}
+		
 	}
 
 	@Override
