@@ -67,9 +67,10 @@ public class Backend {
 		task.execute();
 	}
 	
+	/**
+	 * Logs the user out. Reports the status via callback.
+	 */
 	public void logOut(final Callback frontendCallback){
-		
-		session = new Session();
-		
+		session = new Session();	
 	}
 }
