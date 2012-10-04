@@ -1,9 +1,14 @@
 package dat255.grupp06.bibbla.backend;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dat255.grupp06.bibbla.backend.tasks.LoginJob;
+import dat255.grupp06.bibbla.backend.tasks.SearchJob;
+import dat255.grupp06.bibbla.backend.tasks.Task;
+import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.backend.tasks.Login;
-import dat255.grupp06.bibbla.backend.tasks.Search;
 
 /**
  * Performs tasks like searching, reserving and logging in.
@@ -16,47 +21,109 @@ public class Backend {
 	//private NetworkHandler network;
 	//private Jsoup parser; // TODO: MIT license. needs to include notice?
 	private Settings settings;
+	private boolean loggedIn;
 	
 	public Backend() {
 		 //network = new NetworkHandler(); // Don't need networkHandler?
 		 settings = new Settings("logren","12345567643","1336");
 	}
 	
-	/** Searches backend for the supplied string, and calls callback when done. **/
-	public void search(final String s, final Callback c) {
-		
-		// Creates a new search.
-		// Search is then run in a separate thread.
-		new Search(s, 
-				
-			// Is called when searching is done.
-			new Callback() {
+	/**
+	 * Starts the login process. Reports results using c1.
+	 * @param c1 The frontend callback object.
+	 */
+	public void login(final Callback frontendCallback) {
+
+		// Firstly, create a new Callback object which calls backend.
+		Callback backendCallback = new Callback() {
+			@Override
+			// This code is run when Task finishes (on UI thread).
 			public void handleMessage(Message msg) {
-
-				// Did we need to login? (using arg1==1 is arbitrary)
-				if (msg.arg1 == 1) {
-					
-					// If so, login automatically.
-					Login l = new Login(settings.getName(), settings.getCode(), settings.getPin());
-					l.startAndFinish(); // Blocks until job is done.
-					if (l.getSuccess()) {
-						Backend.this.search(s, c); // Try search again.
-					} else {
-						// Login failed. Handle?
-					}	
-				}
-				// Unspecified error while searching.
-				if (msg.obj == null) {
-					// Do we need to do anything special, or just forward?
-				}
-
-				else { // We're all clear! Forward to frontend.
-					c.handleMessage(msg);
-				}
+				Backend.this.loginDone(msg, frontendCallback);
+			}};
+		
+		// Secondly, create a new Task and define its body.
+		// Should call our newly created Callback when done.
+		Task task = new Task(backendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				LoginJob job = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
+				message = job.run();
+				return null;
 			}
-			
-		// Finally, run the search task. (starts a new thread)  
-		}).execute();
+		};
+		
+		// Finally, start the task.
+		task.execute();
+	}
+	
+	public void loginDone(Message msg, Callback frontendCallback) {
+		loggedIn = msg.loggedIn;
+		
+		// No further processing necessary. Forward to frontend.
+		frontendCallback.handleMessage(msg);
+	}
+	
+	/**
+	 * Checks if the user is logged in. If not, tries to login.
+	 * @param frontendCallback - Frontend is notified if login fails.
+	 * @returns true if the user is logged in.
+	 */
+	private boolean loginCheck(Callback frontendCallback) {
+		
+		// Are we not logged in?
+		if (!loggedIn) {
+			// Then login. (Runs the job directly; no new thread.)
+			LoginJob loginJob = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
+			Message msg = loginJob.run();
+			// Did login succeed?
+			if (msg.loggedIn) {
+				loggedIn = true;
+			} else {
+				// Login failed. Tell frontend and exit search.
+				loggedIn = false;
+				frontendCallback.handleMessage(msg);
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/** Searches backend for the supplied string, and calls callback when done. **/
+	public void search(final String s, final Callback frontendCallback) {
+		
+		// Firstly, create a new Callback object which calls backend.
+		Callback backendCallback = new Callback() {
+			@Override
+			// This code is run when Task finishes (on UI thread).
+			public void handleMessage(Message msg) {
+				Backend.this.searchDone(msg, frontendCallback);
+			}};
+		
+		// Secondly, create a new Task and define its body.
+		// Should call our newly created Callback when done.
+		Task task = new Task(backendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				SearchJob job = new SearchJob(s);
+				message = job.run();
+				
+				return null;
+			}
+		};
+		
+		// Finally, start the task.
+		task.execute();
+	}
+	
+	public void searchDone(Message msg, Callback frontendCallback) {
+		loggedIn = msg.loggedIn;
+
+		// No further processing necessary. Forward to frontend.
+		frontendCallback.handleMessage(msg);
 
 	}
 }
