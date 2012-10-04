@@ -66,4 +66,10 @@ public class Backend {
 		// Start the task.
 		task.execute();
 	}
+	
+	public void logOut(final Callback frontendCallback){
+		
+		session = new Session();
+		
+	}
 }
