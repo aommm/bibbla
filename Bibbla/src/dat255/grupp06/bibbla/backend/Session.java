@@ -31,19 +31,10 @@ public class Session {
 		}
 	}
 	
-	public void setCookies(Map<String, String> cookies) {
-		synchronized(lock) {
+	private void setCookies(Map<String, String> cookies) {
+		synchronized(cookies) {
 			// Save our new cookies.
 			this.cookies = cookies;
-			
-			// Update loggedIn dumbly.
-			if (cookies == null) {
-				loggedIn = false;
-			} else if (cookies.size() < 1) {
-				loggedIn = false;
-			} else {
-				loggedIn = true;
-			}
 		}
 	}	
 	
@@ -51,7 +42,7 @@ public class Session {
 		// Not logged in?
 		if (!loggedIn) {
 			// Try again. 
-			if (!login()) {
+			if (!login().loggedIn) {
 				// Attempt #2 failed. Die.
 				return false; 
 			}
@@ -62,19 +53,24 @@ public class Session {
 	
 	/**
 	 * Starts login, and waits for it to finish.
- 	 * @returns the success of the login. 
- 	 * 
-	 * Note: 
-	 * We don't change any member variables here - 
-	 * they are changed from within LoginJob, using our setX()-methods.
+	 * Updates our member variables accordingly.
+ 	 * @returns the success of the login.
 	 */
-	public boolean login() {
-		// Create a new login job, and run it.
-		LoginJob job = new LoginJob(this);
+	public Message login() {
 		Message message = new Message();
-		message = job.run();
-		// Return the success of the job.
-		return message.loggedIn;
+		
+		synchronized(lock) {
+			// Create a new login job, and run it.
+			LoginJob job = new LoginJob(this);
+			message = job.run();
+			// Did job succeed?
+			loggedIn = message.loggedIn;
+			if (loggedIn) {
+				setCookies((Map<String, String>) message.obj);
+			}
+		}
+		
+		return message;
 	}
 
 	public String getName() {

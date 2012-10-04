@@ -14,6 +14,12 @@ public class Message {
 	
 	@Override
 	public String toString() {
-		return "error: "+error+", loggedIn: "+loggedIn+", obj: "+obj+".";
+		if (error == null) {
+			return "Success! loggedIn: "+loggedIn+", obj: "+obj+".";	
+		}
+		else {
+			return "Error: "+error+"loggedIn: "+loggedIn+", obj: "+obj+".";
+		}
+		
 	}
 }

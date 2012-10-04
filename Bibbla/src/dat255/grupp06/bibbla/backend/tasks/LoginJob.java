@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Error;
 //import java.net.CookieManager;
 
 /**
@@ -30,6 +31,7 @@ public class LoginJob {
 	// Needed only in LoginJob.
 	Map<String, String> sessionVariables;
 	Session session;
+	Message message;
 	
 	String name, code, pin;
 	
@@ -38,6 +40,7 @@ public class LoginJob {
 		name = session.getName();
 		code = session.getCode();
 		pin = session.getPin();
+		message = new Message();
 		
 		// Initialise maps.
 		sessionVariables = new HashMap<String, String>();
@@ -49,10 +52,7 @@ public class LoginJob {
 	 * @returns the success of the operation.
 	 */
 	public Message run() {
-		
-		// Create a response object.
-		Message msg = new Message();
-		
+
 		try {
 			System.out.print("\n****** LoginJob \n");
 			System.out.print("* getLoginForm(): ");
@@ -66,14 +66,15 @@ public class LoginJob {
 			System.out.print("succeeded! *\n");
 			System.out.print("****** LoginJob done \n");
 			// We made it through.
-			session.setCookies(sessionCookies);
-			msg.loggedIn = true;
+			message.obj = sessionCookies;
+			message.loggedIn = true;
 		}
 		catch (Exception e) {
 			System.out.print("failed: "+e.getMessage()+" ***\n");
+			message.error = Error.LOGIN_FAILED;
 		}
 
-		return msg;
+		return message;
 	}
 	
 	/**
@@ -105,6 +106,12 @@ public class LoginJob {
 		   (sessionCookies.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE") == null)) {
 			throw new Exception("missing cookies/variables.");
 		}
+		
+		// Debugging
+		for (Entry<String, String> c : sessionCookies.entrySet()) {
+			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
+		} System.out.print("\n");
+		
 	}
 	
 	
@@ -135,6 +142,11 @@ public class LoginJob {
 
 	    // These new cookies are all we'll need. 
 	    sessionCookies = response.cookies();
+	    
+	    // Debugging
+		for (Entry<String, String> c : sessionCookies.entrySet()) {
+			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
+		} System.out.print("\n");
 	}
 	
 	/**
@@ -156,10 +168,16 @@ public class LoginJob {
 	    // Is login link present?
 	    if (html.select("a[id=loginLinkComponent]").size() > 0) {
 	    	// Yep. Login failed.
-	    	System.out.println(html.select("a[id=loginLinkComponent]").first().text());
+	    	System.out.println("login link present.");
 	    	throw new Exception("Login test failed.");
 	    }
 
+	    // Debugging
+		for (Entry<String, String> c : sessionCookies.entrySet()) {
+			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
+		}
+		System.out.print("\n");
+	    
 	    // We made it here without exceptions? Yay!
 	}
 	

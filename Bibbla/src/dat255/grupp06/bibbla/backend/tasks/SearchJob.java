@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Error;
 
 public class SearchJob {
 	
@@ -27,7 +28,6 @@ public class SearchJob {
 			this.session = session;
 			
 		}
-		
 		
 		public Message run(){
 			
@@ -45,11 +45,13 @@ public class SearchJob {
 				System.out.print("****** SearchJob done \n");
 				
 				// We made it through!
-				session.setCookies(sessionCookies);
+				//session.setCookies(sessionCookies);
+				// Is public setCookies() needed?
 				msg.loggedIn = true;
 			}
 			catch (Exception e) {
 				System.out.print("failed: "+e.getMessage()+" *** \n");
+				message.error = Error.SEARCH_FAILED;
 			}
 
 			return message;
@@ -68,21 +70,13 @@ public class SearchJob {
 			
 			Document doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl")
 					.cookies(sessionCookies)
-					.get();
-			
+					.get();	
 		}
 		
-		
-		private void step2() {
-		
+		private void step2() {		
 			List<Book> results = new ArrayList<Book>();
 			results.add(new Book("The Tibethan Book of the Dead", "Dalai Lama"));
 			message.obj = results;
-			
 		}
-
-
-
-
 
 }
