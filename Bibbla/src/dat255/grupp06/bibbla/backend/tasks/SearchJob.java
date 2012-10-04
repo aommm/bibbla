@@ -44,7 +44,7 @@ public class SearchJob {
 				System.out.print("succeeded! *\n*");
 				System.out.print("****** SearchJob done \n");
 				
-				// We made it through.
+				// We made it through!
 				session.setCookies(sessionCookies);
 				msg.loggedIn = true;
 			}
