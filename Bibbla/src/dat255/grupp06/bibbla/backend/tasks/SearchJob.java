@@ -78,11 +78,10 @@ public class SearchJob {
 		private void step2() {		
 			List<Book> results = new ArrayList<Book>();
 			Elements searchResults = doc.select("table.browseResult");
-			for(int i=0;i<searchResults.size();i++){
-				Element currentTable = searchResults.get(i);
+			for(Element e : searchResults){
 				Book book = new Book();
-				book.setAuthor(currentTable.select("div.dpBibAuthor").text());
-				book.setName(currentTable.select("div.dpBibTitle").text());
+				book.setAuthor(e.select("div.dpBibAuthor").text());
+				book.setName(e.select("div.dpBibTitle").text());
 				results.add(book);
 			}
 			
