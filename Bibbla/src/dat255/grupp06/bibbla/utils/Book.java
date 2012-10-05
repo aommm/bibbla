@@ -1,50 +1,75 @@
 package dat255.grupp06.bibbla.utils;
 
-/** Represents a book or any other type of media.
- *  TODO: Needs many more properties and methods. Atm just for testing. **/ 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents a book or any other type of media.
+ *  TODO: Needs many more properties and methods. Atm just for testing.
+ *  @author Niklas Logren
+ */ 
 public class Book {
-	private BookType type;
-	private String name, author, isbn;
 	
+	// Immutable variables
+	private String name;
+	private String author;
+	//private BookType type; // TODO Do we even want enum for this?
+	private String type;
+	private String url;
+	private String reserveUrl;
+	
+	// Mutable variables
+	private String publisher; 
+	private String physicalDescription;
+	private String notes;
+	private List<PhysicalBook> copies;
+	
+	/**
+	 * Prints the book's name&author, and whether it has urls/details specified.
+	 */
 	@Override
 	public String toString() {
-		return "Book [" + name + ", " + author + "]";
+		return "Book [" + name + ", " + author + ", urls: " +
+			((url!=null)&&(reserveUrl!=null)) +", details: " + ((publisher!=null) 
+			|| (physicalDescription!=null) || (notes!=null) || (copies!=null)) +"]";
 	}
 	
 	/********************************
 	 * Constructors
 	 ********************************/	
-	public Book(String name, String author, String isbn) {
+	/**
+	 * Creates a new book using the supplied information.
+	 */
+	public Book(String name, String author, String type, String url, String reserveUrl) {
+		this();
 		this.name = name;
 		this.author = author;
-		this.isbn = isbn;
+		this.url = url;
+		this.reserveUrl = reserveUrl;
 	}
+
+	/**
+	 * Creates a new Book, and assigns to it a name and an author.
+	 * Should be used for debugging only, TODO remove later on.
+	 */
 	public Book(String name, String author) {
+		this();
 		this.name = name;
 		this.author = author;
-		this.isbn = null;
 	}
-	public Book(String name) {
-		this.name = name;
-		this.author = null;
-		this.isbn = null;
-	}
-	
+
 	public Book() {
-		this.name = "Titel";
-		this.author = "Författare";
-		this.isbn = "abc123";
+		copies = new ArrayList<PhysicalBook>();
 	}
 
 	/********************************
 	 * Getters/setters
 	 ********************************/
 	
-	public BookType getType() {
+	public String getType() {
 		return type;
 	}
-
-	public void setType(BookType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -52,7 +77,6 @@ public class Book {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -60,16 +84,49 @@ public class Book {
 	public String getAuthor() {
 		return author;
 	}
-
 	public void setAuthor(String author) {
 		this.author = author;
 	}
 
-	public String getIsbn() {
-		return isbn;
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+	public String getReserveUrl() {
+		return reserveUrl;
+	}
+	public void setReserveUrl(String reserveUrl) {
+		this.reserveUrl = reserveUrl;
+	}
+	
+	public String getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
 	}
 
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
+	public String getPhysicalDescription() {
+		return physicalDescription;
+	}
+	public void setPhysicalDescription(String physicalDescription) {
+		this.physicalDescription = physicalDescription;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public List<PhysicalBook> getCopies() {
+		return copies;
+	}
+	public void setCopies(List<PhysicalBook> copies) {
+		this.copies = copies;
 	}
 }
