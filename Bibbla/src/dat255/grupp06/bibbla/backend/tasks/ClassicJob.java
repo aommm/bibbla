@@ -40,21 +40,28 @@ public class ClassicJob {
 	}
 	
 	public Message run() throws Exception {
-
+		// LoginJob
 		getLoginForm();
 		postLoginDetails();
+		
+		// SearchJob
 		getSearchResults("hej");
+		
 		// Use first hit for everything from now on.
 		Book b = ((List<Book>)message.obj).get(0);
-		getDetailedView(b);
-		reserveBook(b);
+		
+		// BookJob
+		getDetailedView(b); // Updates book.
+		
+		// ReserveJob	
+		reserveBook(b, "an"); // an = angered. See library-codes.txt
 		
 		return message;
 	}
 	
 	private void getLoginForm() throws Exception {
 		System.out.println("/******************************");
-		System.out.println(" * Step 1");
+		System.out.println(" * Step 1.1: get login form");
 		System.out.println(" ******************************/");
 		String url = "https://www.gotlib.goteborg.se/iii/cas/login?service=https%3A%2F%2Fwww.gotlib.goteborg.se%3A443%2Fpatroninfo~S6*swe%2F0%2FIIITICKET&lang=swe&scope=6";
 
@@ -80,13 +87,12 @@ public class ClassicJob {
 			throw new Exception("missing cookies/variables.");
 		}
 		
-		// Debug printing.
-		printSessionVariables();
+		System.out.println("login form got.");
 	}
 	
 	private void postLoginDetails() throws Exception {
 		System.out.println("/******************************");
-		System.out.println(" * Step 2");
+		System.out.println(" * Step 1.2: post login details");
 		System.out.println(" ******************************/");
 		// Prepare POST url (spoiler: contains variables!)
 	    String url= "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=https%3A%2F%2Fwww.gotlib.goteborg.se%3A443%2Fpatroninfo~S6*swe%2F0%2FIIITICKET&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE")+"&scope=6";
@@ -109,8 +115,7 @@ public class ClassicJob {
 	    // These new cookies are all we'll need. 
 	    sessionCookies = response.cookies();
 	    
-		// Debug printing.
-		printSessionVariables();
+	    System.out.println("login details posted.");
 	}
 
 	private void getSearchResults(String searchPhrase) throws Exception {
@@ -147,8 +152,7 @@ public class ClassicJob {
 		// Save list of Books in our message.
 	    message.obj = results;
 	    
-	    // Debug printing.
-		printSessionVariables();
+	    System.out.println("search results got.");
 	}
 	
 	/**
@@ -186,23 +190,45 @@ public class ClassicJob {
 	    // Finally, add list of PhysicalBooks to Book.
 	    book.setCopies(copies);
 	    
-	    // Debug print
-	    printSessionVariables();
+	    System.out.println("detailed view got.");
 	}
 	
 	/**
-	 * Reserve the supplied book.
-	 * TODO implement
+	 * Reserves the supplied book, at the 
 	 */
-	private void reserveBook(Book book) throws Exception {
+	private void reserveBook(Book book, final String libraryCode) throws Exception {
+		System.out.println("/******************************");
+		System.out.println(" * Step 5: Post reservation");
+		System.out.println(" ******************************/");	    
 		
-		throw new UnsupportedOperationException("implementera mig pls");
-		
-		/**
-		// Testing: printing the first PhysicalBook of book.
-		PhysicalBook copy = book.getCopies().get(0);
-		System.out.println(copy);
-		*/
+		// Prepare POST data.
+		Map<String,String> postData = new HashMap<String,String>() {{
+	    	put("locx00", libraryCode);
+	    	put("needby_Year", "Year");
+	    	put("needby_Month", "Month");
+	    	put("needby_Day", "Day");
+	    }};
+	    
+	    String url = book.getReserveUrl();
+	    // Send request, and save response.
+	    Response response = Jsoup.connect(url)
+			    .method(Method.POST)
+			    .cookies(sessionCookies)
+			    .data(postData)
+			    .execute();
+	    
+	    // Prepare response for parsing.
+	    Document html = response.parse();
+
+	    // Font tag -> error. Don't ask, I don't make the rules.
+	    Element div = html.getElementById("singlecolumn");
+	    if (div.getElementsByTag("font").size() > 0) {
+	    	System.out.println("Reservation failed.");
+	    } 
+	    else { // No font tag! No error! Wohoo!
+	    	System.out.println("Reservation successful. Will arrive at "+
+	    div.getElementsByTag("b").first().text()+" sometime before easter. Probably?");
+	    }
 		
 	}
 	
