@@ -15,11 +15,20 @@ public class PhysicalBook {
 	private String status;
 	private String message;
 	
+	/**
+	 * Create a PhysicalBook using the supplied information.
+	 */
 	public PhysicalBook(String library, String shelf, String status, String message) {
 		this.library = library;
 		this.shelf = shelf;
 		this.status = status;
 		this.message = message;
+	}
+	/**
+	 * Create an empty PhysicalBook.
+	 */
+	public PhysicalBook() {
+		
 	}
 
 	@Override
@@ -31,14 +40,28 @@ public class PhysicalBook {
 	public String getLibrary() {
 		return library;
 	}
+	public void setLibrary(String library) {
+		this.library = library;
+	}
+	
 	public String getShelf() {
 		return shelf;
 	}
+	public void setShelf(String shelf) {
+		this.shelf = shelf;
+	}
+	
 	public String getStatus() {
 		return status;
 	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 	public String getMessage() {
 		return message;
 	}
-	
+	public void setMessage(String message) {
+		this.message = message;
+	}
 }

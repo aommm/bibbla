@@ -129,4 +129,23 @@ public class Book {
 	public void setCopies(List<PhysicalBook> copies) {
 		this.copies = copies;
 	}
+	
+	/**
+	 * Sets the supplied PhysicalBook to be the only copy of this book.
+	 */
+	public void setPhysicalBook(PhysicalBook physicalBook) {
+		List<PhysicalBook> copies = new ArrayList<PhysicalBook>();
+		copies.add(physicalBook);
+		this.copies = copies;
+	}
+	/**
+	 * Returns the first PhysicalBook tied to this book. If none, returns null.
+	 */
+	public PhysicalBook getPhysicalBook() {
+		if (copies.size()>0) {
+			return copies.get(0);
+		} else {
+			return null;
+		}
+	}
 }
