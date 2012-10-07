@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jsoup.Jsoup;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+
 import dat255.grupp06.bibbla.backend.tasks.LoginJob;
 import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
@@ -11,6 +15,7 @@ import dat255.grupp06.bibbla.utils.Error;
 public class Session {
 
 	private String name, code, pin;
+	private String userUrl; // The URL to the user's profile page.
 	private Map<String, String> cookies;
 	private boolean loggedIn;
 	private boolean hasCredentials;
@@ -23,6 +28,7 @@ public class Session {
 		this.name = name;
 		this.code = code;
 		this.pin = pin;
+		this.userUrl = ""; // Initialisation needed for synchronisation
 		
 		loggedIn = false;
 		hasCredentials = ((name != null) && (code != null) && (pin != null));
@@ -111,6 +117,36 @@ public class Session {
 		
 		return message;
 	}
+	
+	/**
+	 * Tries to fetch the user's profile URL.
+	 * Does this by visiting a bogus URL, and following the redirect.
+	 * 
+	 * @throws Exception - If redirection doesn't take place.
+	 */
+	private String fetchUserUrl() throws Exception {
+		
+		// Prepare url. (This URL will 302 redirect us)
+		String url = "https://www.gotlib.goteborg.se/patroninfo~S6*swe/1/";
+	    Response response = Jsoup.connect(url)
+	    		.method(Method.GET)
+	    		.followRedirects(false)
+	    		.cookies(getCookies())
+	    		.execute();
+	    
+	    // Were we not redirected?
+	    if (response.statusCode() != 302) {
+	    	return "";
+	    }
+	    
+	    // Are we not logged in?
+	    if (response.parse().select("div.loginPage").size()>0) {
+	    	return "";
+	    }
+	    
+	    // This is the URL which is unique to the user.
+	    return "https://www.gotlib.goteborg.se" + response.header("Location");
+	}
 
 	/**
 	 * Checks whether all user credentials are set, and updates hasCredentials.
@@ -125,13 +161,38 @@ public class Session {
 		return hasCredentials;
 	}
 	
+	/**
+	 * Returns the URL to the user's profile page.
+	 * @returns empty string if something went wrong.
+	 */
+	public String getUserUrl() {
+		synchronized(userUrl) {
+			// If URL is empty, try to fetch a new one.
+			if ("".equals(userUrl)) {
+				try {
+					userUrl = fetchUserUrl();
+				} catch (Exception e) {}
+			}
+			// Return the URL, empty or not.
+			return userUrl;
+		}
+	}
+	/**
+	 * Sets the URL to the user's profile page.
+	 */
+	public void setUserUrl(String userUrl) {
+		synchronized(this.userUrl) {
+			this.userUrl = userUrl;
+		}
+	}
+	
 	public String getName() {
 		synchronized(name) {
 			return name;
 		}
 	}
 	public void setName(String name) {
-		synchronized(name) {
+		synchronized(this.name) {
 			this.name = name;
 			updateHasCredentials();
 		}
@@ -143,7 +204,7 @@ public class Session {
 		}
 	}
 	public void setCode(String code) {
-		synchronized(code) {
+		synchronized(this.code) {
 			this.code = code;
 			updateHasCredentials();
 		}
@@ -155,7 +216,7 @@ public class Session {
 		}
 	}
 	public void setPin(String pin) {
-		synchronized(pin) {
+		synchronized(this.pin) {
 			this.pin = pin;
 			updateHasCredentials();
 		}
