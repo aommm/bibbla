@@ -26,6 +26,7 @@ import dat255.grupp06.bibbla.utils.Error;
 public class LoanedBooksJob {
 	private Session session;
 	private Message message;
+	private String userUrl;
 	
 	public LoanedBooksJob(Session session) {
 		this.session = session;
@@ -39,9 +40,22 @@ public class LoanedBooksJob {
 	public Message run()  {
 		System.out.println("****** LoanedBooksJob: ");
 		try {
-			System.out.println("*** Step 1:");
-			step1();
+			// Get user URL.
+			System.out.println("*** Step 1: get user's url");
+			userUrl = session.getUserUrl();
+			// Did it fail?
+			if ("".equals(userUrl)) {
+				message.error = Error.FETCHING_USER_URL_FAILED;
+				throw new Exception("Fetching user URL failed.");
+			}
+			// Append "items" to user URL.
+			userUrl += "items";
 			System.out.println("Step 1 done! ***");
+			
+			
+			System.out.println("*** Step 2: get loaned books");
+			getLoanedBooks();
+			System.out.println("Step 2 done! ***");
 			
 		} catch (Exception e) {
 			System.out.println("Failed: "+e.getMessage()+" ***");
@@ -50,12 +64,10 @@ public class LoanedBooksJob {
 		return message;
 	}
 	
-	private void step1() throws Exception {
-		// Prepare url.
-		String url = "https://www.gotlib.goteborg.se/patroninfo~S6*swe/1/items";
-	    
+	private void getLoanedBooks() throws Exception {
+
 	    // Send GET request and save response.
-	    Response response = Jsoup.connect(url)
+	    Response response = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
 			    .execute();
@@ -92,6 +104,7 @@ public class LoanedBooksJob {
 	    	book.setName(nameAndAuthor[0]);
 	    	book.setAuthor(nameAndAuthor[1]);
 	    	book.setUrl(row.select("td.patFuncTitle").first().attr("abs:href"));
+	    	book.setRenewId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("value"));
 	    	
 	    	// Finally, add our new book to the list of results.
 	    	results.add(book);
