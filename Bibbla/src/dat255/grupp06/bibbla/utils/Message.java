@@ -18,7 +18,7 @@ public class Message {
 			return "Success! loggedIn: "+loggedIn+", obj: "+obj+".";	
 		}
 		else {
-			return "Error: "+error+"loggedIn: "+loggedIn+", obj: "+obj+".";
+			return "Error: "+error+", loggedIn: "+loggedIn+", obj: "+obj+".";
 		}
 		
 	}
