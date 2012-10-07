@@ -13,12 +13,14 @@ public class Book {
 	// Immutable variables
 	private String name;
 	private String author;
-	//private BookType type; // TODO Do we even want enum for this?
-	private String type;
 	private String url;
-	private String reserveUrl;
 	
 	// Mutable variables
+	private String type;
+	//private BookType type; // TODO Do we even want enum for this?
+	private String reserveUrl;
+	private String renewId;
+	// Details
 	private String publisher; 
 	private String physicalDescription;
 	private String notes;
@@ -72,7 +74,6 @@ public class Book {
 	public void setType(String type) {
 		this.type = type;
 	}
-
 	
 	public String getName() {
 		return name;
@@ -101,6 +102,21 @@ public class Book {
 	public void setReserveUrl(String reserveUrl) {
 		this.reserveUrl = reserveUrl;
 	}
+	
+	/**
+	 * Returns the renew ID for this book.
+	 * Is used to renew it if possible, from within RenewJob.
+	 */
+	public String getRenewId() {
+		return renewId;
+	}
+	/**
+	 * Sets the renew id for this book.
+	 * (Renew ID is only available from "loaned books")
+	 */
+	public void setRenewId(String renewId) {
+		this.renewId = renewId;
+	}	
 	
 	public String getPublisher() {
 		return publisher;
