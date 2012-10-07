@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,10 +20,10 @@ import dat255.grupp06.bibbla.utils.Error;
 public class SearchJob {
 	
 	private String searchPhrase = null;
-	private Message message;
+	private Message message = new Message();
 	private Session session;
 	private Map<String,String> sessionCookies;
-	private Document doc;
+	private Document resultsDocument;
 	
 		public SearchJob(String s, Session session){
 			searchPhrase = s;
@@ -69,19 +71,26 @@ public class SearchJob {
 				throw new Exception("Session.checkLogin() failed.");
 			}
 			
-			doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl")
+			Response response = Jsoup.connect("http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k")
+					.method(Method.GET)
 					.cookies(sessionCookies)
-					.get();	
-			
+					.execute();
+		
+			sessionCookies = response.cookies();
+			resultsDocument = response.parse();
 		}
 		
 		private void step2() {		
+			
 			List<Book> results = new ArrayList<Book>();
-			Elements searchResults = doc.select("table.browseResult");
+			Elements searchResults = resultsDocument.select("table.breifCitTable");
 			for(Element e : searchResults){
-				Book book = new Book();
-				book.setAuthor(e.select("div.dpBibAuthor").text());
-				book.setName(e.select("div.dpBibTitle").text());
+				String name = searchResults.select("a").get(1).text();
+				String author = searchResults.select("strong").first().text();
+				String type = searchResults.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt");
+				String bookUrl = searchResults.select("a").get(1).attr("abs:href"); 
+				String reserveUrl = searchResults.select("div.reserverapadding").select("a").attr("abs:href");
+				Book book = new Book(name, author, type, bookUrl, reserveUrl);
 				results.add(book);
 			}
 			
