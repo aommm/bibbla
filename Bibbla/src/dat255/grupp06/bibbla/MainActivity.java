@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.EditText;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -20,19 +21,19 @@ import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
 	Backend backend;
+	SearchFragment fragment;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-        
         setContentView(R.layout.activity_main);
        
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         
-        SearchFragment fragment = new SearchFragment();
+        fragment = new SearchFragment();
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
         
@@ -102,19 +103,19 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		
 		
 		// Display first book in label.
-		TextView tv = (TextView) findViewById(R.id.text);
-		tv.setText(results.get(0).toString());
-		
+		//TextView tv = (TextView) findViewById(R.id.text);
+		//tv.setText(results.get(0).toString());
 	}
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		TextView mSelected = (TextView)findViewById(R.id.text);
+		/*TextView mSelected = (TextView)findViewById(R.id.text);
 		
 		if(mSelected != null) {
 			Log.d("J","Hej");
 			mSelected.setText("Selected: " + tab.getContentDescription());
 		}
+		*/
 	}
 
 	@Override
@@ -123,5 +124,13 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	}
+	
+	public void changeList(View view) {
+		Log.d("J", "main-activity 1");
+		EditText editText = (EditText) findViewById(R.id.search_field);
+		Log.d("J", "main-activity 2");
+		fragment.changeList(editText.getText().toString());
+		Log.d("J", "main-activity 3");
 	}
 }

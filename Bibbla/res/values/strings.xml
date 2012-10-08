@@ -6,5 +6,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="activity_main_content">Text</string>
     <string name="text">Hej</string>
+    <string name="button_search">Sök</string>
+    <string name="search_field">Boktitel etc.</string>
 
 </resources>
