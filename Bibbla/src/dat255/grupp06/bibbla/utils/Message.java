@@ -11,4 +11,15 @@ public class Message {
 		loggedIn = false;
 		error = null;
 	}
+	
+	@Override
+	public String toString() {
+		if (error == null) {
+			return "Success! loggedIn: "+loggedIn+", obj: "+obj+".";	
+		}
+		else {
+			return "Error: "+error+", loggedIn: "+loggedIn+", obj: "+obj+".";
+		}
+		
+	}
 }

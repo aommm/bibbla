@@ -9,6 +9,7 @@ import dat255.grupp06.bibbla.backend.tasks.Task;
 import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
 /**
  * Performs tasks like searching, reserving and logging in.
@@ -21,109 +22,55 @@ public class Backend {
 	//private NetworkHandler network;
 	//private Jsoup parser; // TODO: MIT license. needs to include notice?
 	private Settings settings;
-	private boolean loggedIn;
+	private Session session;
 	
 	public Backend() {
-		 //network = new NetworkHandler(); // Don't need networkHandler?
-		 settings = new Settings("logren","12345567643","1336");
+		 //network = new NetworkHandler(); // Don't need networkHandler? 
+		settings = new Settings(PrivateCredentials.name,PrivateCredentials.code,PrivateCredentials.pin);
+		 session = new Session(settings.getName(), settings.getCode(), settings.getPin());
 	}
 	
 	/**
-	 * Starts the login process. Reports results using c1.
-	 * @param c1 The frontend callback object.
+	 * Starts the login process. Reports results using callback.
 	 */
 	public void login(final Callback frontendCallback) {
 
-		// Firstly, create a new Callback object which calls backend.
-		Callback backendCallback = new Callback() {
-			@Override
-			// This code is run when Task finishes (on UI thread).
-			public void handleMessage(Message msg) {
-				Backend.this.loginDone(msg, frontendCallback);
-			}};
-		
-		// Secondly, create a new Task and define its body.
-		// Should call our newly created Callback when done.
-		Task task = new Task(backendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				LoginJob job = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
-				message = job.run();
+				message = session.login();
 				return null;
 			}
 		};
-		
-		// Finally, start the task.
+		// Start the task.
 		task.execute();
-	}
-	
-	public void loginDone(Message msg, Callback frontendCallback) {
-		loggedIn = msg.loggedIn;
-		
-		// No further processing necessary. Forward to frontend.
-		frontendCallback.handleMessage(msg);
 	}
 	
 	/**
-	 * Checks if the user is logged in. If not, tries to login.
-	 * @param frontendCallback - Frontend is notified if login fails.
-	 * @returns true if the user is logged in.
+	 *  Searches backend for the supplied string, and reports results using callback.
 	 */
-	private boolean loginCheck(Callback frontendCallback) {
-		
-		// Are we not logged in?
-		if (!loggedIn) {
-			// Then login. (Runs the job directly; no new thread.)
-			LoginJob loginJob = new LoginJob(settings.getName(), settings.getCode(), settings.getPin());
-			Message msg = loginJob.run();
-			// Did login succeed?
-			if (msg.loggedIn) {
-				loggedIn = true;
-			} else {
-				// Login failed. Tell frontend and exit search.
-				loggedIn = false;
-				frontendCallback.handleMessage(msg);
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	/** Searches backend for the supplied string, and calls callback when done. **/
 	public void search(final String s, final Callback frontendCallback) {
 		
-		// Firstly, create a new Callback object which calls backend.
-		Callback backendCallback = new Callback() {
-			@Override
-			// This code is run when Task finishes (on UI thread).
-			public void handleMessage(Message msg) {
-				Backend.this.searchDone(msg, frontendCallback);
-			}};
-		
-		// Secondly, create a new Task and define its body.
-		// Should call our newly created Callback when done.
-		Task task = new Task(backendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				SearchJob job = new SearchJob(s);
+				SearchJob job = new SearchJob(s, session);
 				message = job.run();
-				
 				return null;
 			}
 		};
-		
-		// Finally, start the task.
+		// Start the task.
 		task.execute();
 	}
 	
-	public void searchDone(Message msg, Callback frontendCallback) {
-		loggedIn = msg.loggedIn;
-
-		// No further processing necessary. Forward to frontend.
-		frontendCallback.handleMessage(msg);
-
+	/**
+	 * Logs the user out. Reports the status via callback.
+	 */
+	public void logOut(final Callback frontendCallback){
+		session = new Session();	
 	}
 }

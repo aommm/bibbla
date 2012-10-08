@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -20,6 +25,7 @@ import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
+
 	Backend backend;
 	SearchFragment fragment;
 	
@@ -38,7 +44,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         fragmentTransaction.commit();
         
         backend = new Backend();
-        
+
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
         //Create the tabs
@@ -68,45 +74,55 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	@Override
 	public void onResume() {
 		super.onResume();
-		this.search("bla");
+		// Nothing atm
 	}
 	
-	/** Starts searching procedure in backend. **/
+	/**
+	 * Starts searching procedure in backend, and changes status label.
+	 */
+	/*
 	public void search(String s) {
 		// Calls backend search, using callbacks.
+		statusText.setText("Söker...");
 		backend.search(s, new Callback() {
 			public void handleMessage(Message msg) {
 				MainActivity.this.searchDone(msg);
 			}
 		});
 	}
-	
+	*/
 	/** Is called when backend searching is done.**/
+	/*
 	public void searchDone(Message msg) {
-		// Null implies an error. Todo: Display error nicely.
-		if (msg.obj == null) {
+		
+		if (msg.error != null) {
+			statusText.setText("Fel: "+msg.error);
 			return;
 		}
 		
 		ArrayList<Book> results = (ArrayList<Book>) msg.obj; // Can we assume type is correct?
-		
 		// Did we get no results? 
 		if (results.size() == 0) {
 			// Show special message?
+			statusText.setText("Inga resultat.");
 			return;
 		}
 		
-		// Otherwise, print all books.
+		// Otherwise, display all books in status label.
+		String txt = "";
 		for (Book book : results) {
-			Log.i("debug: searchDone():", book.toString());
+			txt += ". "+book.toString();
 		}
 		
-		
+		//statusText.setText(txt);
+
 		// Display first book in label.
 		//TextView tv = (TextView) findViewById(R.id.text);
 		//tv.setText(results.get(0).toString());
 	}
 
+	*/
+	
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		/*TextView mSelected = (TextView)findViewById(R.id.text);
