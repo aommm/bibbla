@@ -21,7 +21,6 @@ public class SearchJob {
 	
 	private String searchPhrase = null;
 	private Message message = new Message();
-	private Map<String,String> sessionCookies;
 	private Document resultsDocument;
 	
 		public SearchJob(String s){
@@ -43,11 +42,6 @@ public class SearchJob {
 				step2();
 				System.out.print("succeeded! *\n*");
 				System.out.print("****** SearchJob done \n");
-				
-				// We made it through!
-				//session.setCookies(sessionCookies);
-				// Is public setCookies() needed?
-				msg.loggedIn = true;
 			}
 			catch (Exception e) {
 				System.out.print("failed: "+e.getMessage()+" *** \n");
@@ -72,12 +66,12 @@ public class SearchJob {
 			List<Book> results = new ArrayList<Book>();
 			Elements searchResults = resultsDocument.select("table.breifCitTable");
 			for(Element e : searchResults){
-				String name = searchResults.select("a").get(1).text();
-				String author = searchResults.select("strong").first().text();
-				String type = searchResults.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt");
-				String bookUrl = searchResults.select("a").get(1).attr("abs:href"); 
-				String reserveUrl = searchResults.select("div.reserverapadding").select("a").attr("abs:href");
-				Book book = new Book(name, author, type, bookUrl, reserveUrl);
+				Book book = new Book();
+				book.setName(e.select("a").get(1).text());
+				book.setAuthor(e.select("strong").first().text());
+				book.setType(e.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt"));
+				book.setUrl(e.select("a").get(1).attr("abs:href")); 
+				book.setReserveUrl(e.select("div.reserverapadding").select("a").attr("abs:href"));
 				results.add(book);
 			}
 			
