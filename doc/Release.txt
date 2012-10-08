@@ -1,0 +1,13 @@
+Release notice
+Bibbla 0.0
+
+Changes since last hand-in:
+
+- The app's most essential functionality - searching for books - is implemented in a very raw state.
+
+Known bugs and limitations:
+
+- Book search
+  - The results display is very poor on information.
+  - You only get the first ten results or so.
+- No other funtionality is implemented :P
