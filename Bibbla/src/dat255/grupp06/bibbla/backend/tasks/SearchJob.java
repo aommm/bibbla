@@ -1,95 +1,100 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.utils.Message;
-
-import android.net.Uri;
+import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Error;
 
 public class SearchJob {
 	
 	private String searchPhrase = null;
-	private String htmlResults = null;
-	private Message message;
+	private Message message = new Message();
+	private Session session;
+	private Map<String,String> sessionCookies;
+	private Document resultsDocument;
 	
-		public SearchJob(String s){
+		public SearchJob(String s, Session session){
 			searchPhrase = s;
 			message = new Message();
+			this.session = session;
 			
 		}
-		
 		
 		public Message run(){
 			
+			// Create a response object.
+			Message msg = new Message();
+			
 			try {
+				System.out.print("\n****** SearchJob\n");
+				System.out.print("* step1(): ");
 				step1();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.print("succeeded! *\n");
+				System.out.print("* step2(): ");
+				step2();
+				System.out.print("succeeded! *\n*");
+				System.out.print("****** SearchJob done \n");
+				
+				// We made it through!
+				//session.setCookies(sessionCookies);
+				// Is public setCookies() needed?
+				msg.loggedIn = true;
 			}
-			
-			try {
-				if (step1())
-					step2();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			catch (Exception e) {
+				System.out.print("failed: "+e.getMessage()+" *** \n");
+				message.error = Error.SEARCH_FAILED;
 			}
-			List<Book> results = new ArrayList<Book>();
+
 			return message;
-			
 		}
 
 
-		private boolean step1() throws IOException{
+		private void step1() throws Exception{
 			
-			/*URL url = new URL("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl");
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			//InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-			htmlResults = (String)connection.getContent();
-			if (connection.getResponseCode() == 200)
-				return true;
-			else
-				return false;
-				*/
-			Document doc = Jsoup.connect("http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchPhrase+"__Orightresult__U1?lang=swe&suite=pearl").get();
+			// Check if we're logged in, and if so, get session cookies.
+			if (session.checkLogin()) {
+				sessionCookies = session.getCookies();
+				message.loggedIn = true; // Tell frontend
+			} else { // Abort search.
+				throw new Exception("Session.checkLogin() failed.");
+			}
 			
-			return false;
-
-			
+			Response response = Jsoup.connect("http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k")
+					.method(Method.GET)
+					.cookies(sessionCookies)
+					.execute();
+		
+			sessionCookies = response.cookies();
+			resultsDocument = response.parse();
 		}
 		
-		
-		private boolean step2() {
-		
-			// Check if logged in or not
-			// Set appropriate value in message.loggedIn
+		private void step2() {		
 			
-			return false;
-
+			List<Book> results = new ArrayList<Book>();
+			Elements searchResults = resultsDocument.select("table.breifCitTable");
+			for(Element e : searchResults){
+				String name = searchResults.select("a").get(1).text();
+				String author = searchResults.select("strong").first().text();
+				String type = searchResults.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt");
+				String bookUrl = searchResults.select("a").get(1).attr("abs:href"); 
+				String reserveUrl = searchResults.select("div.reserverapadding").select("a").attr("abs:href");
+				Book book = new Book(name, author, type, bookUrl, reserveUrl);
+				results.add(book);
+			}
 			
+			message.obj = results;
 		}
-
-
-
-
 
 }
