@@ -21,15 +21,12 @@ public class SearchJob {
 	
 	private String searchPhrase = null;
 	private Message message = new Message();
-	private Session session;
 	private Map<String,String> sessionCookies;
 	private Document resultsDocument;
 	
-		public SearchJob(String s, Session session){
+		public SearchJob(String s){
 			searchPhrase = s;
 			message = new Message();
-			this.session = session;
-			
 		}
 		
 		public Message run(){
@@ -61,22 +58,12 @@ public class SearchJob {
 		}
 
 
-		private void step1() throws Exception{
-			
-			// Check if we're logged in, and if so, get session cookies.
-			if (session.checkLogin()) {
-				sessionCookies = session.getCookies();
-				message.loggedIn = true; // Tell frontend
-			} else { // Abort search.
-				throw new Exception("Session.checkLogin() failed.");
-			}
+		private void step1() throws Exception {
 			
 			Response response = Jsoup.connect("http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k")
 					.method(Method.GET)
-					.cookies(sessionCookies)
 					.execute();
-		
-			sessionCookies = response.cookies();
+
 			resultsDocument = response.parse();
 		}
 		
