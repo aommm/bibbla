@@ -19,12 +19,22 @@ import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.backend.Backend;
 
+/**
+ * A fragment that holds the search bar, button 
+ * and a ListFragment that displays search results
+ * 
+ * @author Jonathan Orrö
+ */
+
 public class SearchFragment extends SherlockFragment {
 
 	Backend backend;
 	SearchListFragment fragment;
 	
 	@Override
+	/**
+	 * Inflates the view and sets up the ListFragment
+	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		FragmentManager fragmentManager = getFragmentManager();
@@ -37,27 +47,18 @@ public class SearchFragment extends SherlockFragment {
 		return inflater.inflate(R.layout.search_fragment, container, false);
 	}
 	
-	public void changeList(String searchString) {
-		Log.d("J", "search-fragment  change-list  1");
-		search(searchString);
-		Log.d("J", "search-fragment  change-list  2");
-	}
-	
 	/** Starts searching procedure in backend. **/
 	public void search(String s) {
 		// Calls backend search, using callbacks.
-		Log.d("J", "search-fragment  search  1");
 		backend.search(s, new Callback() {
 			public void handleMessage(Message msg) {
 				SearchFragment.this.searchDone(msg);
 			}
 		});
-		Log.d("J", "search-fragment  search  2");
 	}
 	
 	/** Is called when backend searching is done.**/
 	public void searchDone(Message msg) {
-		Log.d("J", "search-fragment  search-done  1");
 		// Null implies an error. Todo: Display error nicely.
 		if (msg.obj == null) {
 			return;
@@ -73,11 +74,17 @@ public class SearchFragment extends SherlockFragment {
 		
 		String[] searchItems = new String[results.size()];
 		int i=0;
+		
 		// Otherwise, print all books.
 		for (Book book : results) {
 			searchItems[i] = book.getName();
+			i++;
 		}
 		
 		fragment.changeListItems(searchItems);
+	}
+
+	public void setBackend(Backend b) {
+		backend = b;
 	}
 }

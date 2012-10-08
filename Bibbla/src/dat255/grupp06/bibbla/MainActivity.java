@@ -35,15 +35,15 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
        
+        backend = new Backend();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         
         fragment = new SearchFragment();
+        fragment.setBackend(backend);
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
-        
-        backend = new Backend();
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
@@ -77,61 +77,8 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		// Nothing atm
 	}
 	
-	/**
-	 * Starts searching procedure in backend, and changes status label.
-	 */
-	/*
-	public void search(String s) {
-		// Calls backend search, using callbacks.
-		statusText.setText("Söker...");
-		backend.search(s, new Callback() {
-			public void handleMessage(Message msg) {
-				MainActivity.this.searchDone(msg);
-			}
-		});
-	}
-	*/
-	/** Is called when backend searching is done.**/
-	/*
-	public void searchDone(Message msg) {
-		
-		if (msg.error != null) {
-			statusText.setText("Fel: "+msg.error);
-			return;
-		}
-		
-		ArrayList<Book> results = (ArrayList<Book>) msg.obj; // Can we assume type is correct?
-		// Did we get no results? 
-		if (results.size() == 0) {
-			// Show special message?
-			statusText.setText("Inga resultat.");
-			return;
-		}
-		
-		// Otherwise, display all books in status label.
-		String txt = "";
-		for (Book book : results) {
-			txt += ". "+book.toString();
-		}
-		
-		//statusText.setText(txt);
-
-		// Display first book in label.
-		//TextView tv = (TextView) findViewById(R.id.text);
-		//tv.setText(results.get(0).toString());
-	}
-
-	*/
-	
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		/*TextView mSelected = (TextView)findViewById(R.id.text);
-		
-		if(mSelected != null) {
-			Log.d("J","Hej");
-			mSelected.setText("Selected: " + tab.getContentDescription());
-		}
-		*/
 	}
 
 	@Override
@@ -142,11 +89,8 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
 	
-	public void changeList(View view) {
-		Log.d("J", "main-activity 1");
+	public void search(View view) {
 		EditText editText = (EditText) findViewById(R.id.search_field);
-		Log.d("J", "main-activity 2");
-		fragment.changeList(editText.getText().toString());
-		Log.d("J", "main-activity 3");
+		fragment.search(editText.getText().toString());
 	}
 }

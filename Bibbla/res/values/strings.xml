@@ -5,14 +5,8 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="activity_main_content">Text</string>
-<<<<<<< HEAD
     <string name="text">Hej</string>
     <string name="button_search">Sök</string>
     <string name="search_field">Boktitel etc.</string>
-=======
-    
-    <string name ="search_button_text">Sök</string>
-    <string name ="result_label_default_text"></string>
->>>>>>> aff524054acbdf0d1e393524bb33dbd41761b6df
 
 </resources>

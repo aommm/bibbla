@@ -1,14 +1,9 @@
 package dat255.grupp06.bibbla.backend;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dat255.grupp06.bibbla.backend.tasks.LoginJob;
+import android.util.Log;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
-import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
 /**
@@ -52,7 +47,7 @@ public class Backend {
 	 *  Searches backend for the supplied string, and reports results using callback.
 	 */
 	public void search(final String s, final Callback frontendCallback) {
-		
+		Log.d("J", "backend    search    1");
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
