@@ -126,6 +126,11 @@ public class Session {
 	 */
 	private String fetchUserUrl() throws Exception {
 		
+		// We have need to be logged in for "user url" to make sense.
+		if (!checkLogin()) {
+			return "";
+		}
+		
 		// Prepare url. (This URL will 302 redirect us)
 		String url = "https://www.gotlib.goteborg.se/patroninfo~S6*swe/1/";
 	    Response response = Jsoup.connect(url)

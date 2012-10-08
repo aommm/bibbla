@@ -2,33 +2,33 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.PhysicalBook;
-import dat255.grupp06.bibbla.utils.Error;
 
 /**
  * Fetches a list of the user's currently loaned books.
  *
  * @author Niklas Logren
  */
-public class LoanedBooksJob {
+public class MyBooksJob {
 	private Session session;
 	private Message message;
+	private Map<String, String> sessionCookies;
 	private String userUrl;
 	
-	public LoanedBooksJob(Session session) {
+	public MyBooksJob(Session session) {
 		this.session = session;
 		this.message = new Message();
 	}
@@ -38,10 +38,10 @@ public class LoanedBooksJob {
 	 * @returns a Message, containing a List of the user's current loans. 
 	 */
 	public Message run()  {
-		System.out.println("****** LoanedBooksJob: ");
+		System.out.println("****** MyBooksJob: ");
 		try {
 			// Get user URL.
-			System.out.println("*** Step 1: get user's url");
+			System.out.println("*** Step 2: get user's url");
 			userUrl = session.getUserUrl();
 			// Did it fail?
 			if ("".equals(userUrl)) {
@@ -50,12 +50,12 @@ public class LoanedBooksJob {
 			}
 			// Append "items" to user URL.
 			userUrl += "items";
-			System.out.println("Step 1 done! ***");
-			
-			
-			System.out.println("*** Step 2: get loaned books");
-			getLoanedBooks();
 			System.out.println("Step 2 done! ***");
+			
+			
+			System.out.println("*** Step 3: get loaned books");
+			getLoanedBooks();
+			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
 			System.out.println("Failed: "+e.getMessage()+" ***");
@@ -66,6 +66,7 @@ public class LoanedBooksJob {
 	
 	private void getLoanedBooks() throws Exception {
 
+		System.out.println(userUrl);
 	    // Send GET request and save response.
 	    Response response = Jsoup.connect(userUrl)
 			    .method(Method.GET)
