@@ -6,8 +6,19 @@
     android:orientation="vertical"
     android:padding="20dip">
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/tabText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/search_button_text"
+         android:onClick="buttonClicked" />
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/result_label_default_text" />    
 </LinearLayout>
 
