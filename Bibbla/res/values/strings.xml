@@ -8,5 +8,9 @@
     <string name="text">Hej</string>
     <string name="button_search">Sök</string>
     <string name="search_field">Boktitel etc.</string>
+    <string name="debt_view_text">Skuld: %d kr</string>
+    <string name="logout_text">Logga ut</string>
+    <string name="my_loans_header">Mina lån</string>
+    <string name="my_reservations_header">Mina reservationer</string>
 
 </resources>
