@@ -32,12 +32,14 @@
     <EditText android:id="@+id/login_pin_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberPassword"
         android:hint="@string/login_pin_hint"/>
     
     <!-- Submit -->
     <Button android:id="@+id/login_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="login"
         android:text="@string/login_send_text"/>
     
 </LinearLayout>

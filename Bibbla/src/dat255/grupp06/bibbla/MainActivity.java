@@ -1,33 +1,22 @@
 package dat255.grupp06.bibbla;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-
-import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import dat255.grupp06.bibbla.backend.Backend;
-import dat255.grupp06.bibbla.fragments.SearchFragment;
-import dat255.grupp06.bibbla.utils.Book;
-import dat255.grupp06.bibbla.utils.Callback;
-import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.fragments.LoginFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
 
 	Backend backend;
-	SearchFragment fragment;
+	LoginFragment fragment;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +29,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         
-        fragment = new SearchFragment();
+        fragment = new LoginFragment();
         fragment.setBackend(backend);
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
@@ -53,11 +42,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         ActionBar.Tab librariesTab = getSupportActionBar().newTab();
         
         //Set tab properties
-        searchTab.setContentDescription("Sök");
+        searchTab.setContentDescription("Sï¿½k");
         searchTab.setIcon(android.R.drawable.ic_menu_search);
         searchTab.setTabListener(this);
         
-        profileTab.setContentDescription("Lån");
+        profileTab.setContentDescription("Lï¿½n");
         profileTab.setIcon(android.R.drawable.ic_menu_share);
         profileTab.setTabListener(this);
         
@@ -91,6 +80,14 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	
 	public void search(View view) {
 		EditText editText = (EditText) findViewById(R.id.search_field);
-		fragment.search(editText.getText().toString());
+//		fragment.search(editText.getText().toString());
+	}
+	
+	public void login(View vieww) {
+		EditText nameET = (EditText) findViewById(R.id.login_name_field);
+		EditText cardET = (EditText) findViewById(R.id.login_card_field);
+		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
+		fragment.login(nameET.getText().toString(), cardET.getText().toString(),
+				pinET.getText().toString());
 	}
 }
