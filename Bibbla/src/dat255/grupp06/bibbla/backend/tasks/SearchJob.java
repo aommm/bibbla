@@ -53,8 +53,9 @@ public class SearchJob {
 
 
 		private void step1() throws Exception {
-			
-			Response response = Jsoup.connect("http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k")
+			String url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
+			Response response = Jsoup.connect(url)
+					.timeout(5000)
 					.method(Method.GET)
 					.execute();
 
