@@ -96,7 +96,7 @@ public class SearchFragment extends SherlockFragment {
 		
 		// No input? No need to search.
 		if("".equals(searchEdit.getText().toString())) {
-			listFragment.updateList(new String[0]);
+			listFragment.updateList(new ArrayList<Book>());
 			return;
 		}
 		
@@ -124,14 +124,8 @@ public class SearchFragment extends SherlockFragment {
 			Toast.makeText(getSherlockActivity().getApplicationContext(), "Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
 			return;
 		}
-
+		// Convert results to List<Book>.  
 		ArrayList<Book> books = (ArrayList<Book>) msg.obj;
-		
-		// Save the title of each book.
-		String[] bookTitles = new String[books.size()];
-		for (int i=0; i<books.size(); i++) {
-			bookTitles[i] = books.get(i).getName();
-		}
 				
 		// Did we get no results? 
 		if (books.size() == 0) {
@@ -139,7 +133,7 @@ public class SearchFragment extends SherlockFragment {
 		}
 		
 		// Update list with titles (empty or not).
-		listFragment.updateList(bookTitles);
+		listFragment.updateList(books);
 	}
 
 	public void setBackend(Backend b) {
