@@ -43,12 +43,23 @@ public class SearchFragment extends SherlockFragment {
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        
+        fragment = new SearchListFragment();
+        fragmentTransaction.add(R.id.list_container, fragment);
+        fragmentTransaction.commit();
+		
+		return inflater.inflate(R.layout.search_fragment, container, false);
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		
+		// Get our GUI elements.
 		searchButton = (Button)getActivity().findViewById(R.id.search_button);
 		searchField = (EditText)getActivity().findViewById(R.id.search_field);
-
-		// Get text of "search" action from xml.
-		// TODO: change text of soft keyboard's next button.
-		String searchText = getActivity().getResources().getString(R.string.button_search); // Get text from xml
 
 		// Create a listener for keyboard "enter" button.
 		OnEditorActionListener listener = new OnEditorActionListener() {
@@ -60,20 +71,10 @@ public class SearchFragment extends SherlockFragment {
 		        return false;
 		    }
 		};
-		// Add our newly created listener to the text field.  
-		System.out.println("exists: "+(searchField != null));
-		System.out.println("instof: "+(searchField instanceof EditText));
-		// searchField.setOnEditorActionListener(listener);
-		// TODO: searchField doesn't exist!
+		// Add our newly created listener to the text field.
+		searchField.setOnEditorActionListener(listener);
 		
-		FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        
-        fragment = new SearchListFragment();
-        fragmentTransaction.add(R.id.list_container, fragment);
-        fragmentTransaction.commit();
-		
-		return inflater.inflate(R.layout.search_fragment, container, false);
+		// TODO: Hide keyboard when keyboard "enter" is pressed.
 	}
 	
 	/** Starts searching procedure in backend. **/
