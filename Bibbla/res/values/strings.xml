@@ -19,6 +19,8 @@
     <string name="login_card_hint">Lånekortsnummer</string>
     <string name="login_pin_hint">PIN-kod</string>
     <string name="login_send_text">Logga in</string>
+    <string name="login_fail_msg">Det gick inte att logga in. Dubbelkolla
+        uppgifterna.</string>
 
     <!-- Profile -->
     <string name="debt_view_text">Skuld: %d kr</string>
