@@ -2,12 +2,14 @@ package dat255.grupp06.bibbla;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
@@ -33,8 +36,15 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
+        
+        // We want a fancy spinner for marking progress.
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.activity_main);
        
+        // Hide progress bar by default.
+        setSupportProgressBarIndeterminateVisibility(false);
+        
         backend = new Backend();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -89,8 +99,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
 	
-	public void search(View view) {
-		EditText editText = (EditText) findViewById(R.id.search_field);
-		fragment.search(editText.getText().toString());
+	public void searchClicked(View view) {
+		fragment.searchClicked();
 	}
 }

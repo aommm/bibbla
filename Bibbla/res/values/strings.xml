@@ -7,6 +7,6 @@
     <string name="activity_main_content">Text</string>
     <string name="text">Hej</string>
     <string name="button_search">Sök</string>
-    <string name="search_field">Boktitel etc.</string>
+    <string name="edit_search">Boktitel etc.</string>
 
 </resources>

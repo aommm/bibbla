@@ -32,7 +32,7 @@ public class SearchListFragment extends SherlockListFragment {
     /**
      * Receives the search-results and swaps the contents in the list with them.
      */
-    public void changeListItems(String[] listItems) {
+    public void updateList(String[] listItems) {
 		setListAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, listItems));
     }
