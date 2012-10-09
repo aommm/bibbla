@@ -68,4 +68,12 @@ public class Backend {
 	public void logOut(final Callback frontendCallback){
 		session = new Session();	
 	}
+	
+	/**
+	 * Fetch user data from web or from cache.
+	 * @author arla
+	 */
+	public String getUserName() {
+		return "John Johansson";
+	}
 }

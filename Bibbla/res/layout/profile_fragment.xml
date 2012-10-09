@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <!-- User's full name -->
-    <TextView android:id="@+id/nameHeader"
+    <TextView android:id="@+id/name_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
