@@ -11,16 +11,20 @@
 	        android:layout_weight="3"
 	        android:layout_width="0dp"
 	        android:layout_height="wrap_content"
-	        android:hint="@string/search_field" />"
+	        android:inputType="text"
+	        android:imeOptions="actionSearch"
+	        android:singleLine="true"
+	        android:hint="@string/search_field" />
 	    <Button
+	        android:id="@+id/search_button"
 	        android:layout_weight="1"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/button_search" 
 	        android:onClick="search"/>
 	</LinearLayout>
-	
-    <FrameLayout android:id="@+id/list_container" 
+
+    <FrameLayout android:id="@+id/list_container"
         android:layout_weight="1"
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content" />
