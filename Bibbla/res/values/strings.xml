@@ -8,6 +8,19 @@
     <string name="text">Hej</string>
     <string name="button_search">Sök</string>
     <string name="search_field">Boktitel etc.</string>
+
+    <!-- Log in -->
+    <string name="login_header">Logga in</string>
+    <string name="login_info">Logga in med ditt lånekort för att nå personliga
+        funktioner såsom att reservera böcker eller se över dina lån. Om du
+        inte har ett lånekort kan gå till något av biblioteken och be om ett.
+        </string>
+    <string name="login_name_hint">Efternamn</string>
+    <string name="login_card_hint">Lånekortsnummer</string>
+    <string name="login_pin_hint">PIN-kod</string>
+    <string name="login_send_text">Logga in</string>
+
+    <!-- Profile -->
     <string name="debt_view_text">Skuld: %d kr</string>
     <string name="logout_text">Logga ut</string>
     <string name="my_loans_header">Mina lån</string>

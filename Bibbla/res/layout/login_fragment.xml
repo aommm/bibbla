@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Log in header -->
+    <TextView android:id="@+id/login_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center"
+        android:background="@android:color/background_light"
+        android:text="@string/login_header"/>
+    
+    <TextView android:id="@+id/login_info"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/login_info"/>
+    
+    <!-- Input fields -->
+    <EditText android:id="@+id/login_name_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_name_hint"/>
+    
+    <EditText android:id="@+id/login_card_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_card_hint"/>
+    
+    <EditText android:id="@+id/login_pin_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_pin_hint"/>
+    
+    <!-- Submit -->
+    <Button android:id="@+id/login_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_send_text"/>
+    
+</LinearLayout>
