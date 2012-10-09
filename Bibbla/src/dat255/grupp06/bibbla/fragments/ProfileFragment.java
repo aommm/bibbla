@@ -27,7 +27,6 @@ public class ProfileFragment extends SherlockFragment {
 	
 	public void setBackend(Backend backend) {
 		this.backend = backend;
-//		updateFromBackend();
 	}
 	
 	@Override
@@ -42,8 +41,8 @@ public class ProfileFragment extends SherlockFragment {
 		
 		// Name header
 		String name = backend.getUserName();
-		TextView nameHeader = (TextView) getActivity().findViewById(R.id.name_header);
-		nameHeader.setText(name);
+		TextView nameHeading = (TextView) getActivity().findViewById(R.id.name_heading);
+		nameHeading.setText(name);
 		// Current debt
 		// Loans list
 		// Reservations list

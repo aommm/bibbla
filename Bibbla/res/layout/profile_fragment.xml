@@ -5,12 +5,9 @@
     android:orientation="vertical" >
 
     <!-- User's full name -->
-    <TextView android:id="@+id/name_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center"
-        android:background="@android:color/background_light"/>
+    <TextView android:id="@+id/name_heading"
+        android:text=""
+        style="@style/Heading"/>
     
     <!-- Debt and log-out button -->
     <LinearLayout
@@ -33,15 +30,11 @@
     </LinearLayout>
     
     <!-- My loans -->
-    <TextView android:id="@+id/loansHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center"
-        android:background="@android:color/background_light"
-        android:text="@string/my_loans_header"/>
+    <TextView android:id="@+id/loans_heading"
+        style="@style/Heading"
+        android:text="@string/my_loans_heading"/>
     
-    <ListView android:id="@+id/loansList"
+    <ListView android:id="@+id/loans_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -49,15 +42,11 @@
     
     <!-- My reservations -->
     <TextView
-        android:id="@+id/reservationsHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:gravity="center"
-        android:text="@string/my_reservations_header"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:id="@+id/reservations_heading"
+        style="@style/Heading"
+        android:text="@string/my_reservations_heading"/>
     
-    <ListView android:id="@+id/reservationsList"
+    <ListView android:id="@+id/reservations_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">

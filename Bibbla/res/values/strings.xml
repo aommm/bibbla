@@ -10,7 +10,7 @@
     <string name="search_field">Boktitel etc.</string>
 
     <!-- Log in -->
-    <string name="login_header">Logga in</string>
+    <string name="login_heading">Logga in</string>
     <string name="login_info">Logga in med ditt lånekort för att nå personliga
         funktioner såsom att reservera böcker eller se över dina lån. Om du
         inte har ett lånekort kan gå till något av biblioteken och be om ett.
@@ -25,7 +25,7 @@
     <!-- Profile -->
     <string name="debt_view_text">Skuld: %d kr</string>
     <string name="logout_text">Logga ut</string>
-    <string name="my_loans_header">Mina lån</string>
-    <string name="my_reservations_header">Mina reservationer</string>
+    <string name="my_loans_heading">Mina lån</string>
+    <string name="my_reservations_heading">Mina reservationer</string>
 
 </resources>
