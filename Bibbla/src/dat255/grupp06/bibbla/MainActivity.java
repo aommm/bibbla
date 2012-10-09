@@ -12,11 +12,15 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.LoginFragment;
+import dat255.grupp06.bibbla.fragments.SearchFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
 
 	Backend backend;
-	LoginFragment fragment;
+	
+	// TODO These should probably go into a list or something.
+	SearchFragment searchFragment;
+	LoginFragment loginFragment;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,9 +33,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         
-        fragment = new LoginFragment();
-        fragment.setBackend(backend);
-        fragmentTransaction.add(R.id.fragment_container, fragment);
+        searchFragment = new SearchFragment();
+        loginFragment = new LoginFragment();
+        searchFragment.setBackend(backend);
+        loginFragment.setBackend(backend);
+        fragmentTransaction.add(R.id.fragment_container, loginFragment);
         fragmentTransaction.commit();
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -80,14 +86,14 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	
 	public void search(View view) {
 		EditText editText = (EditText) findViewById(R.id.search_field);
-//		fragment.search(editText.getText().toString());
+		searchFragment.search(editText.getText().toString());
 	}
 	
 	public void login(View vieww) {
 		EditText nameET = (EditText) findViewById(R.id.login_name_field);
 		EditText cardET = (EditText) findViewById(R.id.login_card_field);
 		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
-		fragment.login(nameET.getText().toString(), cardET.getText().toString(),
+		loginFragment.login(nameET.getText().toString(), cardET.getText().toString(),
 				pinET.getText().toString());
 	}
 }
