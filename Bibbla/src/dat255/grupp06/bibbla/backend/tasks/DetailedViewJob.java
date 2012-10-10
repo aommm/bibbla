@@ -15,18 +15,16 @@ import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.PhysicalBook;
+import dat255.grupp06.bibbla.utils.Error;
 
 public class DetailedViewJob {
 	
-	private Book book;
+	private Book originalBook, newBook;
 	private Message message = new Message();
-	private Map<String,String> sessionCookies;
 	
-	public DetailedViewJob(Book book, Session session){
-		
-		this.book = book;
-		sessionCookies = session.getCookies();
-	
+	public DetailedViewJob(Book book){
+		this.originalBook = book;
+		this.newBook = (Book)originalBook.clone();
 	}
 	
 	public Message run(){
@@ -35,19 +33,18 @@ public class DetailedViewJob {
 			getBookDetails();
 		} catch (IOException e) {
 			System.out.println("Something went wrong dude!");
+			message.error = Error.DETAILED_VIEW_FAILED;
 			e.printStackTrace();
 		}
 		
-		message.obj = book;
 		return message;
 		
 	}
 	
 	private void getBookDetails() throws IOException{
 		
-	    Response response = Jsoup.connect(book.getUrl())
+	    Response response = Jsoup.connect(originalBook.getUrl())
 			    .method(Method.GET)
-			    .cookies(sessionCookies)
 			    .execute();
 	    
 	    List<PhysicalBook> copies = new ArrayList<PhysicalBook>();
@@ -62,8 +59,9 @@ public class DetailedViewJob {
 	    	PhysicalBook physicalBook = new PhysicalBook(library, shelf, status, message);
 	    	copies.add(physicalBook);
 	    }
+	    // TODO:
+	    // Fill other fields as well
 	    
-	    book.setCopies(copies);
-		
+	    newBook.setCopies(copies);
 	}
 }
