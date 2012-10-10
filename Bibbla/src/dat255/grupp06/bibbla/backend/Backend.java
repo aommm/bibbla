@@ -46,6 +46,8 @@ public class Backend {
 	
 	/**
 	 * Starts the login process. Reports results using callback.
+	 * 
+	 * @param frontendCallback - the callback object which will be called when logging in is done.
 	 */
 	public void login(final Callback frontendCallback) {
 
@@ -64,15 +66,18 @@ public class Backend {
 	
 	/**
 	 *  Searches backend for the supplied string, and reports results using callback.
+	 *  
+	 *  @param s - The string to search for.
+	 *  @param page - which page of search results to fetch. If too high, returns empty list.
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void search(final String s, final Callback frontendCallback) {
-		Log.d("J", "backend    search    1");
+	public void search(final String s, final int page, final Callback frontendCallback) {
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				SearchJob job = new SearchJob(s,0,0);
+				SearchJob job = new SearchJob(s,0);
 				message = job.run();
 				return null;
 			}

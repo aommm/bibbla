@@ -79,7 +79,7 @@ public class SearchFragment extends SherlockFragment {
 	/** Starts searching procedure in backend. **/
 	public void search(String s) {
 		// Calls backend search, using callbacks.
-		backend.search(s, new Callback() {
+		backend.search(s, 0, new Callback() {
 			public void handleMessage(Message msg) {
 				SearchFragment.this.searchDone(msg);
 			}

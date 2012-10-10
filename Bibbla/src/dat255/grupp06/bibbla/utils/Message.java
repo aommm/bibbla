@@ -4,14 +4,12 @@ public class Message {
 	public Object obj;
 	public boolean loggedIn;
 	public Error error;
-	public int resultsNumber;
 	
 	
 	public Message() {
 		obj = null;
 		loggedIn = false;
 		error = null;
-		resultsNumber = 0;
 	}
 	
 	@Override
