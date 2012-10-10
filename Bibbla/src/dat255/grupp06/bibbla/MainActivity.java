@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.LoginFragment;
+import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
@@ -21,6 +22,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	// TODO These should probably go into a list or something.
 	SearchFragment searchFragment;
 	LoginFragment loginFragment;
+	ProfileFragment profileFragment;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         
         searchFragment = new SearchFragment();
         loginFragment = new LoginFragment();
+        profileFragment = new ProfileFragment();
         searchFragment.setBackend(backend);
         loginFragment.setBackend(backend);
-        fragmentTransaction.add(R.id.fragment_container, loginFragment);
+        profileFragment.setBackend(backend);
+        fragmentTransaction.add(R.id.fragment_container, profileFragment);
         fragmentTransaction.commit();
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

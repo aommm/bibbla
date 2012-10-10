@@ -1,8 +1,11 @@
 package dat255.grupp06.bibbla.backend;
 
+import java.util.List;
+
 import android.util.Log;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
+import dat255.grupp06.bibbla.utils.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
@@ -75,5 +78,14 @@ public class Backend {
 	 */
 	public String getUserName() {
 		return "John Johansson";
+	}
+	public int getDebt() {
+		return 10;
+	}
+	public List<Book> getLoans() {
+		throw new UnsupportedOperationException();
+	}
+	public List<Book> getReservations() {
+		throw new UnsupportedOperationException();
 	}
 }
