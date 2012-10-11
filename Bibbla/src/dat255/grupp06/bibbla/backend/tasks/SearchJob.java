@@ -3,6 +3,7 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -11,8 +12,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchJob {
 	
@@ -90,8 +91,7 @@ public class SearchJob {
 			book.setType(e.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt"));
 			book.setUrl(e.select("a").get(1).attr("abs:href")); 
 			book.setReserveUrl(e.select("div.reserverapadding").select("a").attr("abs:href"));
-			String availableString = e.select("td.sokresultat").text();
-			book.setAvailable(parseIntInitialString(availableString) > 0);
+			book.setAvailable(availableParse(e.select("td.sokresultat").select("em").text()));
 			results.add(book);
 		}
 		
@@ -99,23 +99,15 @@ public class SearchJob {
 	}
 
 	/**
-	 * Parse an int from the beginning of a string. The numeric characters with
-	 * which the string begins, if any, are returned as an int. If the string
-	 * doesn't begin with numbers, the return value is 0.
-	 * @param string A string which possibly begins with numbers.
-	 * @return An integer which defaults to 0 if parse fails.
+	 * Parse the first word of string as int.
+	 * @param A string whose first word possibly is a number.
+	 * @return An int which defaults to 0 if parse fails.
 	 */
-	// TODO Move to utils?
-	public static int parseIntInitialString(String string) {
-		int result = 0, endpos = 1; // Skip 0 to avoid trying to parsing ""
-		while (true) {
-			try {
-				// TODO Optimise int parsing
-				result = Integer.parseInt(string.substring(0,endpos++));
-			} catch (NumberFormatException exc) {
-				break;
-			}
+	private int availableParse(String text) {
+		try {
+			return Integer.parseInt(text.split(" ")[0]);
+		} catch (NumberFormatException exc) {
+			return 0;
 		}
-		return result;
 	}
 }

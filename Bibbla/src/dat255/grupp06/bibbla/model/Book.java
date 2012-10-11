@@ -16,7 +16,7 @@ public class Book {
 	private String name;
 	private String author;
 	private String url;
-	private boolean available;
+	private int available;
 	
 	// Mutable variables
 	private String type;
@@ -193,19 +193,19 @@ public class Book {
 	}
 
 	/**
-	 * Set whether the book is available to loan in any library. 
-	 * @param Whether the book is available.
+	 * Set how many copies of this book are available to loan in any library. 
+	 * @param Number of available copies.
 	 * @author arla
 	 */
-	public void setAvailable(boolean available) {
+	public void setAvailable(int available) {
 		this.available = available;
 	}
 	
 	/**
-	 * Whether the book is available to loan in any library.
+	 * Number of copies of this book that are available to loan in any library.
 	 * @author arla
 	 */
-	public boolean getAvailable() {
+	public int getAvailable() {
 		return available;
 	}
 }

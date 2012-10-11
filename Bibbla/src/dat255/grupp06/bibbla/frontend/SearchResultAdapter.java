@@ -69,7 +69,7 @@ public class SearchResultAdapter extends BaseAdapter {
 		((TextView) view.findViewById(R.id.search_result_author))
 			.setText(book.getAuthor());
 		((ImageView) view.findViewById(R.id.search_result_available))
-			.setImageResource(book.getAvailable() ?
+			.setImageResource(book.getAvailable() > 0 ?
 				android.R.drawable.presence_online :
 				android.R.drawable.presence_busy);
 		return view;
