@@ -84,7 +84,9 @@ public class SearchFragment extends SherlockFragment {
 		searchEdit.setOnEditorActionListener(listener);
 	}
 	
-	/** Starts searching procedure in backend. **/
+	/**
+	 * Starts searching procedure in backend.
+	 */
 	public void searchClicked() {
 
 		// Display progress bar.
@@ -108,7 +110,7 @@ public class SearchFragment extends SherlockFragment {
 		};
 		
 		// Call backend search.
-		backend.search(searchEdit.getText().toString(), c);
+		backend.search(searchEdit.getText().toString(), 0, c);
 	}
 	
 	/** Is called when backend searching is done.**/
