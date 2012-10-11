@@ -63,6 +63,30 @@ public class Book {
 	public Book() {
 		copies = new ArrayList<PhysicalBook>();
 	}
+	
+	@Override
+	public Object clone() {
+
+		Book newBook = new Book();
+		
+		newBook.name = name;
+		newBook.author = author;
+		newBook.url = url;
+		newBook.type = type;
+		newBook.reserveUrl = reserveUrl;
+		newBook.renewId = renewId;
+		newBook.publisher = publisher;
+		newBook.physicalDescription = physicalDescription;
+		newBook.notes = notes;
+		
+		List<PhysicalBook> newCopies = new ArrayList<PhysicalBook>();
+		for(PhysicalBook pb : copies) {
+			newCopies.add((PhysicalBook)pb.clone());
+		}
+		newBook.copies = newCopies;
+		
+		return newBook;
+	}
 
 	/********************************
 	 * Getters/setters

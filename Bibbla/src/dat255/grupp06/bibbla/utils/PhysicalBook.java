@@ -32,6 +32,17 @@ public class PhysicalBook {
 	}
 
 	@Override
+	public Object clone() {
+		
+		PhysicalBook pb = new PhysicalBook();
+		pb.library = library;
+		pb.shelf = shelf;
+		pb.status = status;
+		pb.message = message;
+		return pb;
+	}
+	
+	@Override
 	public String toString() {
 		return "PhysicalBook [library=" + library + ", shelf=" + shelf
 				+ ", status=" + status + ", message=" + message + "]";
