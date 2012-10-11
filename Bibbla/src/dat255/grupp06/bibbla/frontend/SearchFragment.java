@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.fragments;
+package dat255.grupp06.bibbla.frontend;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
