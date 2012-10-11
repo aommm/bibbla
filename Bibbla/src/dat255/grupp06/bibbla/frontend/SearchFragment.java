@@ -90,15 +90,13 @@ public class SearchFragment extends SherlockFragment {
 	 * Starts searching procedure in backend.
 	 */
 	public void searchClicked() {
-
-		// Convert search string to iso-8859-1
+		
+		// Convert search string to UTF-8.
 		String searchString = searchEdit.getText().toString();
 		try {
-			searchString = URLEncoder.encode(searchString, "iso-8859-1");
+			searchString = URLEncoder.encode(searchString, "UTF-8");
 		} catch (UnsupportedEncodingException e) {}
-		System.out.println("BBBBBBBBBB: "+searchString);
-		 
-		
+
 		// Display progress bar.
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(true);
 		
