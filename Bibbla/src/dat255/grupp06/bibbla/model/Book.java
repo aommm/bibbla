@@ -11,10 +11,12 @@ import java.util.List;
  */ 
 public class Book {
 	
+	// TODO Make immutable variables final
 	// Immutable variables
 	private String name;
 	private String author;
 	private String url;
+	private boolean available;
 	
 	// Mutable variables
 	private String type;
@@ -188,5 +190,22 @@ public class Book {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Set whether the book is available to loan in any library. 
+	 * @param Whether the book is available.
+	 * @author arla
+	 */
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+	
+	/**
+	 * Whether the book is available to loan in any library.
+	 * @author arla
+	 */
+	public boolean getAvailable() {
+		return available;
 	}
 }

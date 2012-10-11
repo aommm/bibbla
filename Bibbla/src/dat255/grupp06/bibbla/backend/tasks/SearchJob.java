@@ -88,10 +88,32 @@ public class SearchJob {
 			book.setType(e.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt"));
 			book.setUrl(e.select("a").get(1).attr("abs:href")); 
 			book.setReserveUrl(e.select("div.reserverapadding").select("a").attr("abs:href"));
+			String availableString = e.select("td.sokresultat").text();
+			book.setAvailable(parseIntInitialString(availableString) > 0);
 			results.add(book);
 		}
 		
 		message.obj = results;
 	}
 
+	/**
+	 * Parse an int from the beginning of a string. The numeric characters with
+	 * which the string begins, if any, are returned as an int. If the string
+	 * doesn't begin with numbers, the return value is 0.
+	 * @param string A string which possibly begins with numbers.
+	 * @return An integer which defaults to 0 if parse fails.
+	 */
+	// TODO Move to utils?
+	public static int parseIntInitialString(String string) {
+		int result = 0, endpos = 1; // Skip 0 to avoid trying to parsing ""
+		while (true) {
+			try {
+				// TODO Optimise int parsing
+				result = Integer.parseInt(string.substring(0,endpos++));
+			} catch (NumberFormatException exc) {
+				break;
+			}
+		}
+		return result;
+	}
 }
