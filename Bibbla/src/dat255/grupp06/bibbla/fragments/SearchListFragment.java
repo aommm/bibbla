@@ -15,7 +15,7 @@ import dat255.grupp06.bibbla.R;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 
 /**
  * ListFragment that is used to display the search-results after a search.

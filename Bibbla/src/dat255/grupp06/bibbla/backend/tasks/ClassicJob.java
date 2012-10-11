@@ -15,9 +15,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.PhysicalBook;
 import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.utils.PhysicalBook;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
 /**

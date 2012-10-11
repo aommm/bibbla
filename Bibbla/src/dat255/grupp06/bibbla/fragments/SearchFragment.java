@@ -1,5 +1,7 @@
 package dat255.grupp06.bibbla.fragments;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -24,7 +26,7 @@ import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -89,6 +91,14 @@ public class SearchFragment extends SherlockFragment {
 	 */
 	public void searchClicked() {
 
+		// Convert search string to iso-8859-1
+		String searchString = searchEdit.getText().toString();
+		try {
+			searchString = URLEncoder.encode(searchString, "iso-8859-1");
+		} catch (UnsupportedEncodingException e) {}
+		System.out.println("BBBBBBBBBB: "+searchString);
+		 
+		
 		// Display progress bar.
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(true);
 		
@@ -97,7 +107,7 @@ public class SearchFragment extends SherlockFragment {
 		imm.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
 		
 		// No input? No need to search.
-		if("".equals(searchEdit.getText().toString())) {
+		if("".equals(searchString)) {
 			listFragment.updateList(new ArrayList<Book>());
 			return;
 		}
@@ -110,7 +120,7 @@ public class SearchFragment extends SherlockFragment {
 		};
 		
 		// Call backend search.
-		backend.search(searchEdit.getText().toString(), 0, c);
+		backend.search(searchString, 0, c);
 	}
 	
 	/** Is called when backend searching is done.**/

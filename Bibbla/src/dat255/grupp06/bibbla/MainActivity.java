@@ -23,7 +23,7 @@ import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 

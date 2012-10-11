@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
 
@@ -61,7 +61,7 @@ public class SearchJob {
 			String url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
 			Response response = Jsoup.connect(url)
 					.method(Method.GET)
-					.timeout(10)
+					.timeout(5000)
 					.execute();
 			resultsDocument = response.parse();
 		}

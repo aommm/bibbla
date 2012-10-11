@@ -5,7 +5,7 @@ import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 

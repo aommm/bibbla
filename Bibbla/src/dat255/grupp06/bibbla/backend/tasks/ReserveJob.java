@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class ReserveJob {

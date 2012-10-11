@@ -1,6 +1,6 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class BookJob {
