@@ -2,9 +2,11 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.io.IOException;
 import java.util.*;
+
 import org.jsoup.Connection.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
+import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
@@ -20,6 +22,7 @@ public class RenewJob {
 	private Session session;
 	private Message message;
 	private List<Book> books;
+	private Response httpResponse;
 	private String userUrl;
 	
 	/**
@@ -57,14 +60,8 @@ public class RenewJob {
 	/**
 	 * Starts the renewal process.
 	 * 
-	 * TODO: doesn't report errors correctly.
-	 * 
-	 * Current behaviour:
-	 * Even if the returned message indicates RENEW_FAILED,
-	 * it's still possible that some of the renewals were successful.
-	 * 
-	 * Even if no error is indicated, some of the renewals may have failed.
-	 * Be aware. 
+	 * @returns a Message, containing a list of Books, some of which may have
+	 * 	their message attribute set. 
 	 */
 	public Message run()  {
 		System.out.println("****** RenewJob: ");
@@ -83,7 +80,11 @@ public class RenewJob {
 			
 			System.out.println("*** Step 2: post our renewal");
 			postRenewal();
-			System.out.println("Step 2 done! ***");			
+			System.out.println("Step 2 done! ***");
+			
+			System.out.println("*** Step 3: parse the results");
+			parseResults();
+			System.out.println("Step 3 done! ***");		
 			
 		} catch (Exception e) {
 			System.out.println("Failed: "+e.getMessage()+" ***");
@@ -118,14 +119,23 @@ public class RenewJob {
 	    }};
 	    
 	    // Send POST request to user url and save response.
-	    Response response = Jsoup.connect(userUrl)
+	    httpResponse = Jsoup.connect(userUrl)
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
-	    
+
+	}
+	
+	/**
+	 * Parses the results retrieved by postRenewal().
+	 * 
+	 * @throws Exception if we're not logged in, or if parsing otherwise failed.
+	 */
+	private void parseResults() throws Exception {
+		
 	    // Prepare parsing.
-	    Document html = response.parse();
+	    Document html = httpResponse.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
@@ -136,23 +146,22 @@ public class RenewJob {
 	    	message.loggedIn = true;
 	    }
 	    
+	    // Parse our table rows into a list of Books.
+	    Elements rows = html.select("tr.patFuncEntry");
+	    List<Book> results = CommonParsing.parseMyBooks(rows);
+	    /**
+	     * TODO: 
+	     * Get the text of each font tag in CommonParsing,
+	     * and save in physicalBook.message. 
+	     * Can we really use a common parsing method like this?
+	     * Is the results of this the same as MyBooksJob?
+	     */
+	    
 	    // Just checking - font tags implies trouble.
 	    if (html.select("font").size()>0) {
-	    	// Something went wrong,
-	    	// but some of the renewals may still have been applied.
+	    	// Something went wrong, but not necessarily everything.
 	    	message.error = Error.RENEW_FAILED;
-	    	
-	    	/**
-	    	 * TODO:
-	    	 * Get text of each font tag- it is the error message.
-	    	 * Tell the world about every error in some fancy way.
-	    	 * 
-	    	 * Should we return List<Book>? If so, where do we put the error?
-	    	 * In what situations do we create RenewJobs? What do we want then?
-	    	 * So many questions. So few answers. 
-	    	 */
 	    }
-	    
 	}
 	
 }

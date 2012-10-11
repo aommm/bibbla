@@ -14,6 +14,7 @@ public class PhysicalBook {
 	// (Idea: Can parse status and possible return date.)  
 	private String status;
 	private String message;
+	private boolean error;
 	
 	/**
 	 * Create a PhysicalBook using the supplied information.
@@ -74,5 +75,12 @@ public class PhysicalBook {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	public String getError() {
+		return message;
+	}
+	public void setError(boolean error) {
+		this.error = error;
 	}
 }

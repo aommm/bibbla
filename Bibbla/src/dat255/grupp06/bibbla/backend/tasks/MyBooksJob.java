@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.PhysicalBook;
+import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -25,7 +26,8 @@ import dat255.grupp06.bibbla.utils.Message;
 public class MyBooksJob {
 	private Session session;
 	private Message message;
-	private Map<String, String> sessionCookies;
+	
+	private Response httpResponse;
 	private String userUrl;
 	
 	public MyBooksJob(Session session) {
@@ -41,7 +43,7 @@ public class MyBooksJob {
 		System.out.println("****** MyBooksJob: ");
 		try {
 			// Get user URL.
-			System.out.println("*** Step 2: get user's url");
+			System.out.println("*** Step 1: get user's url");
 			userUrl = session.getUserUrl();
 			// Did it fail?
 			if ("".equals(userUrl)) {
@@ -50,11 +52,14 @@ public class MyBooksJob {
 			}
 			// Append "items" to user URL.
 			userUrl += "items";
+			System.out.println("Step 1 done! ***");
+			
+			System.out.println("*** Step 2: fetch loaned books");
+			fetchLoanedBooks();
 			System.out.println("Step 2 done! ***");
 			
-			
-			System.out.println("*** Step 3: get loaned books");
-			getLoanedBooks();
+			System.out.println("*** Step 3: parse loaned books");
+			parseLoanedBooks();
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -64,17 +69,28 @@ public class MyBooksJob {
 		return message;
 	}
 	
-	private void getLoanedBooks() throws Exception {
+	/**
+	 * Connects to gotlib, and downloads the HTML of 'loaned books'.
+	 * 
+	 * @throws Exception - If http connection fails.
+	 */
+	private void fetchLoanedBooks() throws Exception {
 
-		System.out.println(userUrl);
 	    // Send GET request and save response.
-	    Response response = Jsoup.connect(userUrl)
+	    httpResponse = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();
-	    
+			    .execute();   
+	}
+	
+	/**
+	 * Parses the results saved by fetchLoanedBooks().
+	 * 
+	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
+	 */
+	private void parseLoanedBooks() throws Exception {
 	    // Prepare parsing.
-	    Document html = response.parse();
+	    Document html = httpResponse.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
@@ -83,33 +99,9 @@ public class MyBooksJob {
 	    	throw new Exception("Not logged in");
 	    }
 	    
-	    // Loop through all rows, and create a Book for each.
-	    List<Book> results = new ArrayList<Book>();
+	    // Parse our table rows into a list of Books.
 	    Elements rows = html.select("tr.patFuncEntry");
-	    for (Element row : rows) {
-	    	// Create our new Book.
-	    	Book book = new Book();
-	    	
-	    	// Create a new PhysicalBook, and give it a status and a shelf.
-	    	PhysicalBook physicalBook = new PhysicalBook();
-	    	physicalBook.setStatus(row.select("td.patFuncStatus").first().text());
-	    	physicalBook.setShelf(row.select("td.patFuncCallNo").first().text());
-	    	book.setPhysicalBook(physicalBook);
-
-	    	// Set name, author and URL.
-	    	String[] nameAndAuthor = row.select("td.patFuncTitle").text().split("/");
-	    	// TODO: can books have slashes in their titles/authors? If so, this breaks.
-	    	if (nameAndAuthor.length > 2) {
-	    		throw new Exception("step1(): Too many slashes in title!");
-	    	}
-	    	book.setName(nameAndAuthor[0]);
-	    	book.setAuthor(nameAndAuthor[1]);
-	    	book.setUrl(row.select("td.patFuncTitle").first().attr("abs:href"));
-	    	book.setRenewId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("value"));
-	    	
-	    	// Finally, add our new book to the list of results.
-	    	results.add(book);
-	    }
+	    List<Book> results = CommonParsing.parseMyBooks(rows);
 	    
 	    // Return list of loaned books.
 	    message.obj = results;
