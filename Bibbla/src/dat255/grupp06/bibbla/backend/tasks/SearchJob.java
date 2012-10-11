@@ -61,7 +61,6 @@ public class SearchJob {
 		// Fetch first page?
 		if (pageNumber == 0) {
 			String url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
-			System.out.println("url: "+url);
 			Response response = Jsoup.connect(url)
 					.method(Method.GET)
 					.timeout(5000)
