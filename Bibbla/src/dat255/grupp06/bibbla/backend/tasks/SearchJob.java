@@ -3,6 +3,7 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -11,8 +12,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchJob {
 	
@@ -60,7 +61,6 @@ public class SearchJob {
 		// Fetch first page?
 		if (pageNumber == 0) {
 			String url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
-			System.out.println("url: "+url);
 			Response response = Jsoup.connect(url)
 					.method(Method.GET)
 					.timeout(5000)
@@ -90,10 +90,23 @@ public class SearchJob {
 			book.setType(e.select("td.sokresultat").get(4).getElementsByTag("img").first().attr("alt"));
 			book.setUrl(e.select("a").get(1).attr("abs:href")); 
 			book.setReserveUrl(e.select("div.reserverapadding").select("a").attr("abs:href"));
+			book.setAvailable(availableParse(e.select("td.sokresultat").select("em").text()));
 			results.add(book);
 		}
 		
 		message.obj = results;
 	}
 
+	/**
+	 * Parse the first word of string as int.
+	 * @param A string whose first word possibly is a number.
+	 * @return An int which defaults to 0 if parse fails.
+	 */
+	private int availableParse(String text) {
+		try {
+			return Integer.parseInt(text.split(" ")[0]);
+		} catch (NumberFormatException exc) {
+			return 0;
+		}
+	}
 }
