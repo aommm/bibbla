@@ -17,13 +17,14 @@ import dat255.grupp06.bibbla.utils.PrivateCredentials;
  */
 public class Backend {
 	
-	//private NetworkHandler network;
-	//private Jsoup parser; // TODO: MIT license. needs to include notice?
 	private Settings settings;
 	private Session session;
 	
+	/**
+	 * Creates a new instance of our Backend.
+	 * Initialises a new session and fetches settings.
+	 */
 	public Backend() {
-		//network = new NetworkHandler(); // Don't need networkHandler? 
 		settings = new Settings(PrivateCredentials.name,PrivateCredentials.code,PrivateCredentials.pin);
 		session = new Session(settings.getName(), settings.getCode(), settings.getPin());
 	}
@@ -109,14 +110,17 @@ public class Backend {
 	 *  Fetches a list of the user's current reservations.
 	 *  Returns it using callback.
 	 *  TODO: implement.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchReservations(Callback frontendCallback) {
 		throw new UnsupportedOperationException("implement pls");
 	}
 
 	/**
-	 *  Fetches a list of the user's currently loaned books.
-	 *  Returns it using callback.
+	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchLoans(Callback frontendCallback) {
 		// Create a new Task and define its body.
