@@ -27,16 +27,18 @@ public class Book {
 	private String publisher; 
 	private String physicalDescription;
 	private String notes;
-	private List<PhysicalBook> copies;
+	private List<PhysicalBook> physicalBooks;
 	
 	/**
 	 * Prints the book's name&author, and whether it has urls/details specified.
 	 */
 	@Override
 	public String toString() {
-		return "Book [" + name + ", " + author + ", urls: " +
+		String physicalBook = ((physicalBooks.get(0) != null) ? physicalBooks.get(0).toString() : "no");
+		return "Book (" + name + ", " + author + ", urls: " +
 			((url!=null)&&(reserveUrl!=null)) +", details: " + ((publisher!=null) 
-			|| (physicalDescription!=null) || (notes!=null) || (copies!=null)) +"]";
+			|| (physicalDescription!=null) || (notes!=null)) +
+			", physicalBook: "+physicalBook+")\n";
 	}
 	
 	/********************************
@@ -64,7 +66,7 @@ public class Book {
 	}
 
 	public Book() {
-		copies = new ArrayList<PhysicalBook>();
+		physicalBooks = new ArrayList<PhysicalBook>();
 	}
 	
 	@Override
@@ -82,11 +84,11 @@ public class Book {
 		newBook.physicalDescription = physicalDescription;
 		newBook.notes = notes;
 		
-		List<PhysicalBook> newCopies = new ArrayList<PhysicalBook>();
-		for(PhysicalBook pb : copies) {
-			newCopies.add((PhysicalBook)pb.clone());
+		List<PhysicalBook> newPhysicalBooks = new ArrayList<PhysicalBook>();
+		for(PhysicalBook pb : physicalBooks ) {
+			newPhysicalBooks.add((PhysicalBook)pb.clone());
 		}
-		newBook.copies = newCopies;
+		newBook.physicalBooks = newPhysicalBooks;
 		
 		return newBook;
 	}
@@ -166,27 +168,27 @@ public class Book {
 		this.notes = notes;
 	}
 
-	public List<PhysicalBook> getCopies() {
-		return copies;
+	public List<PhysicalBook> getPhysicalBooks() {
+		return physicalBooks;
 	}
-	public void setCopies(List<PhysicalBook> copies) {
-		this.copies = copies;
+	public void setPhysicalBooks(List<PhysicalBook> physicalBooks) {
+		this.physicalBooks = physicalBooks;
 	}
 	
 	/**
 	 * Sets the supplied PhysicalBook to be the only copy of this book.
 	 */
 	public void setPhysicalBook(PhysicalBook physicalBook) {
-		List<PhysicalBook> copies = new ArrayList<PhysicalBook>();
-		copies.add(physicalBook);
-		this.copies = copies;
+		List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
+		physicalBooks.add(physicalBook);
+		this.physicalBooks = physicalBooks;
 	}
 	/**
 	 * Returns the first PhysicalBook tied to this book. If none, returns null.
 	 */
 	public PhysicalBook getPhysicalBook() {
-		if (copies.size()>0) {
-			return copies.get(0);
+		if (physicalBooks.size()>0) {
+			return physicalBooks.get(0);
 		} else {
 			return null;
 		}
@@ -208,4 +210,25 @@ public class Book {
 	public int getAvailable() {
 		return available;
 	}
+	
+	/**
+	 * Returns the message of our first PhysicalBook. If no physicalBooks, returns null.
+	 */
+	public String getMessage() {
+		if (physicalBooks.size()>0) {
+			return physicalBooks.get(0).getMessage();
+		} else {
+			return null;
+		}
+	}
+	/**
+	 * Returns the error status of our first PhysicalBook. If no physicalBooks, returns false.
+	 */
+	public boolean getError() {
+		if (physicalBooks.size()>0) {
+			return physicalBooks.get(0).getError();
+		} else {
+			return false;
+		}
+	}	
 }

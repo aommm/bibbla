@@ -46,7 +46,7 @@ public class PhysicalBook {
 	@Override
 	public String toString() {
 		return "PhysicalBook [library=" + library + ", shelf=" + shelf
-				+ ", status=" + status + ", message=" + message + "]";
+				+ ", status=" + status + ", error=" + error + ", message=" + message + ")";
 	}
 	
 	public String getLibrary() {
@@ -77,8 +77,8 @@ public class PhysicalBook {
 		this.message = message;
 	}
 	
-	public String getError() {
-		return message;
+	public boolean getError() {
+		return error;
 	}
 	public void setError(boolean error) {
 		this.error = error;

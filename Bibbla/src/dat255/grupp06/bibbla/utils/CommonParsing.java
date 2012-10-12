@@ -20,9 +20,13 @@ public class CommonParsing {
 	 * Parses the HTML from the "my loans"-view of gotlib.
 	 * 
 	 * @param rows - The table rows as parsed by Jsoup. Should be <tr class="trpatFuncEntry" ...> .
-	 * @returns a list of Books. (Each book contains physicalBook, name, author, url and renewId)
+	 * 
+	 * @returns a list of Books. Each book contains physicalBook, name, author, url and renewId.
+	 * 	The physicalBook may contain an error message, retrievable by getMessage().
+	 * 
 	 * @throws Exception - If there is a slash in the title of the book,
-	 * 						this code cannot differentiate between author and title. TODO or can it? 
+	 * 	this code cannot differentiate between author and title.
+	 * @throws Exception also if parsing fails in any other way. 
 	 */
 	public static List<Book> parseMyBooks(Elements rows) throws Exception {
 		
@@ -41,8 +45,18 @@ public class CommonParsing {
 	    	// Create our new Book.
 	    	Book book = new Book();
 	    	
-	    	// Create a new PhysicalBook, and give it a status and a shelf.
+	    	// Create a new PhysicalBook.
 	    	PhysicalBook physicalBook = new PhysicalBook();
+	    	
+	    	// Does the PhysicalBook have an error?
+	    	if (row.select("font").size()>0) {
+	    		Element errorTag = row.select("font").first();
+	    		physicalBook.setError(true);
+	    		physicalBook.setMessage(errorTag.text());
+	    		// Font tag is located inside status td.
+	    		// Remove so that .text()-call below returns only status.
+	    		errorTag.remove();
+	    	}
 	    	physicalBook.setStatus(row.select("td.patFuncStatus").first().text());
 	    	physicalBook.setShelf(row.select("td.patFuncCallNo").first().text());
 	    	book.setPhysicalBook(physicalBook);

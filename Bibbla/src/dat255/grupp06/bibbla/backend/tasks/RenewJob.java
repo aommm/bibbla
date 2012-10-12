@@ -146,22 +146,18 @@ public class RenewJob {
 	    	message.loggedIn = true;
 	    }
 	    
-	    // Parse our table rows into a list of Books.
-	    Elements rows = html.select("tr.patFuncEntry");
-	    List<Book> results = CommonParsing.parseMyBooks(rows);
-	    /**
-	     * TODO: 
-	     * Get the text of each font tag in CommonParsing,
-	     * and save in physicalBook.message. 
-	     * Can we really use a common parsing method like this?
-	     * Is the results of this the same as MyBooksJob?
-	     */
-	    
 	    // Just checking - font tags implies trouble.
 	    if (html.select("font").size()>0) {
 	    	// Something went wrong, but not necessarily everything.
 	    	message.error = Error.RENEW_FAILED;
 	    }
+	    
+	    // Parse our table rows into a list of Books.
+	    Elements rows = html.select("tr.patFuncEntry");
+	    List<Book> results = CommonParsing.parseMyBooks(rows);
+	    
+	    // Return list of books.
+	    message.obj = results;
 	}
 	
 }

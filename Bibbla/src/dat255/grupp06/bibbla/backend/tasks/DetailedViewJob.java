@@ -47,7 +47,7 @@ public class DetailedViewJob {
 			    .method(Method.GET)
 			    .execute();
 	    
-	    List<PhysicalBook> copies = new ArrayList<PhysicalBook>();
+	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
 	    Elements tableRows = response.parse().select("table.bibItems").select("tr.bibItemsEntry");
 	    
 	    for (Element row : tableRows) {
@@ -57,11 +57,11 @@ public class DetailedViewJob {
 	    	String status = columns.get(2).text();
 	    	String message = columns.get(3).text();
 	    	PhysicalBook physicalBook = new PhysicalBook(library, shelf, status, message);
-	    	copies.add(physicalBook);
+	    	physicalBooks.add(physicalBook);
 	    }
 	    // TODO:
 	    // Fill other fields as well
 	    
-	    newBook.setCopies(copies);
+	    newBook.setPhysicalBooks(physicalBooks);
 	}
 }
