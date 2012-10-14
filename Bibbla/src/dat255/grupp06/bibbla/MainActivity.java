@@ -38,8 +38,6 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         searchFragment.setBackend(backend);
         loginFragment.setBackend(backend);
         profileFragment.setBackend(backend);
-        /*fragmentTransaction.add(R.id.fragment_container, profileFragment);
-        fragmentTransaction.commit();*/
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -50,11 +48,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         ActionBar.Tab profileTab = getSupportActionBar().newTab();
         
         //Set tab properties
-        searchTab.setContentDescription("S�k");
+        searchTab.setContentDescription("Sök");
         searchTab.setIcon(android.R.drawable.ic_menu_search);
         searchTab.setTabListener(this);
         
-        profileTab.setContentDescription("L�n");
+        profileTab.setContentDescription("Lån");
         profileTab.setIcon(android.R.drawable.ic_menu_share);
         profileTab.setTabListener(this);
    
@@ -76,30 +74,27 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		Log.d("J", tab.getPosition()+"select");
+		Log.d("J", "Selecting tab "+tab.getPosition());
 		switch(tab.getPosition()) {
 			case 0:
 				ft.add(R.id.fragment_container, searchFragment);
-				Log.d("J", "select 1    "+tab.getPosition());
 				break;
 			case 1:
-				//ft.add(R.id.fragment_container, testFragment);
-				Log.d("J", "select 2    "+tab.getPosition());
+				// TODO Check if logged in here or in login fragment?
+				ft.add(R.id.fragment_container, loginFragment);
 				break;
 		}
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		Log.d("J", tab.getPosition()+"unselect");
+		Log.d("J", "Unselecting tab "+tab.getPosition());
 		switch(tab.getPosition()) {
 		case 0:
 			ft.remove(searchFragment);
-			Log.d("J", "unselect 1       "+tab.getPosition());
 			break;
 		case 1:
-			//ft.remove(testFragment);
-			Log.d("J", "unselect 2       "+tab.getPosition());
+			ft.remove(loginFragment);
 			break;
 		}
 	}
