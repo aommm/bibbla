@@ -64,14 +64,14 @@ public class SearchResultAdapter extends BaseAdapter {
 		Book book = list.get(position);
 		View view = activity.getLayoutInflater().inflate(
 				R.layout.search_result, parent, false);
-//		((TextView) view.findViewById(R.id.search_result_title))
-//			.setText(book.getName());
-//		((TextView) view.findViewById(R.id.search_result_author))
-//			.setText(book.getAuthor());
-//		((ImageView) view.findViewById(R.id.search_result_available))
-//			.setImageResource(book.getAvailable() > 0 ?
-//				android.R.drawable.presence_online :
-//				android.R.drawable.presence_busy);
+		((TextView) view.findViewById(R.id.search_result_title))
+			.setText(book.getName());
+		((TextView) view.findViewById(R.id.search_result_author))
+			.setText(book.getAuthor());
+		((ImageView) view.findViewById(R.id.search_result_available))
+			.setImageResource(book.getAvailable() > 0 ?
+				android.R.drawable.presence_online :
+				android.R.drawable.presence_busy);
 		return view;
 	}
 
