@@ -49,15 +49,31 @@ public class SearchFragment extends SherlockFragment {
 	 * Inflates the view and sets up the ListFragment.
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+		
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        
-        listFragment = new SearchListFragment();
-        fragmentTransaction.add(R.id.list_container, listFragment);
-        fragmentTransaction.commit();
 		
+		if(listFragment == null) {
+	        listFragment = new SearchListFragment();
+	        fragmentTransaction.add(R.id.list_container, listFragment);
+	        Log.d("J", "createView     1");
+		} else {
+			fragmentTransaction.attach(listFragment);
+			Log.d("J", "createView     2");
+		}
+
+        fragmentTransaction.commit();
 		return inflater.inflate(R.layout.fragment_search, container, false);
+	}
+	
+	@Override
+	public void onDestroyView() {
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Log.d("J", "destroy");
+        fragmentTransaction.detach(listFragment);
+        fragmentTransaction.commit();
+        super.onDestroyView();
 	}
 	
 	@Override

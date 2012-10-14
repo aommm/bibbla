@@ -33,9 +33,6 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         setSupportProgressBarIndeterminateVisibility(false);
 
         backend = new Backend();
-        
-        searchFragment = new SearchFragment();
-        searchFragment.setBackend(backend);
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -67,30 +64,30 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		Log.d("J", tab.getPosition()+"select");
 		switch(tab.getPosition()) {
 			case 0:
-				ft.add(R.id.fragment_container, searchFragment);
-				Log.d("J", "select 1    "+tab.getPosition());
+				if(searchFragment == null) {
+			        searchFragment = new SearchFragment();
+			        searchFragment.setBackend(backend);
+			        ft.add(R.id.fragment_container, searchFragment);
+				} else {
+					ft.attach(searchFragment);
+				}
 				break;
 			case 1:
 				//ft.add(R.id.fragment_container, testFragment);
-				Log.d("J", "select 2    "+tab.getPosition());
 				break;
 		}
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		Log.d("J", tab.getPosition()+"unselect");
 		switch(tab.getPosition()) {
 		case 0:
-			ft.remove(searchFragment);
-			Log.d("J", "unselect 1       "+tab.getPosition());
+			ft.detach(searchFragment);
 			break;
 		case 1:
 			//ft.remove(testFragment);
-			Log.d("J", "unselect 2       "+tab.getPosition());
 			break;
 		}
 	}
