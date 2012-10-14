@@ -1,5 +1,6 @@
 package dat255.grupp06.bibbla.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,24 @@ import dat255.grupp06.bibbla.utils.Message;
 public class LoginFragment extends SherlockFragment {
 	
 	Backend backend;
+	private OnLoginListener onLoginListener;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.login_fragment, container, false);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		// Register activity as onLoginListener
+		try {
+			onLoginListener = (OnLoginListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() +
+					"must implement OnLoginListener");
+		}
 	}
 	
 	// TODO Extract backend field to super class, or keep it in MainActivity
@@ -43,14 +57,21 @@ public class LoginFragment extends SherlockFragment {
 	}
 	
 	public void loginDone(Message msg) {
-		// switch to other fragment???
 		if (msg.loggedIn) {
-			//getActivity().showProfileTab() or something
+			onLoginListener.onLoginSuccessful();
 			android.util.Log.d("A", "Enter Logged-in Profile fragment.");
 		} else {
 			Toast.makeText(getSherlockActivity(), R.string.login_fail_msg,
 				Toast.LENGTH_SHORT).show();
 		}
 		
+	}
+	
+	/**
+	 * Interface to specify action taken upon login
+	 * @see http://developer.android.com/guide/components/fragments.html#EventCallbacks
+	 */
+	public interface OnLoginListener {
+		public void onLoginSuccessful();
 	}
 }

@@ -15,7 +15,8 @@ import dat255.grupp06.bibbla.fragments.LoginFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.frontend.SearchFragment;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
+public class MainActivity extends SherlockFragmentActivity implements
+ActionBar.TabListener, LoginFragment.OnLoginListener {	
 
 	Backend backend;
 	
@@ -86,6 +87,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		}
 	}
 
+	// TODO Remove in favor of ft.replace() in onTabSelected()?
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		Log.d("J", "Unselecting tab "+tab.getPosition());
@@ -109,5 +111,14 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
 		loginFragment.login(nameET.getText().toString(), cardET.getText().toString(),
 				pinET.getText().toString());
+	}
+
+	@Override
+	public void onLoginSuccessful() {
+		System.out.println("onLoginSuccessful");
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_container, profileFragment);
+		ft.commit();
+		// TODO This breaks what onTab[Un]Selected does with the fragments.
 	}
 }
