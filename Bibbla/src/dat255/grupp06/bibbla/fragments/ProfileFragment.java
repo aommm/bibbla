@@ -46,7 +46,7 @@ public class ProfileFragment extends SherlockFragment {
 		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
 		nameHeading.setText(name);
 		// Current debt
-		int debt = backend.getDebt();
+		int debt = backend.getUserDebt();
 		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
 		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
 		// Loans list

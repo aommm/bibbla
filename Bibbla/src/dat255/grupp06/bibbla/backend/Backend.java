@@ -136,10 +136,6 @@ public class Backend {
 	public void logOut(final Callback frontendCallback){
 		session = new Session();	
 	}
-	
-	public int getDebt() {
-		return 10;
-	}
 	public List<Book> getLoans() {
 		throw new UnsupportedOperationException();
 	}
