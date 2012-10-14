@@ -44,6 +44,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         //Create the tabs
         ActionBar.Tab searchTab = getSupportActionBar().newTab();
         ActionBar.Tab profileTab = getSupportActionBar().newTab();
+        ActionBar.Tab libraryTab = getSupportActionBar().newTab();
         
         //Set tab properties
         searchTab.setContentDescription("Sök");
@@ -53,10 +54,15 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         profileTab.setContentDescription("Lån");
         profileTab.setIcon(android.R.drawable.ic_menu_share);
         profileTab.setTabListener(this);
+        
+        libraryTab.setContentDescription("Bibliotek");
+        libraryTab.setIcon(android.R.drawable.ic_menu_directions);
+        libraryTab.setTabListener(this);
    
         //Add the tabs to the action bar
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
+        getSupportActionBar().addTab(libraryTab);
     }
 	
 	@Override

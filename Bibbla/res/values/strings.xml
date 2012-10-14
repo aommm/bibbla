@@ -10,5 +10,11 @@
     <string name="button_search">Sök</string>
     <string name="edit_search">Boktitel etc.</string>
     <string name="available_description">Om boken går att låna</string>
+    <string-array name="libNames">
+        <item >lib1</item>
+        <item >lib2</item>
+        <item >lib3</item>
+        <item />
+    </string-array>
 
 </resources>
