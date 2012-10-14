@@ -82,7 +82,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 				ft.add(R.id.fragment_container, searchFragment);
 				Log.d("J", "select 1    "+tab.getPosition());
 				break;
-			case 1:
+			case 2:
 				ft.add(R.id.fragment_container, libraryFragment);
 				Log.d("J", "select 2    "+tab.getPosition());
 				break;
@@ -97,7 +97,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			ft.remove(searchFragment);
 			Log.d("J", "unselect 1       "+tab.getPosition());
 			break;
-		case 1:
+		case 2:
 			ft.remove(libraryFragment);
 			Log.d("J", "unselect 2       "+tab.getPosition());
 			break;
