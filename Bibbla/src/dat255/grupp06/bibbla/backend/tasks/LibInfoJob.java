@@ -71,16 +71,18 @@ public class LibInfoJob {
 	}
 	
 	private void step2() {		
-
 		List<Library> results = new ArrayList<Library>();
-		Elements searchResults = resultsDocument.select("li.odd js-unit");// resultsDocument.select("li.odd js-unit"); //odd js-unit??
+		Elements searchResults = resultsDocument.select("li.div.unit-h cf");// resultsDocument.select("li.odd js-unit"); //odd js-unit??
 		for(Element e : searchResults){
 			System.out.println("Came into for loop");
-
 			Library library = new Library();
-			library.setName(e.select("a").get(1).text());
+			System.out.println("Created library");
+			library.setName(e.select("a").first().text());
+			System.out.println("setName..."+ library.getName());
 			library.setAddress(e.select("span").first().text());
+			System.out.println("setAddress...");
 			library.setPhoneNr(e.select("a.phone-link").get(1).text());
+			System.out.println("set phoneNr...");
 			results.add(library);
 			System.out.println(library.toString());
 		}
