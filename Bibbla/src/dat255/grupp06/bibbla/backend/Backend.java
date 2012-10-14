@@ -146,4 +146,8 @@ public class Backend {
 	public List<Book> getReservations() {
 		throw new UnsupportedOperationException();
 	}
+	
+	public boolean isLoggedIn() {
+		return session.checkLogin();
+	}
 }

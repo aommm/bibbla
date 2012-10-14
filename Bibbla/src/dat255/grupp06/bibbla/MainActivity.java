@@ -81,8 +81,11 @@ ActionBar.TabListener, LoginFragment.OnLoginListener {
 				ft.replace(R.id.fragment_container, searchFragment);
 				break;
 			case 1:
-				// TODO Check if logged in here or in login fragment?
-				ft.replace(R.id.fragment_container, loginFragment);
+				if (backend.isLoggedIn()) {
+					ft.replace(R.id.fragment_container, profileFragment);
+				} else {
+					ft.replace(R.id.fragment_container, loginFragment);
+				}
 				break;
 		}
 	}
