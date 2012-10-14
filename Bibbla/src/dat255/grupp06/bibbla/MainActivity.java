@@ -12,12 +12,14 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.frontend.LibraryFragment;
 import dat255.grupp06.bibbla.frontend.SearchFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener {	
 
 	Backend backend;
 	SearchFragment searchFragment;
+	LibraryFragment libraryFragment;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         
         searchFragment = new SearchFragment();
         searchFragment.setBackend(backend);
+        libraryFragment = new LibraryFragment();
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -80,7 +83,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 				Log.d("J", "select 1    "+tab.getPosition());
 				break;
 			case 1:
-				//ft.add(R.id.fragment_container, testFragment);
+				ft.add(R.id.fragment_container, libraryFragment);
 				Log.d("J", "select 2    "+tab.getPosition());
 				break;
 		}
@@ -95,7 +98,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			Log.d("J", "unselect 1       "+tab.getPosition());
 			break;
 		case 1:
-			//ft.remove(testFragment);
+			ft.remove(libraryFragment);
 			Log.d("J", "unselect 2       "+tab.getPosition());
 			break;
 		}
