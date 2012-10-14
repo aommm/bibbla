@@ -93,7 +93,7 @@ public class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				DetailedViewJob job = new DetailedViewJob(book);
+				DetailedViewJob job = new DetailedViewJob(book, session);
 				message = job.run();
 				return null;
 			}
@@ -137,13 +137,6 @@ public class Backend {
 		session = new Session();	
 	}
 	
-	/**
-	 * Fetch user data from web or from cache.
-	 * @author arla
-	 */
-	public String getUserName() {
-		return "John Johansson";
-	}
 	public int getDebt() {
 		return 10;
 	}

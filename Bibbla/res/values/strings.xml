@@ -8,6 +8,7 @@
     <string name="text">Hej</string>
     <string name="button_search">Sök</string>
     <string name="search_field">Boktitel etc.</string>
+    <string name="test_text">Fragmenthhihihihihihihi</string>
 
     <!-- Log in -->
     <string name="login_heading">Logga in</string>
