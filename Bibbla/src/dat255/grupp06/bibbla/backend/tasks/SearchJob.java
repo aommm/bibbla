@@ -50,8 +50,8 @@ public class SearchJob {
 			System.out.print("****** SearchJob done \n");
 		}
 		catch (Exception e) {
+			message.error = (message.error!=null) ? message.error : Error.SEARCH_FAILED;
 			System.out.print("failed: "+e.getMessage()+" *** \n");
-			message.error = Error.SEARCH_FAILED;
 		}
 
 		return message;
@@ -63,7 +63,7 @@ public class SearchJob {
 			String url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
 			Response response = Jsoup.connect(url)
 					.method(Method.GET)
-					.timeout(5000)
+					.timeout(50000)
 					.execute();
 			resultsDocument = response.parse();
 		}

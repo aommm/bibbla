@@ -32,13 +32,11 @@ public class DetailedViewJob {
 		try {
 			getBookDetails();
 		} catch (IOException e) {
+			message.error = (message.error!=null) ? message.error : Error.DETAILED_VIEW_FAILED;
 			System.out.println("Something went wrong dude!");
-			message.error = Error.DETAILED_VIEW_FAILED;
-			e.printStackTrace();
 		}
 		
 		return message;
-		
 	}
 	
 	private void getBookDetails() throws IOException{
