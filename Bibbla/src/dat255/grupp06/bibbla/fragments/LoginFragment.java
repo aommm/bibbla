@@ -47,6 +47,7 @@ public class LoginFragment extends SherlockFragment {
 	}
 	
 	public void login(String name, String card, String pin) {
+		// TODO Loading spinner
 		Callback loginCallback = new Callback() {
 			@Override
 			public void handleMessage(Message msg) {

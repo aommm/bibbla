@@ -78,27 +78,17 @@ ActionBar.TabListener, LoginFragment.OnLoginListener {
 		Log.d("J", "Selecting tab "+tab.getPosition());
 		switch(tab.getPosition()) {
 			case 0:
-				ft.add(R.id.fragment_container, searchFragment);
+				ft.replace(R.id.fragment_container, searchFragment);
 				break;
 			case 1:
 				// TODO Check if logged in here or in login fragment?
-				ft.add(R.id.fragment_container, loginFragment);
+				ft.replace(R.id.fragment_container, loginFragment);
 				break;
 		}
 	}
 
-	// TODO Remove in favor of ft.replace() in onTabSelected()?
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		Log.d("J", "Unselecting tab "+tab.getPosition());
-		switch(tab.getPosition()) {
-		case 0:
-			ft.remove(searchFragment);
-			break;
-		case 1:
-			ft.remove(loginFragment);
-			break;
-		}
 	}
 
 	@Override
@@ -119,6 +109,5 @@ ActionBar.TabListener, LoginFragment.OnLoginListener {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, profileFragment);
 		ft.commit();
-		// TODO This breaks what onTab[Un]Selected does with the fragments.
 	}
 }
