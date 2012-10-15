@@ -1,19 +1,27 @@
 package dat255.grupp06.bibbla.fragments;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
- * Main fragment for the profile or "me" tab.
+ * Main fragment for the profile or "me" tab. You must give a reference to the
+ * Backend object before using the fragment.
  * @author arla
  */
 public class ProfileFragment extends SherlockFragment {
@@ -26,6 +34,10 @@ public class ProfileFragment extends SherlockFragment {
 		return inflater.inflate(R.layout.profile_fragment, container, false);
 	}
 	
+	/**
+	 * Give a reference to the Backend
+	 * @param backend The Backend object used by the application
+	 */
 	public void setBackend(Backend backend) {
 		this.backend = backend;
 	}
@@ -36,7 +48,13 @@ public class ProfileFragment extends SherlockFragment {
 		updateFromBackend();
 	}
 	
-	private void updateFromBackend() {
+	/**
+	 * Update the contents of GUI elements with information from Backend, such
+	 * as name, current debt, books on loan and pending reservations.
+	 * @throws IllegalStateException if the backend is not set.
+	 * @see setBackend(Backend)
+	 */
+	private void updateFromBackend() throws IllegalStateException {
 		if (backend == null)
 			throw new IllegalStateException();
 		
@@ -49,14 +67,41 @@ public class ProfileFragment extends SherlockFragment {
 		int debt = backend.getUserDebt();
 		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
 		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
-		// Loans list
-//		List<Book> loans = backend.getLoans();
-//		ListView loansList = (ListView) activity.findViewById(R.id.loans_list);
-//		loansList.setSomething(loans.lahdidah()));
-		// Reservations list
-//		List<Book> reservations = backend.getReservations();
-//		ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
-//		loansList.setSomething(loans.lahdidah()));
+		
+		// The lists take some time; using Callback.
+		// TODO Loading spinner
+		Callback updateCallback = new Callback() {
+			@Override public void handleMessage(Message msg) {
+				ProfileFragment.this.loansUpdateDone(msg);
+			}
+		};
+		backend.fetchLoans(updateCallback);
+		
+		Callback reservationsCallback = new Callback() {
+			@Override public void handleMessage(Message msg) {
+				ProfileFragment.this.reservationsUpdateDone(msg);
+			}
+		};
+//		backend.fetchReservations(updateCallback);
+	}
+	
+	private void loansUpdateDone(Message msg) {
+		Activity activity = getSherlockActivity();
+		try {
+			List<Book> loans = (List<Book>) msg.obj;
+			ListView loansList = (ListView) activity.findViewById(R.id.loans_list);
+			loansList.setAdapter(new BookListAdapter(activity, loans));
+		} catch (ClassCastException e) {
+			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	private void reservationsUpdateDone(Message msg) {
+		Activity activity = getSherlockActivity();
+		List<Book> reservations = null;
+		ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
+		reservationsList.setAdapter(new BookListAdapter(activity, reservations));
+		
 	}
 	
 }

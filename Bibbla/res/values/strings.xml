@@ -29,5 +29,6 @@
     <string name="logout_text">Logga ut</string>
     <string name="my_loans_heading">Mina lån</string>
     <string name="my_reservations_heading">Mina reservationer</string>
+    <string name="loans_list_error">Kunde inte hämta lånlistan</string>
 
 </resources>

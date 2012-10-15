@@ -144,12 +144,6 @@ public class Backend {
 	public void logOut(){
 		session = new Session();	
 	}
-	public List<Book> getLoans() {
-		throw new UnsupportedOperationException();
-	}
-	public List<Book> getReservations() {
-		throw new UnsupportedOperationException();
-	}
 	
 	public boolean isLoggedIn() {
 		return session.checkLogin();

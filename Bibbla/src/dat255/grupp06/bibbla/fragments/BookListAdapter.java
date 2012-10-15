@@ -15,7 +15,7 @@ import dat255.grupp06.bibbla.model.Book;
  * Custom ListAdapter for book search results.
  * @author arla
  */
-public class SearchResultAdapter extends BaseAdapter {
+public class BookListAdapter extends BaseAdapter {
 	
 	private List<Book> list;
 	private Activity activity;
@@ -27,7 +27,7 @@ public class SearchResultAdapter extends BaseAdapter {
 	 * @param list A list of books to present. 
 	 */
 	// TODO Bad style to pass activity?
-	public SearchResultAdapter(Activity activity, List<Book> list) {
+	public BookListAdapter(Activity activity, List<Book> list) {
 		// TODO Clone needed?
 		this.list = list;
 		this.activity = activity;
