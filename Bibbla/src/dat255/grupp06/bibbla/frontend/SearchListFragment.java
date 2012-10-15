@@ -2,6 +2,7 @@ package dat255.grupp06.bibbla.frontend;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListAdapter;
@@ -29,7 +30,8 @@ public class SearchListFragment extends SherlockListFragment {
      * When an item is clicked in the list this method is called
      */
     public void onListItemClick(ListView l, View v, int position, long id) {
-        //Do something
+    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
+    	startActivity(intent);
     }
     
     /**
@@ -38,7 +40,6 @@ public class SearchListFragment extends SherlockListFragment {
     public void updateList(List<Book> books) {
     	ListAdapter adapter = new SearchResultAdapter(getSherlockActivity(), books);
     	this.setListAdapter(adapter);
-    	
     }
 }
 
