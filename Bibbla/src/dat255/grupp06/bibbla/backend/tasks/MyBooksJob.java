@@ -59,6 +59,7 @@ public class MyBooksJob {
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
+			message.error = (message.error!=null) ? message.error : Error.MY_BOOKS_FAILED;
 			System.out.println("Failed: "+e.getMessage()+" ***");
 		}
 		

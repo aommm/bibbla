@@ -55,10 +55,11 @@ public class MyReservationsJob {
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse reservations");
-			parseLoanedBooks();
+			parseReservedBooks();
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
+			message.error = (message.error!=null) ? message.error : Error.MY_RESERVATIONS_FAILED;
 			System.out.println("Failed: "+e.getMessage()+" ***");
 		}
 		
@@ -84,7 +85,7 @@ public class MyReservationsJob {
 	 * 
 	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseLoanedBooks() throws Exception {
+	private void parseReservedBooks() throws Exception {
 	    // Prepare parsing.
 	    Document html = httpResponse.parse();
 

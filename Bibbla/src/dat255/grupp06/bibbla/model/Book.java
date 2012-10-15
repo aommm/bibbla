@@ -22,6 +22,7 @@ public class Book {
 	// Id's, used for renewing and unreserving.
 	private String renewId;
 	private String unreserveId;
+	private String freezeId;
 	
 	// Details
 	private String publisher; 
@@ -34,7 +35,8 @@ public class Book {
 	 */
 	@Override
 	public String toString() {
-		String physicalBook = ((physicalBooks.get(0) != null) ? physicalBooks.get(0).toString() : "no");
+		String physicalBook = ((physicalBooks.size()>0) && ((physicalBooks.get(0) != null))
+				? physicalBooks.get(0).toString() : "no");
 		return "Book (" + name + ", " + author + ", urls: " +
 			((url!=null)&&(reserveUrl!=null)) +", details: " + ((publisher!=null) 
 			|| (physicalDescription!=null) || (notes!=null)) +
@@ -196,6 +198,20 @@ public class Book {
 	 */
 	public String getUnreserveId() {
 		return unreserveId;
+	}
+	
+	/**
+	 * Sets the unreserve id for this book.
+	 */
+	public void setFreezeId(String freezeId) {
+		this.freezeId = freezeId;
+	}
+	/**
+	 * Returns the freeze ID for this book.
+	 * Can be used to freeze its reservation if possible; used from within UnreserveJob.
+	 */
+	public String getFreezeId() {
+		return freezeId;
 	}
 	
 	/**

@@ -96,15 +96,21 @@ public class CommonParsing {
 
 	    	// Set name, author and URL.
 	    	String[] nameAndAuthor = row.select("td.patFuncTitle").text().split("/");
-	    	// TODO: can books have slashes in their titles/authors? If so, this breaks.
+	    	// Did we find more than one slash?
 	    	if (nameAndAuthor.length > 2) {
-	    		throw new Exception("CommonParsing: Too many slashes in title!");
+	    		// Ignore the others. Temporary solution!
+	    		nameAndAuthor = new String[]{nameAndAuthor[0], nameAndAuthor[1]};
+	    	// Did we find no slash?
+	    	} else if (nameAndAuthor.length < 2) {
+	    		// Set author to "".
+	    		nameAndAuthor = new String[]{nameAndAuthor[0], ""};
 	    	}
 	    	book.setName(nameAndAuthor[0]);
 	    	book.setAuthor(nameAndAuthor[1]);
 	    	book.setUrl(row.select("td.patFuncTitle").first().attr("abs:href"));
 	    	if (parseReservations) {
-	    		book.setUnreserveId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("value"));	
+	    		book.setUnreserveId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("name"));
+	    		book.setFreezeId(row.select("td.patFuncFreeze").first().getElementsByTag("input").first().attr("name"));
 	    	} else {
 	    		book.setRenewId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("value"));
 	    	}
