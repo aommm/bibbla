@@ -1,0 +1,14 @@
+Om sprint #5
+Arild Matsson 2012-10-15
+
+Backlogs: https://www.pivotaltracker.com/projects/651449
+
+Under sprintplaneringen bestämde vi hur vi skulle testa de Job-klasser (som hämtar information från hemsidan) som kräver inloggning. Beslutet baserades på dialog med Henrik.
+- Om det finns en fil med inloggningsuppgifter (PrivateCredentials.java, som finns i .gitignore) så använd dem för att utföra testet.
+- Om det inte finns inloggningsuppgifter så lyckas testet direkt.
+
+Vi delade upp testningen av Job-klasserna mellan varandra, och bestämde några ytterligare uppgifter:
+- Fahad fixar Session och DetailedViewJob
+- Madeleine jobbar vidare med hela Bibliotek-fliken, både backend- och frontend
+- Niklas kollar på backend generellt samt lägger till lämplig licenstagg i koden
+- Arild arbetar på ett login-flow som fungerar (bättre)
