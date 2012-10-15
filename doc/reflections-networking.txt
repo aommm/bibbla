@@ -1,6 +1,9 @@
 We spent much of our time "reverse-engineering" gotlib's servers.
 
-We had to analyse all HTTP requests to deconstruct how the official website worked while performing various tasks. We looked at what requests were sent and what responses were received during the flow of each task, for example searching for a book, and reproduced these in Java using the networking library Jsoup.
+We had to analyse all HTTP requests to deconstruct how the official website worked while performing various tasks. We looked at what requests were sent and what responses were received during the flow of each task using a firefox addon called "Tamper Data".
 
-....
-to be continued
+We reproduced these in Java using the networking library Jsoup. We also inspected the HTML of each page to find the relevant information to be parsed. This was done for every task, e.g. logging in, searching, reserving et cetera.
+
+Since we had to analyse every task this way, it was a lot of work. This has  unfortunately resulted in us having less LOC's than we would otherwise. Writing this underlying networking code was necessary, though, since the Gothenburg library lacks a regular API.
+
+An API would have saved us a lot of time, which we could've used to improve the app in any number of ways. Still - you have to work with what you've got.
