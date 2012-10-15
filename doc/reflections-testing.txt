@@ -1,0 +1,10 @@
+When it came to testing, we had a problem.
+
+Much of our code was functionality for logged-in users only, and if we were to have high test coverage (a percentage of how much of our code that had tests), we would have to test this logged-in code as well. The problem was: we used our own personal details while developing.
+
+Obviously, we couldn't add these to our git repo. Tests should ideally pass for anyone who wants to run them, not just people who have login credentials of their own. Since the actual code required credentials, we had two options:
+
+* Write tests which if no login credentials were present, passed automatically.
+* Write our own bogus server, which simulated gotlib and returned the expected HTML.
+
+To be continued...
