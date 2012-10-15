@@ -27,6 +27,7 @@ public class Book {
 	private String publisher; 
 	private String physicalDescription;
 	private String notes;
+	private String isbn;
 	private List<PhysicalBook> physicalBooks;
 	
 	/**
@@ -230,5 +231,13 @@ public class Book {
 		} else {
 			return false;
 		}
+	}
+
+	public String getIsbn() {
+		return isbn;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
 	}	
 }
