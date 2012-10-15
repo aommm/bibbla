@@ -35,7 +35,6 @@ public class DetailedViewJob {
 		}
 		
 		return message;
-		
 	}
 	
 	private void getBookDetails() throws IOException{

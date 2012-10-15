@@ -11,15 +11,12 @@ import java.util.List;
  */ 
 public class Book {
 	
-	// TODO Make immutable variables final
-	// Immutable variables
 	private String name;
 	private String author;
-	private String url;
 	private int available;
-	
-	// Mutable variables
 	private String type;
+	
+	private String url;
 	private String reserveUrl;
 	
 	// Id's, used for renewing and unreserving.
@@ -54,7 +51,7 @@ public class Book {
 	 * Creates a new book using the supplied information.
 	 * @param name - The name of the book.
 	 * @param author - The author of the book.
-     * @param type - The type of the book (e-book, audio-book, daisy, etc) 
+     * @param type - The type of the book (e-book, audio-book, daisy, etc)
 	 * @param url - The url to the book's detailed view.
 	 * @param reserveUrl - The url used to reserve the book.
 	 */
@@ -215,7 +212,7 @@ public class Book {
 	}
 	
 	/**
-	 * Sets the unreserve id for this book.
+	 * Sets the freeze id for this book.
 	 */
 	public void setFreezeId(String freezeId) {
 		this.freezeId = freezeId;
@@ -343,6 +340,7 @@ public class Book {
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
+
 	/**
 	 * Returns the library of our first PhysicalBook. If no physicalBooks, returns false.
 	 */
