@@ -58,4 +58,5 @@ public class ProfileFragment extends SherlockFragment {
 //		ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
 //		loansList.setSomething(loans.lahdidah()));
 	}
+	
 }

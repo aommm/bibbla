@@ -81,6 +81,7 @@ ActionBar.TabListener, LoginFragment.OnLoginListener {
 				ft.replace(R.id.fragment_container, searchFragment);
 				break;
 			case 1:
+				// TODO isLoggedIn takes time. Either show loading spinner or change isLoggedIn
 				if (backend.isLoggedIn()) {
 					ft.replace(R.id.fragment_container, profileFragment);
 				} else {
@@ -98,19 +99,26 @@ ActionBar.TabListener, LoginFragment.OnLoginListener {
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
 	
-	public void login(View vieww) {
+	public void login(View view) {
 		EditText nameET = (EditText) findViewById(R.id.login_name_field);
 		EditText cardET = (EditText) findViewById(R.id.login_card_field);
 		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
 		loginFragment.login(nameET.getText().toString(), cardET.getText().toString(),
 				pinET.getText().toString());
+		// TODO Move LoginFragment.login() here
 	}
-
+	
 	@Override
 	public void onLoginSuccessful() {
-		System.out.println("onLoginSuccessful");
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, profileFragment);
+		ft.commit();
+	}
+	
+	public void logout(View view) {
+		backend.logOut();
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_container, loginFragment);
 		ft.commit();
 	}
 }

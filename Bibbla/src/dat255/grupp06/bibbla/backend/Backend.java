@@ -131,9 +131,9 @@ public class Backend {
 	}
 	
 	/**
-	 * Logs the user out. Reports the status via callback.
+	 * Logs the user out.
 	 */
-	public void logOut(final Callback frontendCallback){
+	public void logOut(){
 		session = new Session();	
 	}
 	public List<Book> getLoans() {
