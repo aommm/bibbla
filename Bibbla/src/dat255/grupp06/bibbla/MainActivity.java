@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -14,9 +15,11 @@ import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.LoginFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.frontend.SearchFragment;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements
-ActionBar.TabListener, LoginFragment.OnLoginListener {	
+ActionBar.TabListener {	
 
 	Backend backend;
 	
@@ -100,19 +103,29 @@ ActionBar.TabListener, LoginFragment.OnLoginListener {
 	}
 	
 	public void login(View view) {
-		EditText nameET = (EditText) findViewById(R.id.login_name_field);
-		EditText cardET = (EditText) findViewById(R.id.login_card_field);
-		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
-		loginFragment.login(nameET.getText().toString(), cardET.getText().toString(),
-				pinET.getText().toString());
-		// TODO Move LoginFragment.login() here
+//		EditText nameET = (EditText) findViewById(R.id.login_name_field);
+//		EditText cardET = (EditText) findViewById(R.id.login_card_field);
+//		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
+		// TODO Loading spinner
+		Callback loginCallback = new Callback() {
+			@Override
+			public void handleMessage(Message msg) {
+				MainActivity.this.loginDone(msg);
+			}
+		};
+		// TODO Wtf, no credentials?
+		backend.login(loginCallback);
 	}
 	
-	@Override
-	public void onLoginSuccessful() {
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_container, profileFragment);
-		ft.commit();
+	public void loginDone(Message msg) {
+		if (msg.loggedIn) {
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.replace(R.id.fragment_container, profileFragment);
+			ft.commit();
+		} else {
+			Toast.makeText(this, R.string.login_fail_msg,
+				Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	public void logout(View view) {
