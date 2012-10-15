@@ -36,9 +36,8 @@ public class SearchListFragment extends SherlockListFragment {
      * Receives the search-results and swaps the contents in the list with them.
      */
     public void updateList(List<Book> books) {
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books);
+    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
     	this.setListAdapter(adapter);
-    	
     }
 }
 

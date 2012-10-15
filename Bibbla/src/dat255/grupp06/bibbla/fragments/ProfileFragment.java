@@ -68,29 +68,30 @@ public class ProfileFragment extends SherlockFragment {
 		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
 		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
 		
-		// The lists take some time; using Callback.
+		// The lists take some time so let's use Callback.
 		// TODO Loading spinner
-		Callback updateCallback = new Callback() {
+		Callback loansCallback = new Callback() {
 			@Override public void handleMessage(Message msg) {
 				ProfileFragment.this.loansUpdateDone(msg);
 			}
 		};
-		backend.fetchLoans(updateCallback);
+		backend.fetchLoans(loansCallback);
 		
 		Callback reservationsCallback = new Callback() {
 			@Override public void handleMessage(Message msg) {
 				ProfileFragment.this.reservationsUpdateDone(msg);
 			}
 		};
-//		backend.fetchReservations(updateCallback);
+		backend.fetchReservations(reservationsCallback);
 	}
 	
 	private void loansUpdateDone(Message msg) {
 		Activity activity = getSherlockActivity();
 		try {
+			@SuppressWarnings("unchecked")
 			List<Book> loans = (List<Book>) msg.obj;
 			ListView loansList = (ListView) activity.findViewById(R.id.loans_list);
-			loansList.setAdapter(new BookListAdapter(activity, loans));
+			loansList.setAdapter(new BookListAdapter(activity, loans, false));
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
 		}
@@ -98,9 +99,14 @@ public class ProfileFragment extends SherlockFragment {
 	
 	private void reservationsUpdateDone(Message msg) {
 		Activity activity = getSherlockActivity();
-		List<Book> reservations = null;
-		ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
-		reservationsList.setAdapter(new BookListAdapter(activity, reservations));
+		try {
+			@SuppressWarnings("unchecked")
+			List<Book> reservations = (List<Book>) msg.obj;
+			ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
+			reservationsList.setAdapter(new BookListAdapter(activity, reservations, false));
+		} catch (ClassCastException e) {
+			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
+		}
 		
 	}
 	

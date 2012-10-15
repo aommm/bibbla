@@ -1,9 +1,8 @@
 package dat255.grupp06.bibbla.backend;
 
-import java.util.List;
-
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
+import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
 import dat255.grupp06.bibbla.model.Book;
@@ -110,12 +109,19 @@ public class Backend {
 	/**
 	 *  Fetches a list of the user's current reservations.
 	 *  Returns it using callback.
-	 *  TODO: implement.
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchReservations(Callback frontendCallback) {
-		throw new UnsupportedOperationException("implement pls");
+		Task task = new Task(frontendCallback) {
+			@Override
+			protected Void doInBackground(String... arg0) {
+				MyReservationsJob job = new MyReservationsJob(session);
+				message = job.run();
+				return null;
+			}
+		};
+		task.execute();
 	}
 
 	/**
