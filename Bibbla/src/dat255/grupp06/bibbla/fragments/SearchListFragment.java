@@ -1,17 +1,20 @@
 package dat255.grupp06.bibbla.fragments;
 
+import java.util.List;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
+import dat255.grupp06.bibbla.model.Book;
+
 /**
  * ListFragment that is used to display the search-results after a search.
  * 
- * @author Jonathan Orrö
+ * @author Jonathan Orrï¿½
  *
  */
 public class SearchListFragment extends SherlockListFragment {
@@ -32,9 +35,10 @@ public class SearchListFragment extends SherlockListFragment {
     /**
      * Receives the search-results and swaps the contents in the list with them.
      */
-    public void changeListItems(String[] listItems) {
-		setListAdapter(new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, listItems));
+    public void updateList(List<Book> books) {
+    	ListAdapter adapter = new SearchResultAdapter(getSherlockActivity(), books);
+    	this.setListAdapter(adapter);
+    	
     }
 }
 

@@ -15,28 +15,28 @@ import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
 /**
- * Fetches a list of the user's currently loaned books.
+ * Fetches a list of the user's current reservations.
  *
  * @author Niklas Logren
  */
-public class MyBooksJob {
+public class MyReservationsJob {
 	private Session session;
 	private Message message;
 	
 	private Response httpResponse;
 	private String userUrl;
 	
-	public MyBooksJob(Session session) {
+	public MyReservationsJob(Session session) {
 		this.session = session;
 		this.message = new Message();
 	}
 	
 	/**
-	 * Fetches the user's currently loaned books.
-	 * @returns a Message, containing a List of the user's current loans. 
+	 * Fetches the user's currentl reservations.
+	 * @returns a Message, containing a List of the user's current reservations. 
 	 */
 	public Message run()  {
-		System.out.println("****** MyBooksJob: ");
+		System.out.println("****** MyReservationsJob: ");
 		try {
 			// Get user URL.
 			System.out.println("*** Step 1: get user's url");
@@ -47,14 +47,14 @@ public class MyBooksJob {
 				throw new Exception("Fetching user URL failed.");
 			}
 			// Append "items" to user URL.
-			userUrl += "items";
+			userUrl += "holds";
 			System.out.println("Step 1 done! ***");
 			
-			System.out.println("*** Step 2: fetch loaned books");
-			fetchLoanedBooks();
+			System.out.println("*** Step 2: fetch reservations");
+			fetchReservations();
 			System.out.println("Step 2 done! ***");
 			
-			System.out.println("*** Step 3: parse loaned books");
+			System.out.println("*** Step 3: parse reservations");
 			parseLoanedBooks();
 			System.out.println("Step 3 done! ***");
 			
@@ -66,11 +66,11 @@ public class MyBooksJob {
 	}
 	
 	/**
-	 * Connects to gotlib, and downloads the HTML of 'loaned books'.
+	 * Connects to gotlib, and downloads the HTML of the reservations page.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchLoanedBooks() throws Exception {
+	private void fetchReservations() throws Exception {
 
 	    // Send GET request and save response.
 	    httpResponse = Jsoup.connect(userUrl)
@@ -80,7 +80,7 @@ public class MyBooksJob {
 	}
 	
 	/**
-	 * Parses the results saved by fetchLoanedBooks().
+	 * Parses the results saved by fetchReservations().
 	 * 
 	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
 	 */
@@ -97,7 +97,7 @@ public class MyBooksJob {
 	    
 	    // Parse our table rows into a list of Books.
 	    Elements rows = html.select("tr.patFuncEntry");
-	    List<Book> results = CommonParsing.parseMyBooks(rows);
+	    List<Book> results = CommonParsing.parseMyReservations(rows);
 	    
 	    // Return list of loaned books.
 	    message.obj = results;

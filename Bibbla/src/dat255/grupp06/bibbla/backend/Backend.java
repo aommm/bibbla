@@ -2,12 +2,11 @@ package dat255.grupp06.bibbla.backend;
 
 import java.util.List;
 
-import android.util.Log;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
-import dat255.grupp06.bibbla.utils.Book;
+import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
@@ -19,13 +18,14 @@ import dat255.grupp06.bibbla.utils.PrivateCredentials;
  */
 public class Backend {
 	
-	//private NetworkHandler network;
-	//private Jsoup parser; // TODO: MIT license. needs to include notice?
 	private Settings settings;
 	private Session session;
 	
+	/**
+	 * Creates a new instance of our Backend.
+	 * Initialises a new session and fetches settings.
+	 */
 	public Backend() {
-		//network = new NetworkHandler(); // Don't need networkHandler? 
 		settings = new Settings(PrivateCredentials.name,PrivateCredentials.code,PrivateCredentials.pin);
 		session = new Session(settings.getName(), settings.getCode(), settings.getPin());
 	}
@@ -48,6 +48,8 @@ public class Backend {
 	
 	/**
 	 * Starts the login process. Reports results using callback.
+	 * 
+	 * @param frontendCallback - the callback object which will be called when logging in is done.
 	 */
 	public void login(final Callback frontendCallback) {
 
@@ -66,15 +68,18 @@ public class Backend {
 	
 	/**
 	 *  Searches backend for the supplied string, and reports results using callback.
+	 *  
+	 *  @param s - The string to search for.
+	 *  @param page - which page of search results to fetch. If too high, returns empty list.
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void search(final String s, final Callback frontendCallback) {
-		Log.d("J", "backend    search    1");
+	public void search(final String s, final int page, final Callback frontendCallback) {
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				SearchJob job = new SearchJob(s);
+				SearchJob job = new SearchJob(s,0);
 				message = job.run();
 				return null;
 			}
@@ -93,7 +98,7 @@ public class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				DetailedViewJob job = new DetailedViewJob(book, session);
+				DetailedViewJob job = new DetailedViewJob(book);
 				message = job.run();
 				return null;
 			}
@@ -106,14 +111,17 @@ public class Backend {
 	 *  Fetches a list of the user's current reservations.
 	 *  Returns it using callback.
 	 *  TODO: implement.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchReservations(Callback frontendCallback) {
 		throw new UnsupportedOperationException("implement pls");
 	}
 
 	/**
-	 *  Fetches a list of the user's currently loaned books.
-	 *  Returns it using callback.
+	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchLoans(Callback frontendCallback) {
 		// Create a new Task and define its body.

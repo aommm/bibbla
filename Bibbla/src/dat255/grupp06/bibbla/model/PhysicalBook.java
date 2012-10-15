@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.utils;
+package dat255.grupp06.bibbla.model;
 
 /**
  * A class modeling a physical copy of a book.
@@ -14,6 +14,7 @@ public class PhysicalBook {
 	// (Idea: Can parse status and possible return date.)  
 	private String status;
 	private String message;
+	private boolean error;
 	
 	/**
 	 * Create a PhysicalBook using the supplied information.
@@ -32,9 +33,20 @@ public class PhysicalBook {
 	}
 
 	@Override
+	public Object clone() {
+		
+		PhysicalBook pb = new PhysicalBook();
+		pb.library = library;
+		pb.shelf = shelf;
+		pb.status = status;
+		pb.message = message;
+		return pb;
+	}
+	
+	@Override
 	public String toString() {
 		return "PhysicalBook [library=" + library + ", shelf=" + shelf
-				+ ", status=" + status + ", message=" + message + "]";
+				+ ", status=" + status + ", error=" + error + ", message=" + message + ")";
 	}
 	
 	public String getLibrary() {
@@ -63,5 +75,12 @@ public class PhysicalBook {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	public boolean getError() {
+		return error;
+	}
+	public void setError(boolean error) {
+		this.error = error;
 	}
 }

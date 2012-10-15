@@ -1,16 +1,16 @@
+
 package dat255.grupp06.bibbla.backend;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.jsoup.Jsoup;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
 
 import dat255.grupp06.bibbla.backend.tasks.LoginJob;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class Session {
 
@@ -25,17 +25,17 @@ public class Session {
 	 * Creates a new session, and saves the supplied credentials.
 	 */
 	public Session(String name, String code, String pin) {
-		this.name = name;
-		this.code = code;
-		this.pin = pin;
-		this.userUrl = ""; // Initialisation needed for synchronisation
+		// Set user details. If null, initalise to empty string. (for synch)
+		this.name = (name == null)?"":name;
+		this.code = (code == null)?"":code;
+		this.pin = (pin == null)?"":pin;
+		this.userUrl = "";
 		
 		loggedIn = false;
-		hasCredentials = ((name != null) && (code != null) && (pin != null));
+		updateHasCredentials();
 		
 		cookies = new HashMap<String, String>();
 		lock = new Object();
-		
 	}
 	/**
 	 * Creates a new anonymous session.
@@ -43,6 +43,9 @@ public class Session {
 	public Session() {
 		loggedIn = false;
 		hasCredentials = false;
+		this.name = "";
+		this.code = "";
+		this.pin = "";
 		
 		cookies = new HashMap<String, String>();
 		lock = new Object();
@@ -62,7 +65,7 @@ public class Session {
 	 * @param cookies - new cookies to save.
 	 */
 	private void setCookies(Map<String, String> cookies) {
-		synchronized(cookies) {
+		synchronized(this.cookies) {
 			// Save our new cookies.
 			this.cookies = cookies;
 		}
@@ -157,12 +160,12 @@ public class Session {
 	 * Checks whether all user credentials are set, and updates hasCredentials.
 	 */
 	private void updateHasCredentials() {
-		hasCredentials = ((name != null) && (code != null) && (pin != null));
+		hasCredentials = ((!"".equals(name)) && (!"".equals(code)) && (!"".equals(pin)));
 	}
 	/**
 	 * Returns whether all user details are correctly set.
 	 */
-	private boolean getHasCredentials() {
+	public boolean getHasCredentials() {
 		return hasCredentials;
 	}
 	

@@ -4,17 +4,17 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.LoginFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
-import dat255.grupp06.bibbla.frontend.SearchFragment;
+import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -32,7 +32,14 @@ ActionBar.TabListener {
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
+        
+        // We want a fancy spinner for marking progress.
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.activity_main);
+       
+        // Hide progress bar by default.
+        setSupportProgressBarIndeterminateVisibility(false);
 
         backend = new Backend();
         
@@ -69,11 +76,6 @@ ActionBar.TabListener {
 	public void onResume() {
 		super.onResume();
 		// Nothing atm
-	}
-	
-	public void search(View view) {
-		EditText editText = (EditText) findViewById(R.id.search_field);
-		searchFragment.search(editText.getText().toString());
 	}
 
 	@Override
@@ -133,5 +135,9 @@ ActionBar.TabListener {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, loginFragment);
 		ft.commit();
+	}
+	
+	public void searchClicked(View view) {
+		searchFragment.searchClicked();
 	}
 }
