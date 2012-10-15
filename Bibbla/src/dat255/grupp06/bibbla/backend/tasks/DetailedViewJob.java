@@ -3,16 +3,17 @@ package dat255.grupp06.bibbla.backend.tasks;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.jsoup.Jsoup;
+
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.PhysicalBook;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class DetailedViewJob {
 	
@@ -29,9 +30,8 @@ public class DetailedViewJob {
 		try {
 			getBookDetails();
 		} catch (IOException e) {
+			message.error = (message.error!=null) ? message.error : Error.DETAILED_VIEW_FAILED;
 			System.out.println("Something went wrong dude!");
-			message.error = Error.DETAILED_VIEW_FAILED;
-			e.printStackTrace();
 		}
 		
 		return message;
@@ -69,7 +69,7 @@ public class DetailedViewJob {
 				}
 	    	}
 	    	
-	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")){
+	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Anmï¿½rkning")){
 	    		notes += (table.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
 				while((table.get(n).select("td.bibInfoLabel").size() == 0)){

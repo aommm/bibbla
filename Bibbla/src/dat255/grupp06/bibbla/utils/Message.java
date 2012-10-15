@@ -14,11 +14,12 @@ public class Message {
 	
 	@Override
 	public String toString() {
+		String o = (obj!=null)?obj.toString():"null";
 		if (error == null) {
-			return "Success! loggedIn: "+loggedIn+", obj: "+obj+".";	
+			return "Success! loggedIn: "+loggedIn+", obj: "+o+".";	
 		}
 		else {
-			return "Error: "+error+", loggedIn: "+loggedIn+", obj: "+obj+".";
+			return "Error: "+error+", loggedIn: "+loggedIn+", obj: "+o+".";
 		}
 		
 	}

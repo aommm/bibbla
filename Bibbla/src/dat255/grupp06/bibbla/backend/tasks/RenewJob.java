@@ -87,6 +87,7 @@ public class RenewJob {
 			System.out.println("Step 3 done! ***");		
 			
 		} catch (Exception e) {
+			message.error = (message.error!=null) ? message.error : Error.RENEW_FAILED;
 			System.out.println("Failed: "+e.getMessage()+" ***");
 		}
 		

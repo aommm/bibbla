@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.frontend;
+package dat255.grupp06.bibbla.fragments;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,7 +34,7 @@ import dat255.grupp06.bibbla.utils.Message;
  * A fragment that holds the search bar, button 
  * and a ListFragment that displays search results
  * 
- * @author Jonathan Orrö
+ * @author Jonathan Orrï¿½
  */
 
 public class SearchFragment extends SherlockFragment {

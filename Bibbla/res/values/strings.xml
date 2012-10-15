@@ -12,4 +12,25 @@
     <string name="available_description">Om boken går att låna</string>
     <string name="overlay_title">Lorem Ipsum</string>
 
+    <!-- Log in -->
+    <string name="login_heading">Logga in</string>
+    <string name="login_info">Logga in med ditt lånekort för att nå personliga
+        funktioner såsom att reservera böcker eller se över dina lån. Om du
+        inte har ett lånekort kan gå till något av biblioteken och be om ett.
+        </string>
+    <string name="login_name_hint">Efternamn</string>
+    <string name="login_card_hint">Lånekortsnummer</string>
+    <string name="login_pin_hint">PIN-kod</string>
+    <string name="login_send_text">Logga in</string>
+    <string name="login_fail_msg">Det gick inte att logga in. Dubbelkolla
+        uppgifterna.</string>
+
+    <!-- Profile -->
+    <string name="debt_view_text">Skuld: %d kr</string>
+    <string name="logout_text">Logga ut</string>
+    <string name="my_loans_heading">Mina lån</string>
+    <string name="my_reservations_heading">Mina reservationer</string>
+    <string name="loans_list_error">Kunde inte hämta lånlistan</string>
+    <string name="reservations_list_error">Kunde inte hämta listan med reservationer</string>
+
 </resources>

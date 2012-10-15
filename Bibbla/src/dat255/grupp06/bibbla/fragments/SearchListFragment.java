@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.frontend;
+package dat255.grupp06.bibbla.fragments;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
+import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
 import dat255.grupp06.bibbla.model.Book;
 
 /**
@@ -38,7 +39,7 @@ public class SearchListFragment extends SherlockListFragment {
      * Receives the search-results and swaps the contents in the list with them.
      */
     public void updateList(List<Book> books) {
-    	ListAdapter adapter = new SearchResultAdapter(getSherlockActivity(), books);
+    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
     	this.setListAdapter(adapter);
     }
 }

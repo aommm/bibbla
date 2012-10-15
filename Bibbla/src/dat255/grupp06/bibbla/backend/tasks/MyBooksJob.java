@@ -1,19 +1,15 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.model.PhysicalBook;
 import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -63,6 +59,7 @@ public class MyBooksJob {
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
+			message.error = (message.error!=null) ? message.error : Error.MY_BOOKS_FAILED;
 			System.out.println("Failed: "+e.getMessage()+" ***");
 		}
 		

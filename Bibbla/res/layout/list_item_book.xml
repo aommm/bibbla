@@ -9,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:src="@android:drawable/ic_menu_help"
         android:contentDescription="@string/available_description"
         android:visibility="visible" />
         

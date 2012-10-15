@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.frontend;
+package dat255.grupp06.bibbla.fragments;
 
 import java.util.List;
 
@@ -15,10 +15,11 @@ import dat255.grupp06.bibbla.model.Book;
  * Custom ListAdapter for book search results.
  * @author arla
  */
-public class SearchResultAdapter extends BaseAdapter {
+public class BookListAdapter extends BaseAdapter {
 	
-	private List<Book> list;
-	private Activity activity;
+	private final List<Book> list;
+	private final Activity activity;
+	private final boolean showAvailable;
 
 	/**
 	 * 
@@ -27,10 +28,11 @@ public class SearchResultAdapter extends BaseAdapter {
 	 * @param list A list of books to present. 
 	 */
 	// TODO Bad style to pass activity?
-	public SearchResultAdapter(Activity activity, List<Book> list) {
+	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable) {
 		// TODO Clone needed?
 		this.list = list;
 		this.activity = activity;
+		this.showAvailable = showAvailable;
 	}
 
 	@Override
@@ -50,8 +52,7 @@ public class SearchResultAdapter extends BaseAdapter {
 	 */
 	@Override
 	public long getItemId(int position) {
-		// TODO Bad?
-		return position;
+		return list.get(position).hashCode();
 	}
 
 	/**
@@ -63,15 +64,17 @@ public class SearchResultAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Book book = list.get(position);
 		View view = activity.getLayoutInflater().inflate(
-				R.layout.search_result, parent, false);
+				R.layout.list_item_book, parent, false);
 		((TextView) view.findViewById(R.id.search_result_title))
 			.setText(book.getName());
 		((TextView) view.findViewById(R.id.search_result_author))
 			.setText(book.getAuthor());
-		((ImageView) view.findViewById(R.id.search_result_available))
-			.setImageResource(book.getAvailable() > 0 ?
-				android.R.drawable.presence_online :
-				android.R.drawable.presence_busy);
+		if (showAvailable) {
+			((ImageView) view.findViewById(R.id.search_result_available))
+				.setImageResource(book.getAvailable() > 0 ?
+					android.R.drawable.presence_online :
+					android.R.drawable.presence_busy);
+		}
 		return view;
 	}
 

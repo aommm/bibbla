@@ -70,8 +70,9 @@ public class LoginJob {
 			message.loggedIn = true;
 		}
 		catch (Exception e) {
+			message.error = (message.error!=null) ? message.error : Error.LOGIN_FAILED;
 			System.out.print("failed: "+e.getMessage()+" ***\n");
-			message.error = Error.LOGIN_FAILED;
+			
 		}
 
 		return message;
