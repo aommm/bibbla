@@ -100,4 +100,9 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	public void searchClicked(View view) {
 		searchFragment.searchClicked();
 	}
+	
+	public void moreSearchResultsClicked(int page, String searchString) {
+		Log.d("J", "hej");
+		searchFragment.getMoreSearchResults(page, searchString);
+	}
 }

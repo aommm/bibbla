@@ -56,10 +56,8 @@ public class SearchFragment extends SherlockFragment {
 		if(listFragment == null) {
 	        listFragment = new SearchListFragment();
 	        fragmentTransaction.add(R.id.list_container, listFragment);
-	        Log.d("J", "createView     1");
 		} else {
 			fragmentTransaction.attach(listFragment);
-			Log.d("J", "createView     2");
 		}
 
         fragmentTransaction.commit();
@@ -70,7 +68,6 @@ public class SearchFragment extends SherlockFragment {
 	public void onDestroyView() {
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Log.d("J", "destroy");
         fragmentTransaction.detach(listFragment);
         fragmentTransaction.commit();
         super.onDestroyView();
@@ -135,6 +132,22 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Call backend search.
 		backend.search(searchString, 0, c);
+		listFragment.setLastSearchString(searchString);
+	}
+	
+	public void getMoreSearchResults(int page, String searchString) {
+		
+		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(true);
+		
+		// Create a new callback object, which refers to our searchDone(). 
+		Callback c = new Callback() {
+			public void handleMessage(Message msg) {
+				SearchFragment.this.moreSearchDone(msg);
+			}
+		};
+		
+		// Call backend search.
+		backend.search(searchString, page, c);
 	}
 	
 	/** Is called when backend searching is done.**/
@@ -160,6 +173,30 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Update list with titles (empty or not).
 		listFragment.updateList(books);
+	}
+	
+	public void moreSearchDone(Message msg) {
+		// Hide progress bar.
+		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
+		
+		// Did the job fail?
+		if (msg.error != null) {
+			// Log,
+			Log.e("searching", "Searching failed: "+msg.error);
+			// And toast user.
+			Toast.makeText(getSherlockActivity().getApplicationContext(), "Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
+			return;
+		}
+		// Convert results to List<Book>.  
+		ArrayList<Book> books = (ArrayList<Book>) msg.obj;
+				
+		// Did we get no results? 
+		if (books.size() == 0) {
+			Toast.makeText(getSherlockActivity().getApplicationContext(), "No results found.", Toast.LENGTH_LONG).show();
+		}
+		
+		// Update list with titles (empty or not).
+		listFragment.appendList(books);
 	}
 
 	public void setBackend(Backend b) {

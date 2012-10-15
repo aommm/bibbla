@@ -11,5 +11,6 @@
     <string name="edit_search">Boktitel etc.</string>
     <string name="available_description">Om boken går att låna</string>
     <string name="overlay_title">Lorem Ipsum</string>
+    <string name="more_search_results">Fler sökresultat</string>
 
 </resources>
