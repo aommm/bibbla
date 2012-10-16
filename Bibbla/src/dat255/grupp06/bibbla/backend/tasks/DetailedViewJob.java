@@ -7,6 +7,7 @@ import java.util.List;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -15,21 +16,34 @@ import dat255.grupp06.bibbla.model.PhysicalBook;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
+/**
+ * Fetches the detailed view of a book, and
+ * saves the additional information in a new Book.
+ * 
+ * @author Fahad Al-Khameesi
+ */
 public class DetailedViewJob {
 	
 	private Book originalBook, newBook;
 	private Message message = new Message();
+	private Response httpResponse; 
 	
 	public DetailedViewJob(Book book){
 		this.originalBook = book;
 		this.newBook = (Book)originalBook.clone();
 	}
 	
+	/**
+	 * Fetches the detailed view of a book.
+	 * 
+	 * @returns a new Book, containing the additional information present in its detailed view.
+	 */
 	public Message run(){
 		
 		try {
-			getBookDetails();
-		} catch (IOException e) {
+			fetchBookDetails();
+			parseBookDetails();
+		} catch (Exception e) {
 			message.error = (message.error!=null) ? message.error : Error.DETAILED_VIEW_FAILED;
 			System.out.println("Something went wrong dude!");
 		}
@@ -37,14 +51,30 @@ public class DetailedViewJob {
 		return message;
 	}
 	
-	private void getBookDetails() throws IOException{
+	/**
+	 * Fetches the details of the supplied book.
+	 * 
+	 * @throws Exception if HTTP connection failed.
+	 */
+	private void fetchBookDetails() throws Exception {
 		
-	    Response response = Jsoup.connect(originalBook.getUrl())
+	    httpResponse = Jsoup.connect(originalBook.getUrl())
 			    .method(Method.GET)
-			    .execute();
+			    .execute();		
+	}
+	
+	/**
+	 * Parses the HTML document fetched by fetchBookDetails().
+	 * 
+	 * @throws Exception if parsing fails.
+	 */
+	private void parseBookDetails() throws Exception{
 
+		// Prepare HTML for parsing.
+		Document html = httpResponse.parse();
+		
 	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
-	    Elements tableRows = response.parse().select("table.bibItems").select("tr.bibItemsEntry");
+	    Elements tableRows = html.select("table.bibItems").select("tr.bibItemsEntry");
 	    
 	    // Create all our PhysicalBooks.
 	    for (Element row : tableRows) {
@@ -58,40 +88,40 @@ public class DetailedViewJob {
 	    }
 
 	    // Select all rows containing detailed information.
-	    Elements table = response.parse().select("div#orders").select("table.bibDetail").select("tr");
+	    Elements rows = html.select("div#orders").select("table.bibDetail").select("tr");
 	    String description = "", notes = "", isbn = "";
 
 	    // Loop through all rows.
-	    for(int i=1;i<table.size();i++) {
+	    for(int i=1;i<rows.size();i++) {
 	    	
 	    	// If we find a physical description,
-	    	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Fysisk beskrivning")){
+	    	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "Fysisk beskrivning")){
 	    		// Save the text present on row #1,
-	    		description += (table.get(i)).select("td.bibInfoData").text();
+	    		description += (rows.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
 				// And if there are rows without labels following it,
 				// they are also part of the description. 
-				while((table.get(n).select("td.bibInfoLabel").size() == 0)){
-					description += (table.get(n)).select("td.bibInfoData").text();
+				while((rows.get(n).select("td.bibInfoLabel").size() == 0)){
+					description += (rows.get(n)).select("td.bibInfoData").text();
 					n++;
 				}
 	    	}
 	    	
 	    	// If we find a note,
-	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")) {
+	       	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")) {
 	       		// Save the text on row ¤1 
-	    		notes += (table.get(i)).select("td.bibInfoData").text();
+	    		notes += (rows.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
 				// And save text of possible following rows that has no label.
-				while((table.get(n).select("td.bibInfoLabel").size() == 0)) {
-					notes += (table.get(n)).select("td.bibInfoData").text();
+				while((rows.get(n).select("td.bibInfoLabel").size() == 0)) {
+					notes += (rows.get(n)).select("td.bibInfoData").text();
 					n++;
 				}
 	    	}
 	       	
 	       	// If we find an ISBN, save it.
-	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "ISBN")){
-	    		isbn = (table.get(i)).select("td.bibInfoData").text();
+	       	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "ISBN")){
+	    		isbn = (rows.get(i)).select("td.bibInfoData").text();
 	    	}
 	    }
 	    
