@@ -109,7 +109,7 @@ public class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				SearchJob job = new SearchJob(s,0);
+				SearchJob job = new SearchJob(s,page);
 				message = job.run();
 				return null;
 			}
