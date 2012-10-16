@@ -90,7 +90,9 @@ public final class Backend {
 				protected Void doInBackground(String... params) {
 					LoginJob job = new LoginJob(settings.getCredentials());
 					message = job.run();
-					session.setCookies((Map<String,String>) message.obj);
+					if (message.loggedIn) {
+						session.setCookies((Map<String,String>) message.obj);
+					}
 					return null;
 				}
 			};

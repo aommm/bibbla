@@ -68,7 +68,13 @@ public class Session implements Serializable {
 		synchronized(this.cookies) {
 			// Save our new cookies.
 			this.cookies = cookies;
-			this.loggedIn = cookies.get(COOKIE_LOGGED_IN).equals("true");
+			if (cookies != null) {
+				String value = cookies.get(COOKIE_LOGGED_IN);
+				if (value != null && value.equals("true"))
+					this.loggedIn = true;
+			}
+			// else
+			this.loggedIn = false;
 		}
 	}	
 	
