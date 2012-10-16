@@ -85,25 +85,35 @@ public class ProfileFragment extends SherlockFragment {
 		backend.fetchReservations(reservationsCallback);
 	}
 	
+	/**
+	 * Update ListView of loans with results.
+	 * @param msg Backend response
+	 */
 	private void loansUpdateDone(Message msg) {
 		Activity activity = getSherlockActivity();
 		try {
 			@SuppressWarnings("unchecked")
 			List<Book> loans = (List<Book>) msg.obj;
 			ListView loansList = (ListView) activity.findViewById(R.id.loans_list);
-			loansList.setAdapter(new BookListAdapter(activity, loans, false));
+			if (loansList != null)
+				loansList.setAdapter(new BookListAdapter(activity, loans, false)); //
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
+	/**
+	 * Update ListView of reservations with results.
+	 * @param msg Backend response
+	 */
 	private void reservationsUpdateDone(Message msg) {
 		Activity activity = getSherlockActivity();
 		try {
 			@SuppressWarnings("unchecked")
 			List<Book> reservations = (List<Book>) msg.obj;
 			ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
-			reservationsList.setAdapter(new BookListAdapter(activity, reservations, false));
+			if (reservationsList != null)
+				reservationsList.setAdapter(new BookListAdapter(activity, reservations, false));
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
 		}
