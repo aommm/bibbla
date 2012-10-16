@@ -17,10 +17,12 @@
 
 package dat255.grupp06.bibbla;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -115,6 +117,11 @@ ActionBar.TabListener {
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		
+		// If we're switching tabs, hide keyboard.
+		hideKeyboard();
+		
+		// Detach the correct fragment.
 		switch(tab.getPosition()) {
 		case 0:
 			ft.detach(searchFragment);
@@ -162,11 +169,23 @@ ActionBar.TabListener {
 		ft.commit();
 	}
 	
+	/**
+	 * Is called when the Search button is clicked.
+	 * @param view - The view the click came from.
+	 */
 	public void searchClicked(View view) {
+		hideKeyboard();
 		searchFragment.searchClicked();
 	}
 	
 	public void moreSearchResultsClicked(int page, String searchString) {
 		searchFragment.getMoreSearchResults(page, searchString);
+	}
+	/**
+	 * Hides the virtual keyboard.
+	 */
+	private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
 	}
 }

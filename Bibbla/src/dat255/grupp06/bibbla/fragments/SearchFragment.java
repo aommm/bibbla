@@ -130,10 +130,6 @@ public class SearchFragment extends SherlockFragment {
 		// Display progress bar.
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(true);
 		
-		// Hide keyboard.
-        InputMethodManager imm = (InputMethodManager) getSherlockActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
-		
 		// No input? No need to search.
 		if("".equals(searchString)) {
 			listFragment.updateList(new ArrayList<Book>());
