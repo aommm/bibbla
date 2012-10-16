@@ -17,6 +17,7 @@
 
 package dat255.grupp06.bibbla.fragments;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -47,7 +48,7 @@ public class BookListAdapter extends BaseAdapter {
 	// TODO Bad style to pass activity?
 	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable) {
 		// TODO Clone needed?
-		this.list = list;
+		this.list = (List<Book>) ((ArrayList<Book>) list).clone();
 		this.activity = activity;
 		this.showAvailable = showAvailable;
 	}

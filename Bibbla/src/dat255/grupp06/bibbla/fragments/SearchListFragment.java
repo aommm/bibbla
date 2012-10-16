@@ -41,7 +41,7 @@ import dat255.grupp06.bibbla.model.Book;
  */
 public class SearchListFragment extends SherlockListFragment {
 	
-	private List<Book> currentBooks;
+	private ArrayList<Book> currentBooks;
 	private int currentPage;
 	private String lastSearch;
 	
@@ -58,12 +58,15 @@ public class SearchListFragment extends SherlockListFragment {
      * When an item is clicked in the list this method is called
      */
     public void onListItemClick(ListView l, View v, int position, long id) {
+    	Log.d("Jonis", "listclick super1");
     	if(position < currentBooks.size()) {
 	    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
 	    	startActivity(intent);
     	} else {
     		currentPage++;
+    		Log.d("Jonis", "listclick 1");
     		((MainActivity) getActivity()).moreSearchResultsClicked(currentPage+1, lastSearch);
+    		Log.d("Jonis", "listclick 2");
     	}
     }
     
@@ -71,11 +74,11 @@ public class SearchListFragment extends SherlockListFragment {
      * Receives the search-results and swaps the contents in the list with them.
      */
     public void updateList(List<Book> books) {
-    	//Adds a null-book to act as a placeholder for the 
+    	//Adds a book to act as a placeholder for the 
     	//"fetch more search results"-message
     	currentBooks.clear();
     	currentBooks.addAll(books);
-    	books.add(null);
+    	books.add(new Book());
 
     	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
 
@@ -83,9 +86,10 @@ public class SearchListFragment extends SherlockListFragment {
     }
     
     public void appendList(List<Book> books) {
-    	Log.d("J", "hej");
     	currentBooks.addAll(books);
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
+    	currentBooks.add(new Book());
+    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), currentBooks, true);
+    	currentBooks.remove(currentBooks.size()-1);
     	this.setListAdapter(adapter);
     }
     

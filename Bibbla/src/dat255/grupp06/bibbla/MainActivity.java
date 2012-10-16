@@ -19,6 +19,7 @@ package dat255.grupp06.bibbla;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -77,6 +78,8 @@ ActionBar.TabListener {
         //Add the tabs to the action bar
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
+        
+        Log.d("Jonis", "main finished");
     }
 	
 	@Override
@@ -164,7 +167,6 @@ ActionBar.TabListener {
 	}
 	
 	public void moreSearchResultsClicked(int page, String searchString) {
-		Log.d("J", "hej");
 		searchFragment.getMoreSearchResults(page, searchString);
 	}
 }
