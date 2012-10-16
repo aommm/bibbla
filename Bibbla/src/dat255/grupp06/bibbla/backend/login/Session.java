@@ -16,6 +16,7 @@ import dat255.grupp06.bibbla.utils.Message;
 public class Session implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
+	private static final String COOKIE_LOGGED_IN = "PAT_LOGGED_IN";
 	private String name, code, pin;
 	private String userUrl; // The URL to the user's profile page.
 	private Map<String, String> cookies;
@@ -63,10 +64,11 @@ public class Session implements Serializable {
 	 * Overwrites the current session's cookies.
 	 * @param cookies - new cookies to save.
 	 */
-	private void setCookies(Map<String, String> cookies) {
+	public void setCookies(Map<String, String> cookies) {
 		synchronized(this.cookies) {
 			// Save our new cookies.
 			this.cookies = cookies;
+			this.loggedIn = cookies.get(COOKIE_LOGGED_IN).equals("true");
 		}
 	}	
 	

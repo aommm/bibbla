@@ -1,5 +1,7 @@
 package dat255.grupp06.bibbla.backend;
 
+import java.util.Map;
+
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.LoginJob;
@@ -86,8 +88,9 @@ public final class Backend {
 			Task task = new Task(frontendCallback) {
 				@Override
 				protected Void doInBackground(String... params) {
-					LoginJob job = new LoginJob(getCredentials());
+					LoginJob job = new LoginJob(settings.getCredentials());
 					message = job.run();
+					session.setCookies((Map<String,String>) message.obj);
 					return null;
 				}
 			};
@@ -199,9 +202,5 @@ public final class Backend {
 	
 	public void saveCredentials(Credentials cred) {
 		saveCredentials(cred.name, cred.card, cred.pin);
-	}
-	
-	public Credentials getCredentials() {
-		return new Credentials(settings.getName(), settings.getCode(), settings.getPin());
 	}
 }

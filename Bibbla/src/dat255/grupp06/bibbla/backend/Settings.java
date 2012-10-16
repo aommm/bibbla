@@ -2,6 +2,8 @@ package dat255.grupp06.bibbla.backend;
 
 import java.io.Serializable;
 
+import dat255.grupp06.bibbla.model.Credentials;
+
 /** A class for storing the user's settings.
  *
  *  TODO: Save to file system.
@@ -46,6 +48,10 @@ public class Settings implements Serializable {
 	public void setPin(String pin) {
 		this.pin = pin;
 		// save to file system.		
+	}
+	
+	public Credentials getCredentials() {
+		return new Credentials(name, code, pin);
 	}
 	
 }
