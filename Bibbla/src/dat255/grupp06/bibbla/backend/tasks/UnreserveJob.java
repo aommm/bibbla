@@ -8,7 +8,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.*;
 import dat255.grupp06.bibbla.utils.Error;

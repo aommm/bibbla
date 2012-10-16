@@ -1,6 +1,7 @@
 
-package dat255.grupp06.bibbla.backend;
+package dat255.grupp06.bibbla.backend.login;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,14 +13,14 @@ import dat255.grupp06.bibbla.backend.tasks.LoginJob;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
-public class Session {
+public class Session implements Serializable {
 
+	private static final long serialVersionUID = 1290665641023286320L;
 	private String name, code, pin;
 	private String userUrl; // The URL to the user's profile page.
 	private Map<String, String> cookies;
 	private boolean loggedIn;
 	private boolean hasCredentials;
-	private Object lock; 
 	
 	/**
 	 * Creates a new session, and saves the supplied credentials.
@@ -35,7 +36,6 @@ public class Session {
 		updateHasCredentials();
 		
 		cookies = new HashMap<String, String>();
-		lock = new Object();
 	}
 	/**
 	 * Creates a new anonymous session.
@@ -48,7 +48,6 @@ public class Session {
 		this.pin = "";
 		
 		cookies = new HashMap<String, String>();
-		lock = new Object();
 	}
 	
 	/**
@@ -94,9 +93,19 @@ public class Session {
 	}
 	
 	/**
+	 * Simply return whether logged in.
+	 * @return true if logged in, false if not (e.g. session expired)
+	 */
+	// TODO This should actually check whether cookie has expired.
+	public boolean isActive() {
+		return loggedIn;
+	}
+	
+	/**
 	 * Starts login, and waits for it to finish.
 	 * Updates our member variables accordingly.
  	 * @returns the success of the login.
+ 	 * @deprecated
 	 */
 	public Message login() {
 		Message message = new Message();
@@ -107,7 +116,7 @@ public class Session {
 			return message;
 		}
 		
-		synchronized(lock) {
+		synchronized(this) {
 			// Create a new login job, and run it.
 			LoginJob job = new LoginJob(this);
 			message = job.run();
@@ -119,6 +128,20 @@ public class Session {
 		}
 		
 		return message;
+	}
+	
+	/**
+	 * Temporary debug method to examine cookies contents
+	 * @param <E>
+	 * @param <F>
+	 */
+	public static <E, F> void debugMapContents(Map<E,F> map) {
+		StringBuffer buffer = new StringBuffer();
+		for (Map.Entry<E,F> entry: map.entrySet()) {
+			buffer.append(entry.getKey().toString()).append(" = ")
+			.append(entry.getValue()).append('\n');
+		}
+		System.out.println(buffer.toString());
 	}
 	
 	/**

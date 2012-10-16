@@ -1,12 +1,16 @@
 package dat255.grupp06.bibbla.backend;
 
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
+import dat255.grupp06.bibbla.backend.tasks.LoginJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
 /**
@@ -15,7 +19,7 @@ import dat255.grupp06.bibbla.utils.PrivateCredentials;
  * 
  * @author Niklas Logren
  */
-public class Backend {
+public final class Backend {
 	
 	private Settings settings;
 	private Session session;
@@ -49,6 +53,7 @@ public class Backend {
 	 * Starts the login process. Reports results using callback.
 	 * 
 	 * @param frontendCallback - the callback object which will be called when logging in is done.
+	 * @deprecated
 	 */
 	public void login(final Callback frontendCallback) {
 
@@ -65,6 +70,31 @@ public class Backend {
 		task.execute();
 	}
 	
+	/**
+	 * New version of login, weird name in order not to break things with
+	 * previous login method.
+	 */
+	public void arildLogin(final Callback frontendCallback) {
+		// Check if already logged in
+		if (session.isActive()) {
+			// Call back with success
+			Message message = new Message();
+			message.loggedIn = true;
+			frontendCallback.handleMessage(message);
+		} else {
+			// Log in through LoginJob, using credentials from settings
+			Task task = new Task(frontendCallback) {
+				@Override
+				protected Void doInBackground(String... params) {
+					LoginJob job = new LoginJob(getCredentials());
+					message = job.run();
+					return null;
+				}
+			};
+			task.execute();
+		}
+	}
+
 	/**
 	 *  Searches backend for the supplied string, and reports results using callback.
 	 *  
@@ -153,5 +183,20 @@ public class Backend {
 	
 	public boolean isLoggedIn() {
 		return session.checkLogin();
+	}
+
+	// TODO Change settings to use Credentials
+	public void saveCredentials(String name, String card, String pin) {
+		settings.setName(name);
+		settings.setCode(card);
+		settings.setPin(pin);
+	}
+	
+	public void saveCredentials(Credentials cred) {
+		saveCredentials(cred.name, cred.card, cred.pin);
+	}
+	
+	public Credentials getCredentials() {
+		return new Credentials(settings.getName(), settings.getCode(), settings.getPin());
 	}
 }

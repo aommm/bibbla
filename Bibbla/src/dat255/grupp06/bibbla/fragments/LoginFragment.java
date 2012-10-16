@@ -13,6 +13,7 @@ import dat255.grupp06.bibbla.backend.Backend;
 /**
  * Main fragment for the profile or "me" tab.
  * @author arla
+ * @deprecated
  */
 public class LoginFragment extends SherlockFragment {
 	
@@ -21,7 +22,7 @@ public class LoginFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.login_fragment, container, false);
+		return inflater.inflate(R.layout.activity_login_overlay, container, false);
 	}
 	
 	// TODO Extract backend field to super class, or keep it in MainActivity

@@ -1,11 +1,14 @@
 package dat255.grupp06.bibbla.backend;
 
+import java.io.Serializable;
+
 /** A class for storing the user's settings.
  *
  *  TODO: Save to file system.
  */
-public class Settings {
+public class Settings implements Serializable {
 
+	private static final long serialVersionUID = 6558963742577293894L;
 	private String name, code, pin;
 
 	public Settings(String name, String code, String pin) {

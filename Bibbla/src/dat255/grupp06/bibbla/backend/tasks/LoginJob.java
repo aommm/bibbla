@@ -1,7 +1,5 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,9 +9,10 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.backend.login.Session;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 //import java.net.CookieManager;
 
 /**
@@ -30,16 +29,29 @@ public class LoginJob {
 	Map<String, String> sessionCookies;
 	// Needed only in LoginJob.
 	Map<String, String> sessionVariables;
-	Session session;
 	Message message;
 	
+	/** @deprecated */
 	String name, code, pin;
+	private final Credentials credentials;
 	
+	/**
+	 * @deprecated
+	 */
 	public LoginJob(Session session) {
-		this.session = session;
 		name = session.getName();
 		code = session.getCode();
 		pin = session.getPin();
+		message = new Message();
+		credentials = null;
+		
+		// Initialise maps.
+		sessionVariables = new HashMap<String, String>();
+		sessionCookies = new HashMap<String, String>();
+	}
+	
+	public LoginJob(Credentials credentials) {
+		this.credentials = credentials;
 		message = new Message();
 		
 		// Initialise maps.
@@ -70,9 +82,9 @@ public class LoginJob {
 			message.loggedIn = true;
 		}
 		catch (Exception e) {
+			message.loggedIn = false;
 			message.error = (message.error!=null) ? message.error : Error.LOGIN_FAILED;
 			System.out.print("failed: "+e.getMessage()+" ***\n");
-			
 		}
 
 		return message;
@@ -127,9 +139,9 @@ public class LoginJob {
 		
 	    // Prepare POST data.
 	    Map<String,String> postData = new HashMap<String,String>() {{
-	    	put("name", name);
-	    	put("code", code);
-	    	put("pin", pin);
+	    	put("name", credentials.name);
+	    	put("code", credentials.card);
+	    	put("pin", credentials.pin);
 	    	put("lt", sessionVariables.get("lt"));
 	    	put("_eventId", "submit");
 	    }};

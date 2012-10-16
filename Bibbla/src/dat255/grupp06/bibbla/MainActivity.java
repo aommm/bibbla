@@ -1,9 +1,9 @@
 package dat255.grupp06.bibbla;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -13,17 +13,21 @@ import com.actionbarsherlock.view.Window;
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
+import dat255.grupp06.bibbla.frontend.LoginManager;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.SerializableCallback;
 
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener {	
 
-	Backend backend;
+	private Backend backend;
+	public static final String EXTRA_BACKEND = "backend";
 	
-	// TODO These should probably go into a list or something.
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
+	LoginManager loginManager;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,7 @@ ActionBar.TabListener {
         setSupportProgressBarIndeterminateVisibility(false);
 
         backend = new Backend();
+        loginManager = new LoginManager(backend);
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -68,8 +73,32 @@ ActionBar.TabListener {
 		// Nothing atm
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * This is used to get data from the Login Overlay Activity.
+	 * @param data in our case should contain a callback to decide what happens
+	 * when login is successful. Use putExtra(LoginManager.EXTRA_CALLBACK,
+	 * myCallback).
+	 * 
+	 * @see http://stackoverflow.com/questions/449484/android-capturing-the-return-of-an-activity
+	 */
 	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == LoginManager.RESULT_LOGIN_FORM) {
+			Credentials cred = (Credentials) data.getSerializableExtra(LoginManager.EXTRA_CREDENTIALS); // TODO What if null?
+			Callback callback = (Callback) data.getSerializableExtra(LoginManager.EXTRA_CALLBACK);
+			backend.saveCredentials(cred);
+			backend.arildLogin(callback);
+		}
+    	// Read return value from overlay
+    	
+		//   if login fails, show error and overlay persists
+	}
+	
+	@Override
+	public void onTabSelected(final Tab tab, final FragmentTransaction ft) {
 		// TODO Refactor to eliminate duplicate code?
 		switch(tab.getPosition()) {
 			case 0:
@@ -82,15 +111,29 @@ ActionBar.TabListener {
 				}
 				break;
 			case 1:
-				if (profileFragment == null) {
-					profileFragment = new ProfileFragment();
-					profileFragment.setBackend(backend);
-					ft.add(R.id.fragment_container, profileFragment);
-				} else {
-					ft.attach(profileFragment);
-				}
-				break;
+				loginManager.loginIfNeeded(this, new SerializableCallback() {
+					private static final long serialVersionUID = -4339854620228514796L;
+					@Override
+					public void handleMessage(Message msg) {
+						// Must not use instance of anything non-serializable
+						MainActivity.showProfileTab(tab, ft, msg);
+					}
+				});
 		}
+	}
+	
+	public void showProfileTab(final Tab tab, final FragmentTransaction ft,
+			Message msg) {
+		if (msg.error != null) {
+			if (profileFragment == null) {
+				profileFragment = new ProfileFragment();
+				profileFragment.setBackend(backend);
+				ft.add(R.id.fragment_container, profileFragment);
+			} else {
+				ft.attach(profileFragment);
+			}
+		}
+		else System.out.println("Not showing profile tab because msg had errors: " + msg.error);
 	}
 
 	@Override
@@ -109,34 +152,9 @@ ActionBar.TabListener {
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
 	
-	public void login(View view) {
-//		EditText nameET = (EditText) findViewById(R.id.login_name_field);
-//		EditText cardET = (EditText) findViewById(R.id.login_card_field);
-//		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
-		// TODO Loading spinner
-		Callback loginCallback = new Callback() {
-			@Override
-			public void handleMessage(Message msg) {
-				MainActivity.this.loginDone(msg);
-			}
-		};
-		// TODO Wtf, no credentials?
-		backend.login(loginCallback);
-	}
-	
-	public void loginDone(Message msg) {
-		if (msg.loggedIn) {
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.fragment_container, profileFragment);
-			ft.commit();
-		} else {
-			Toast.makeText(this, R.string.login_fail_msg,
-				Toast.LENGTH_SHORT).show();
-		}
-	}
-	
 	public void logout(View view) {
-		backend.logOut();
+		loginManager.logout();
+		// ?
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, profileFragment);
 		ft.commit();
