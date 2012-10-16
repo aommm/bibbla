@@ -19,6 +19,7 @@ package dat255.grupp06.bibbla.backend;
 
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
+import dat255.grupp06.bibbla.backend.tasks.MyDebtJob;
 import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
@@ -55,11 +56,24 @@ public class Backend {
 	}
 	
 	/**
-	 *  @returns the user's current debt.
-	 *  TODO: Implement.
+	 *  Starts fetching the user's current debt. Reports results using callback.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when logging in is done. 
 	 */
-	public int getUserDebt() {
-		return (int)(Math.random()*500);
+	public void fetchUserDebt(Callback frontendCallback) {
+		
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				MyDebtJob job = new MyDebtJob(session);
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
 	}
 	
 	/**
