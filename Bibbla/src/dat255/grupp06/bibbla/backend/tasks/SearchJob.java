@@ -18,6 +18,7 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class SearchJob {
 	
 	private String searchPhrase = null;
 	private Message message = new Message();
-	private Document resultsDocument;
+	private Response httpResponse;
 	private int pageNumber;
 
 	/**
@@ -47,6 +48,11 @@ public class SearchJob {
 		this(s, 0);
 	}
 	
+	/**
+	 * Creates a new SearchJob, which returns the specified page of search results.
+	 * @param s - The string to search for.
+	 * @param pageNumber - which page to fetch. 0=page1, 1=page1, 2=page2 ...
+	 */
 	public SearchJob(String s, int pageNumber){
 		searchPhrase = s;
 		System.out.println("s: "+s);
@@ -54,15 +60,19 @@ public class SearchJob {
 		this.pageNumber = pageNumber;
 	}
 	
+	/**
+	 * Starts the searching procedure.
+	 * @returns a Message, which has a List<Book> as its object if successful.
+	 */
 	public Message run(){
 					
 		try {
 			System.out.print("\n****** SearchJob\n");
-			System.out.print("* step1(): ");
-			step1();
+			System.out.print("* step 1: fetch search results ");
+			fetchSearchResults();
 			System.out.print("succeeded! *\n");
-			System.out.print("* step2(): ");
-			step2();
+			System.out.print("* step 2: parse search results ");
+			parseSearchResults();
 			System.out.print("succeeded! *\n*");
 			System.out.print("****** SearchJob done \n");
 		}
@@ -74,33 +84,43 @@ public class SearchJob {
 		return message;
 	}
 
-	private void step1() throws Exception {
+	/**
+	 * Fetches and saves the HTML of the search results.
+	 *   
+	 * @throws Exception if HTTP connection fails.
+	 */
+	private void fetchSearchResults() throws Exception {
+		
+		String url;
 		// Fetch first page?
 		if (pageNumber == 0) {
-			String url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
-			Response response = Jsoup.connect(url)
-					.method(Method.GET)
-					.timeout(50000)
-					.execute();
-			resultsDocument = response.parse();
-		}
-		// Fetch any other page.
+			url = "http://www.gotlib.goteborg.se/search*swe/X?searchtype=X&searcharg="+searchPhrase+"&searchscope=6&SUBMIT=S%C3%B6k";
+		} // Fetch any other page.
 		else {
-			String url = "http://www.gotlib.goteborg.se/search~S6*swe?/X"+searchPhrase+"&searchscope=6&SORT=D/X"+searchPhrase+"&searchscope=6&SORT=D&SUBKEY="+searchPhrase+"/"+(((pageNumber-1)*50)+ 1)+"%2C1000000%2C1000000%2CB/browse";
-			Response response = Jsoup.connect(url)
-			.method(Method.GET)
-			.execute();
-			resultsDocument = response.parse();
+			url = "http://www.gotlib.goteborg.se/search~S6*swe?/X"+searchPhrase+"&searchscope=6&SORT=D/X"+searchPhrase+"&searchscope=6&SORT=D&SUBKEY="+searchPhrase+"/"+(((pageNumber-1)*50)+ 1)+"%2C1000000%2C1000000%2CB/browse";
 		}
 		
-		
+		// Send HTTP request.
+		httpResponse = Jsoup.connect(url)
+					.method(Method.GET)
+					.execute();
 	}
 	
-	private void step2() {		
-		
+	/**
+	 * Parses the HTML fetched by fetchSearchResults().
+	 * 
+	 * @throws Exception if parsing fails. 
+	 */
+	private void parseSearchResults() throws Exception {		
+	
 		List<Book> results = new ArrayList<Book>();
-		Elements searchResults = resultsDocument.select("table.breifCitTable");
-		for(Element e : searchResults){
+		
+		// Prepare HTML for parsing.
+		Document html = httpResponse.parse();
+		
+		// Each result lies in its own table - loop through them all.
+		Elements tables = html.select("table.breifCitTable");
+		for(Element e : tables) {
 			Book book = new Book();
 			book.setName(e.select("a").get(1).text());
 			book.setAuthor(e.select("strong").first().text());
