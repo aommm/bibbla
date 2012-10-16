@@ -15,26 +15,34 @@
     along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
  **/
 
-package dat255.grupp06.bibbla.frontend;
+package dat255.grupp06.bibbla.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Window;
+import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
+import dat255.grupp06.bibbla.backend.Backend;
 
+/**
+ * Main fragment for the profile or "me" tab.
+ * @author arla
+ */
+public class LoginFragment extends SherlockFragment {
+	
+	Backend backend;
 
-
-public class BookOverlayActivity extends SherlockActivity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_overlay);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.login_fragment, container, false);
+	}
+	
+	// TODO Extract backend field to super class, or keep it in MainActivity
+	public void setBackend(Backend backend) {
+		this.backend = backend;
+	}
 }

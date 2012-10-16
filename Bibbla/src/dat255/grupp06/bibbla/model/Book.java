@@ -1,3 +1,20 @@
+/**
+    This file is part of Bibbla.
+
+    Bibbla is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Bibbla is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
+ **/
+
 package dat255.grupp06.bibbla.model;
 
 import java.util.ArrayList;
@@ -11,22 +28,24 @@ import java.util.List;
  */ 
 public class Book {
 	
-	// TODO Make immutable variables final
-	// Immutable variables
 	private String name;
 	private String author;
-	private String url;
 	private int available;
-	
-	// Mutable variables
 	private String type;
-	//private BookType type; // TODO Do we even want enum for this?
+	
+	private String url;
 	private String reserveUrl;
+	
+	// Id's, used for renewing and unreserving.
 	private String renewId;
+	private String unreserveId;
+	private String freezeId;
+	
 	// Details
 	private String publisher; 
 	private String physicalDescription;
 	private String notes;
+	private String isbn;
 	private List<PhysicalBook> physicalBooks;
 	
 	/**
@@ -34,11 +53,17 @@ public class Book {
 	 */
 	@Override
 	public String toString() {
-		String physicalBook = ((physicalBooks.get(0) != null) ? physicalBooks.get(0).toString() : "no");
+		String physicalBook = ((physicalBooks.size()>0) && ((physicalBooks.get(0) != null))
+				? physicalBooks.get(0).toString() : "no");
+		
+		String details = "publisher: "+((publisher!=null)?publisher:"no")+
+				", physicalDescription: "+((physicalDescription!=null)?physicalDescription:"no")+
+				", notes: "+((notes!=null)?notes:"no")+
+				", isbn: "+((isbn!=null)?isbn:"no");
+		
 		return "Book (" + name + ", " + author + ", urls: " +
-			((url!=null)&&(reserveUrl!=null)) +", details: " + ((publisher!=null) 
-			|| (physicalDescription!=null) || (notes!=null)) +
-			", physicalBook: "+physicalBook+")\n";
+			((url!=null)&&(reserveUrl!=null)) +", details: ["+details+
+			"], physicalBook: "+physicalBook+")\n";
 	}
 	
 	/********************************
@@ -46,6 +71,11 @@ public class Book {
 	 ********************************/	
 	/**
 	 * Creates a new book using the supplied information.
+	 * @param name - The name of the book.
+	 * @param author - The author of the book.
+     * @param type - The type of the book (e-book, audio-book, daisy, etc)
+	 * @param url - The url to the book's detailed view.
+	 * @param reserveUrl - The url used to reserve the book.
 	 */
 	public Book(String name, String author, String type, String url, String reserveUrl) {
 		this();
@@ -65,11 +95,18 @@ public class Book {
 		this.author = author;
 	}
 
+	/**
+	 * Creates a new, empty book.
+	 */
 	public Book() {
 		physicalBooks = new ArrayList<PhysicalBook>();
 	}
 	
 	@Override
+	/**
+	 * @returns a copy of this book.
+	 * Performs deep copying of physicalBooks.
+	 */
 	public Object clone() {
 
 		Book newBook = new Book();
@@ -97,37 +134,72 @@ public class Book {
 	 * Getters/setters
 	 ********************************/
 	
+	/**
+	 * Returns the type of the book (e-book, audio-book, daisy, etc).
+	 */
 	public String getType() {
 		return type;
 	}
+	/**
+	 * Sets the type of the book.
+	 * @param type - the type of the book (e-book, audio-book, daisy, etc). 
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 	
+	/**
+	 * Returns the name of the book.
+	 */
 	public String getName() {
 		return name;
 	}
+	/**
+	 * Sets the name of the book.
+	 * @param name - the book's name.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Returns the author of the book.
+	 */
 	public String getAuthor() {
 		return author;
 	}
+	/**
+	 * Sets the author of the book.
+	 * @param author - the book's author.
+	 */
 	public void setAuthor(String author) {
 		this.author = author;
 	}
 
+	/**
+	 * Returns the URL to the book's detailed view.
+	 */
 	public String getUrl() {
 		return url;
 	}
+	/**
+	 * Sets the URL of the book. 
+	 * @param url -  the URL to the book's detailed view.
+	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 	
+	/**
+	 * Returns the URL used to reserve the book.
+	 */
 	public String getReserveUrl() {
 		return reserveUrl;
 	}
+	/**
+	 * Set the reservation URL.
+	 * @param reserveUrl - the URL used to reserve the book.
+	 */
 	public void setReserveUrl(String reserveUrl) {
 		this.reserveUrl = reserveUrl;
 	}
@@ -145,18 +217,61 @@ public class Book {
 	 */
 	public void setRenewId(String renewId) {
 		this.renewId = renewId;
-	}	
+	}
 	
+	/**
+	 * Sets the unreserve id for this book.
+	 */
+	public void setUnreserveId(String unreserveId) {
+		this.unreserveId = unreserveId;
+	}
+	/**
+	 * Returns the unreserve ID for this book.
+	 * Is used to unreserve it if possible, from within UnreserveJob.
+	 */
+	public String getUnreserveId() {
+		return unreserveId;
+	}
+	
+	/**
+	 * Sets the freeze id for this book.
+	 */
+	public void setFreezeId(String freezeId) {
+		this.freezeId = freezeId;
+	}
+	/**
+	 * Returns the freeze ID for this book.
+	 * Can be used to freeze its reservation if possible; used from within UnreserveJob.
+	 */
+	public String getFreezeId() {
+		return freezeId;
+	}
+	
+	/**
+	 * Returns the publisher of the book.
+	 */
 	public String getPublisher() {
 		return publisher;
 	}
+	/**
+	 * Sets the publisher of this book.
+	 * @param publisher - the book's publisher.
+	 */
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
 
+	/**
+	 * Returns the physical description of this book -
+	 * How large it is, how many pages etc.
+	 */
 	public String getPhysicalDescription() {
 		return physicalDescription;
 	}
+	/**
+	 * Sets the physical description of this book.
+	 * @param physicalDescription - Describes how large the book is, how many pages etc.
+	 */
 	public void setPhysicalDescription(String physicalDescription) {
 		this.physicalDescription = physicalDescription;
 	}
@@ -168,9 +283,17 @@ public class Book {
 		this.notes = notes;
 	}
 
+	/**
+	 * Returns a list of all physical books tied to this book.
+	 * @returns empty list if none present. 
+	 */
 	public List<PhysicalBook> getPhysicalBooks() {
 		return physicalBooks;
 	}
+	/**
+	 * Sets a list of all physical books tied to this book.
+	 * @param physicalBooks - a list of the book's physicalBooks.
+	 */	
 	public void setPhysicalBooks(List<PhysicalBook> physicalBooks) {
 		this.physicalBooks = physicalBooks;
 	}
@@ -230,5 +353,24 @@ public class Book {
 		} else {
 			return false;
 		}
-	}	
+	}
+
+	public String getIsbn() {
+		return isbn;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
+	/**
+	 * Returns the library of our first PhysicalBook. If no physicalBooks, returns false.
+	 */
+	public String getLibrary() {
+		if (physicalBooks.size()>0) {
+			return physicalBooks.get(0).getLibrary();
+		} else {
+			return null;
+		}
+	}
 }

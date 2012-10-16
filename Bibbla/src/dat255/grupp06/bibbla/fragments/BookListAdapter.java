@@ -1,4 +1,21 @@
-package dat255.grupp06.bibbla.frontend;
+/**
+    This file is part of Bibbla.
+
+    Bibbla is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Bibbla is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
+ **/
+
+package dat255.grupp06.bibbla.fragments;
 
 import java.util.List;
 
@@ -15,10 +32,11 @@ import dat255.grupp06.bibbla.model.Book;
  * Custom ListAdapter for book search results.
  * @author arla
  */
-public class SearchResultAdapter extends BaseAdapter {
+public class BookListAdapter extends BaseAdapter {
 	
-	private List<Book> list;
-	private Activity activity;
+	private final List<Book> list;
+	private final Activity activity;
+	private final boolean showAvailable;
 
 	/**
 	 * 
@@ -27,10 +45,11 @@ public class SearchResultAdapter extends BaseAdapter {
 	 * @param list A list of books to present. 
 	 */
 	// TODO Bad style to pass activity?
-	public SearchResultAdapter(Activity activity, List<Book> list) {
+	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable) {
 		// TODO Clone needed?
 		this.list = list;
 		this.activity = activity;
+		this.showAvailable = showAvailable;
 	}
 
 	@Override
@@ -50,8 +69,7 @@ public class SearchResultAdapter extends BaseAdapter {
 	 */
 	@Override
 	public long getItemId(int position) {
-		// TODO Bad?
-		return position;
+		return list.get(position).hashCode();
 	}
 
 	/**
@@ -66,16 +84,19 @@ public class SearchResultAdapter extends BaseAdapter {
 		View view;
 		
 		if(position < list.size()-1) {
+	
 			view = activity.getLayoutInflater().inflate(
-					R.layout.search_result, parent, false);
+					R.layout.list_item_book, parent, false);
 			((TextView) view.findViewById(R.id.search_result_title))
 				.setText(book.getName());
 			((TextView) view.findViewById(R.id.search_result_author))
 				.setText(book.getAuthor());
-			((ImageView) view.findViewById(R.id.search_result_available))
-				.setImageResource(book.getAvailable() > 0 ?
-					android.R.drawable.presence_online :
-					android.R.drawable.presence_busy);
+			if (showAvailable) {
+				((ImageView) view.findViewById(R.id.search_result_available))
+					.setImageResource(book.getAvailable() > 0 ?
+						android.R.drawable.presence_online :
+						android.R.drawable.presence_busy);
+			}
 		} else {
 			view = activity.getLayoutInflater().inflate(R.layout.more_search_results, parent, false);
 		}
