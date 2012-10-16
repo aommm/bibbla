@@ -1,3 +1,20 @@
+/**
+    This file is part of Bibbla.
+
+    Bibbla is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Bibbla is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
+ **/
+
 package dat255.grupp06.bibbla.model;
 
 import java.util.ArrayList;
@@ -28,6 +45,7 @@ public class Book {
 	private String publisher; 
 	private String physicalDescription;
 	private String notes;
+	private String isbn;
 	private List<PhysicalBook> physicalBooks;
 	
 	/**
@@ -37,10 +55,15 @@ public class Book {
 	public String toString() {
 		String physicalBook = ((physicalBooks.size()>0) && ((physicalBooks.get(0) != null))
 				? physicalBooks.get(0).toString() : "no");
+		
+		String details = "publisher: "+((publisher!=null)?publisher:"no")+
+				", physicalDescription: "+((physicalDescription!=null)?physicalDescription:"no")+
+				", notes: "+((notes!=null)?notes:"no")+
+				", isbn: "+((isbn!=null)?isbn:"no");
+		
 		return "Book (" + name + ", " + author + ", urls: " +
-			((url!=null)&&(reserveUrl!=null)) +", details: " + ((publisher!=null) 
-			|| (physicalDescription!=null) || (notes!=null)) +
-			", physicalBook: "+physicalBook+")\n";
+			((url!=null)&&(reserveUrl!=null)) +", details: ["+details+
+			"], physicalBook: "+physicalBook+")\n";
 	}
 	
 	/********************************
@@ -50,7 +73,7 @@ public class Book {
 	 * Creates a new book using the supplied information.
 	 * @param name - The name of the book.
 	 * @param author - The author of the book.
-	 * @param type - The type of the book (e-book, audio-book, daisy, etc) 
+     * @param type - The type of the book (e-book, audio-book, daisy, etc)
 	 * @param url - The url to the book's detailed view.
 	 * @param reserveUrl - The url used to reserve the book.
 	 */
@@ -60,6 +83,16 @@ public class Book {
 		this.author = author;
 		this.url = url;
 		this.reserveUrl = reserveUrl;
+	}
+
+	/**
+	 * Creates a new Book, and assigns to it a name and an author.
+	 * Should be used for debugging only, TODO remove later on.
+	 */
+	public Book(String name, String author) {
+		this();
+		this.name = name;
+		this.author = author;
 	}
 
 	/**
@@ -201,7 +234,7 @@ public class Book {
 	}
 	
 	/**
-	 * Sets the unreserve id for this book.
+	 * Sets the freeze id for this book.
 	 */
 	public void setFreezeId(String freezeId) {
 		this.freezeId = freezeId;
@@ -321,6 +354,15 @@ public class Book {
 			return false;
 		}
 	}
+
+	public String getIsbn() {
+		return isbn;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
 	/**
 	 * Returns the library of our first PhysicalBook. If no physicalBooks, returns false.
 	 */
@@ -330,5 +372,5 @@ public class Book {
 		} else {
 			return null;
 		}
-	}	
+	}
 }

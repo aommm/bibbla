@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This file is part of Bibbla.
+
+    Bibbla is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Bibbla is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Log in header -->
+    <TextView android:id="@+id/login_heading"
+        style="@style/Heading"
+        android:text="@string/login_heading"/>
+    
+    <TextView android:id="@+id/login_info"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/login_info"/>
+    
+    <!-- Input fields -->
+
+    <EditText
+        android:id="@+id/login_name_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_name_hint"
+        android:inputType="textCapWords|textPersonName" />
+    
+    <EditText
+        android:id="@+id/login_card_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_card_hint"
+        android:inputType="textCapCharacters" />
+    
+    <EditText
+        android:id="@+id/login_pin_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_pin_hint"
+        android:inputType="number" />
+    
+    <!-- Submit -->
+    <Button android:id="@+id/login_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="login"
+        android:text="@string/login_send_text"/>
+    
+</LinearLayout>

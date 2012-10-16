@@ -1,4 +1,21 @@
-package dat255.grupp06.bibbla.frontend;
+ï»¿/**
+    This file is part of Bibbla.
+
+    Bibbla is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Bibbla is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
+ **/
+
+package dat255.grupp06.bibbla.fragments;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,7 +51,7 @@ import dat255.grupp06.bibbla.utils.Message;
  * A fragment that holds the search bar, button 
  * and a ListFragment that displays search results
  * 
- * @author Jonathan Orrö
+ * @author Jonathan Orrï¿½
  */
 
 public class SearchFragment extends SherlockFragment {
@@ -49,15 +66,31 @@ public class SearchFragment extends SherlockFragment {
 	 * Inflates the view and sets up the ListFragment.
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+		
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        
-        listFragment = new SearchListFragment();
-        fragmentTransaction.add(R.id.list_container, listFragment);
-        fragmentTransaction.commit();
 		
+		if(listFragment == null) {
+	        listFragment = new SearchListFragment();
+	        fragmentTransaction.add(R.id.list_container, listFragment);
+	        Log.d("J", "createView     1");
+		} else {
+			fragmentTransaction.attach(listFragment);
+			Log.d("J", "createView     2");
+		}
+
+        fragmentTransaction.commit();
 		return inflater.inflate(R.layout.fragment_search, container, false);
+	}
+	
+	@Override
+	public void onDestroyView() {
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Log.d("J", "destroy");
+        fragmentTransaction.detach(listFragment);
+        fragmentTransaction.commit();
+        super.onDestroyView();
 	}
 	
 	@Override
