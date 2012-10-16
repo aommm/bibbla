@@ -58,15 +58,12 @@ public class SearchListFragment extends SherlockListFragment {
      * When an item is clicked in the list this method is called
      */
     public void onListItemClick(ListView l, View v, int position, long id) {
-    	Log.d("Jonis", "listclick super1");
     	if(position < currentBooks.size()) {
 	    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
 	    	startActivity(intent);
     	} else {
     		currentPage++;
-    		Log.d("Jonis", "listclick 1");
     		((MainActivity) getActivity()).moreSearchResultsClicked(currentPage+1, lastSearch);
-    		Log.d("Jonis", "listclick 2");
     	}
     }
     

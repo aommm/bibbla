@@ -148,6 +148,7 @@ public class SearchFragment extends SherlockFragment {
 		};
 		
 		// Call backend search.
+		Log.d("Jonis", "searching..... on page    1");
 		backend.search(searchString, 0, c);
 		listFragment.setLastSearchString(searchString);
 	}
@@ -164,6 +165,7 @@ public class SearchFragment extends SherlockFragment {
 		};
 		
 		// Call backend search.
+		Log.d("Jonis", "searching..... on page    "+page);
 		backend.search(searchString, page, c);
 	}
 	
