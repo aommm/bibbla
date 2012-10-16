@@ -3,8 +3,8 @@ package dat255.grupp06.bibbla.frontend;
 import android.app.Activity;
 import android.content.Intent;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.utils.SerializableCallback;
 
 /**
  * Basically contains some code dealing with logging in (which could as well
@@ -25,18 +25,18 @@ public class LoginManager {
 		this.backend = backend;
 	}
 	
-	public void loginIfNeeded(Activity activity, SerializableCallback afterLoginCallback) {
+	public void loginIfNeeded(Activity activity, Callback loginDoneCallback) {
 		boolean loggedIn = false;//backend.isLoggedIn();
 		if (!loggedIn) {
 			// Show login overlay
 			Intent intent = new Intent(activity, LoginOverlayActivity.class);
-			intent.putExtra(EXTRA_CALLBACK, afterLoginCallback); // can not put extra callback
+//			intent.putExtra(EXTRA_CALLBACK, afterLoginCallback); // can not put extra callback
 			activity.startActivityForResult(intent, RESULT_LOGIN_FORM);
 		}
-		// If logged in
+		// If logged in: same should happen as when getting result from LO
 		Message message = new Message();
 		message.loggedIn = loggedIn;
-		afterLoginCallback.handleMessage(message);
+		loginDoneCallback.handleMessage(message);
 	}
 	
 	public void logout() {

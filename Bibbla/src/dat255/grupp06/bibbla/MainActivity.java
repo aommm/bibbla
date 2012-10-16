@@ -17,7 +17,6 @@ import dat255.grupp06.bibbla.frontend.LoginManager;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.utils.SerializableCallback;
 
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener {	
@@ -28,6 +27,7 @@ ActionBar.TabListener {
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
 	LoginManager loginManager;
+	private Callback loginDoneCallback;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,9 +88,8 @@ ActionBar.TabListener {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == LoginManager.RESULT_LOGIN_FORM) {
 			Credentials cred = (Credentials) data.getSerializableExtra(LoginManager.EXTRA_CREDENTIALS); // TODO What if null?
-			Callback callback = (Callback) data.getSerializableExtra(LoginManager.EXTRA_CALLBACK);
 			backend.saveCredentials(cred);
-			backend.arildLogin(callback);
+			backend.arildLogin(loginDoneCallback);
 		}
     	// Read return value from overlay
     	
@@ -111,14 +110,16 @@ ActionBar.TabListener {
 				}
 				break;
 			case 1:
-				loginManager.loginIfNeeded(this, new SerializableCallback() {
-					private static final long serialVersionUID = -4339854620228514796L;
+				// Specify what to do when logged in
+				loginDoneCallback = new Callback() {
 					@Override
 					public void handleMessage(Message msg) {
 						// Must not use instance of anything non-serializable
-						MainActivity.showProfileTab(tab, ft, msg);
+						MainActivity.this.showProfileTab(tab, ft, msg);
 					}
-				});
+				};
+				// Prompt login
+				loginManager.loginIfNeeded(this, loginDoneCallback);
 		}
 	}
 	
