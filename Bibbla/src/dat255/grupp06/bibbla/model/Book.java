@@ -38,10 +38,15 @@ public class Book {
 	public String toString() {
 		String physicalBook = ((physicalBooks.size()>0) && ((physicalBooks.get(0) != null))
 				? physicalBooks.get(0).toString() : "no");
+		
+		String details = "publisher: "+((publisher!=null)?publisher:"no")+
+				", physicalDescription: "+((physicalDescription!=null)?physicalDescription:"no")+
+				", notes: "+((notes!=null)?notes:"no")+
+				", isbn: "+((isbn!=null)?isbn:"no");
+		
 		return "Book (" + name + ", " + author + ", urls: " +
-			((url!=null)&&(reserveUrl!=null)) +", details: " + ((publisher!=null) 
-			|| (physicalDescription!=null) || (notes!=null)) +
-			", physicalBook: "+physicalBook+")\n";
+			((url!=null)&&(reserveUrl!=null)) +", details: ["+details+
+			"], physicalBook: "+physicalBook+")\n";
 	}
 	
 	/********************************

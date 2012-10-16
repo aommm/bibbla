@@ -42,10 +42,11 @@ public class DetailedViewJob {
 	    Response response = Jsoup.connect(originalBook.getUrl())
 			    .method(Method.GET)
 			    .execute();
-	    
+
 	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
 	    Elements tableRows = response.parse().select("table.bibItems").select("tr.bibItemsEntry");
 	    
+	    // Create all our PhysicalBooks.
 	    for (Element row : tableRows) {
 	    	Elements columns = row.getElementsByTag("td"); 
 	    	String library = columns.get(0).text();
@@ -55,39 +56,51 @@ public class DetailedViewJob {
 	    	PhysicalBook physicalBook = new PhysicalBook(library, shelf, status, message);
 	    	physicalBooks.add(physicalBook);
 	    }
-	  
+
+	    // Select all rows containing detailed information.
 	    Elements table = response.parse().select("div#orders").select("table.bibDetail").select("tr");
 	    String description = "", notes = "", isbn = "";
-	    for(int i=1;i<table.size();i++){
+
+	    // Loop through all rows.
+	    for(int i=1;i<table.size();i++) {
+	    	
+	    	// If we find a physical description,
 	    	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Fysisk beskrivning")){
+	    		// Save the text present on row #1,
 	    		description += (table.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
+				// And if there are rows without labels following it,
+				// they are also part of the description. 
 				while((table.get(n).select("td.bibInfoLabel").size() == 0)){
 					description += (table.get(n)).select("td.bibInfoData").text();
 					n++;
 				}
 	    	}
 	    	
-	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Anmï¿½rkning")){
+	    	// If we find a note,
+	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")) {
+	       		// Save the text on row ¤1 
 	    		notes += (table.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
-				while((table.get(n).select("td.bibInfoLabel").size() == 0)){
+				// And save text of possible following rows that has no label.
+				while((table.get(n).select("td.bibInfoLabel").size() == 0)) {
 					notes += (table.get(n)).select("td.bibInfoData").text();
 					n++;
 				}
 	    	}
 	       	
+	       	// If we find an ISBN, save it.
 	       	if(table.get(i).select("td.bibInfoLabel").text().equals((String) "ISBN")){
 	    		isbn = (table.get(i)).select("td.bibInfoData").text();
 	    	}
-	    	
-	    	
-	    	
 	    }
 	    
+	    // Update newBook with this information.
 	    newBook.setPhysicalBooks(physicalBooks);
 	    newBook.setIsbn(isbn);
 	    newBook.setNotes(notes);
 	    newBook.setPhysicalDescription(description);
+	    
+	    message.obj = newBook;
 	}
 }
