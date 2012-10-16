@@ -30,13 +30,13 @@ public class LoginManager {
 		if (!loggedIn) {
 			// Show login overlay
 			Intent intent = new Intent(activity, LoginOverlayActivity.class);
-//			intent.putExtra(EXTRA_CALLBACK, afterLoginCallback); // can not put extra callback
 			activity.startActivityForResult(intent, RESULT_LOGIN_FORM);
+		} else {
+			// If logged in: same should happen as when getting result from LO
+			Message message = new Message();
+			message.loggedIn = loggedIn;
+			loginDoneCallback.handleMessage(message);
 		}
-		// If logged in: same should happen as when getting result from LO
-		Message message = new Message();
-		message.loggedIn = loggedIn;
-		loginDoneCallback.handleMessage(message);
 	}
 	
 	public void logout() {

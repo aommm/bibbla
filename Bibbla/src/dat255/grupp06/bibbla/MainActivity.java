@@ -76,24 +76,35 @@ ActionBar.TabListener {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * This is used to get data from the Login Overlay Activity.
-	 * @param data in our case should contain a callback to decide what happens
-	 * when login is successful. Use putExtra(LoginManager.EXTRA_CALLBACK,
-	 * myCallback).
-	 * 
-	 * @see http://stackoverflow.com/questions/449484/android-capturing-the-return-of-an-activity
+	 * This is called when a user is done with LoginOverlayActivity. Saves the
+	 * specified credentials and tells Backend to log in.
+	 * @param data should contain a Credentials object as an Extra, identified
+	 * by LoginManager.EXTRA_CREDENTIALS
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == LoginManager.RESULT_LOGIN_FORM) {
-			Credentials cred = (Credentials) data.getSerializableExtra(LoginManager.EXTRA_CREDENTIALS); // TODO What if null?
-			backend.saveCredentials(cred);
-			backend.arildLogin(loginDoneCallback);
+		switch (requestCode) {
+		case LoginManager.RESULT_LOGIN_FORM:
+			// Read credentials
+			Credentials cred;
+			try {
+				cred = (Credentials) data.getSerializableExtra(LoginManager.EXTRA_CREDENTIALS);
+			} catch (ClassCastException e) {
+				cred = null;
+			}
+			// TODO Check format of input
+			// Retry if bad credentials.
+			if (cred == null) {
+				loginManager.loginIfNeeded(this, loginDoneCallback);
+			} else {
+				backend.saveCredentials(cred);
+				backend.arildLogin(loginDoneCallback);
+			}
+			break;
+		default:
+			System.out.println("onActivityResult was called with an unknown request code");
 		}
-    	// Read return value from overlay
-    	
-		//   if login fails, show error and overlay persists
 	}
 	
 	@Override
@@ -114,8 +125,7 @@ ActionBar.TabListener {
 				loginDoneCallback = new Callback() {
 					@Override
 					public void handleMessage(Message msg) {
-						// Must not use instance of anything non-serializable
-						MainActivity.this.showProfileTab(tab, ft, msg);
+						MainActivity.this.showProfileTab(msg);
 					}
 				};
 				// Prompt login
@@ -123,18 +133,21 @@ ActionBar.TabListener {
 		}
 	}
 	
-	public void showProfileTab(final Tab tab, final FragmentTransaction ft,
-			Message msg) {
-		if (msg.error != null) {
+	public void showProfileTab(Message msg) {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		if (msg.error == null) {
 			if (profileFragment == null) {
 				profileFragment = new ProfileFragment();
 				profileFragment.setBackend(backend);
 				ft.add(R.id.fragment_container, profileFragment);
+				ft.commit();
 			} else {
 				ft.attach(profileFragment);
+				ft.commit();
 			}
+		} else {
+			loginManager.loginIfNeeded(this, loginDoneCallback);
 		}
-		else System.out.println("Not showing profile tab because msg had errors: " + msg.error);
 	}
 
 	@Override
