@@ -86,12 +86,17 @@ public final class Backend {
 		} else {
 			// Log in through LoginJob, using credentials from settings
 			Task task = new Task(frontendCallback) {
+				@SuppressWarnings("unchecked")
 				@Override
 				protected Void doInBackground(String... params) {
 					LoginJob job = new LoginJob(settings.getCredentials());
 					message = job.run();
 					if (message.loggedIn) {
-						session.setCookies((Map<String,String>) message.obj);
+						try {
+							session.setCookies((Map<String,String>) message.obj);
+						} catch (ClassCastException e) {
+							session.setCookies(null);
+						}
 					}
 					return null;
 				}
