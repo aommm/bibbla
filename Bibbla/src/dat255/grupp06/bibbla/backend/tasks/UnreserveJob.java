@@ -112,11 +112,13 @@ public class UnreserveJob {
 	    	// Unreserve only the specified books.
 	    	else {
 	    		put("updateholdssome", "JA");
+	    		// (The duplicated line is necessary. Don't ask.)
+	    		put("currentsortorder", "current_pickup");
+				put("currentsortorder", "current_pickup");  
 		    	// Loop through the supplied books and add to post. 
 		    	for (int i=0; i<books.size(); i++) {
 					put(books.get(i).getUnreserveId(), "on");
 					put(books.get(i).getFreezeId(), "off");
-					//put("loci4076577x00", "");
 				}
 	    	}
 	    }};

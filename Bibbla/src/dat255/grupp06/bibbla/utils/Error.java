@@ -8,6 +8,7 @@ public enum Error {
 	RESERVE_FAILED,
 	MY_RESERVATIONS_FAILED,
 	MY_BOOKS_FAILED,
+	MY_DEBT_FAILED,
 	DETAILED_VIEW_FAILED,
 	MISSING_CREDENTIALS, // Some user credentials are missing.
 	LOGIN_NEEDED, // Used by other jobs, if they detect they're not logged in.
