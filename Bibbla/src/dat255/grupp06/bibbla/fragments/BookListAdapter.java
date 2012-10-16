@@ -54,12 +54,20 @@ public class BookListAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return list.size();
+		if (list != null) {
+			return list.size();
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return list.get(position);
+		if ((list != null) && (list.size()>position)) {
+			return list.get(position);
+		} else {
+			return null;
+		}
 	}
 
 	/**
