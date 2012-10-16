@@ -26,13 +26,18 @@ public class MyReservationsJob {
 	private Response httpResponse;
 	private String userUrl;
 	
+	/**
+	 * Creates a new MyReservationsJob which will fetch the user's current reservations.
+	 * 
+	 * @param session - the session to use. Is required since this is for logged-in users only.
+	 */
 	public MyReservationsJob(Session session) {
 		this.session = session;
 		this.message = new Message();
 	}
 	
 	/**
-	 * Fetches the user's currentl reservations.
+	 * Fetches the user's current reservations.
 	 * @returns a Message, containing a List of the user's current reservations. 
 	 */
 	public Message run()  {
