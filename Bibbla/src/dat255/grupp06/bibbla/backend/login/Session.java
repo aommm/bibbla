@@ -74,6 +74,7 @@ public class Session implements Serializable {
 	 * Checks if the user is logged in.
 	 * If not, tries to login. If that also fails, returns false.
 	 * @returns our logged in state.
+	 * @deprecated
 	 */
 	public boolean checkLogin() {
 		// Do we lack the user's credentials?

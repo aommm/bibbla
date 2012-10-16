@@ -165,12 +165,22 @@ ActionBar.TabListener {
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
-	
+
+	/**
+	 * Logs out and switches to the Search fragment.
+	 * @param view
+	 */
 	public void logout(View view) {
 		loginManager.logout();
-		// ?
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_container, profileFragment);
+		if (searchFragment == null) {
+			searchFragment = new SearchFragment();
+			searchFragment.setBackend(backend);
+			ft.add(R.id.fragment_container, searchFragment);
+		} else {
+			ft.attach(searchFragment);
+			// detach...?
+		}
 		ft.commit();
 	}
 	

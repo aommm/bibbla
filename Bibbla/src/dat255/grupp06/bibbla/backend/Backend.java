@@ -76,7 +76,7 @@ public final class Backend {
 	 */
 	public void arildLogin(final Callback frontendCallback) {
 		// Check if already logged in
-		if (session.isActive()) {
+		if (isLoggedIn2()) {
 			// Call back with success
 			Message message = new Message();
 			message.loggedIn = true;
@@ -181,8 +181,13 @@ public final class Backend {
 		session = new Session();	
 	}
 	
+	/** @deprecated */
 	public boolean isLoggedIn() {
 		return session.checkLogin();
+	}
+	
+	public boolean isLoggedIn2() {
+		return session.isActive();
 	}
 
 	// TODO Change settings to use Credentials

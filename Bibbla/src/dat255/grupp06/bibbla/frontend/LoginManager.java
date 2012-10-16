@@ -25,8 +25,14 @@ public class LoginManager {
 		this.backend = backend;
 	}
 	
+	/**
+	 * Shows LoginOverlay prompt if not logged in.
+	 * @param activity 
+	 * @param loginDoneCallback will be called if the user was already logged
+	 * in; otherwise will be passed to the activity's onActivityResult method.
+	 */
 	public void loginIfNeeded(Activity activity, Callback loginDoneCallback) {
-		boolean loggedIn = false;//backend.isLoggedIn();
+		boolean loggedIn = backend.isLoggedIn2();
 		if (!loggedIn) {
 			// Show login overlay
 			Intent intent = new Intent(activity, LoginOverlayActivity.class);
