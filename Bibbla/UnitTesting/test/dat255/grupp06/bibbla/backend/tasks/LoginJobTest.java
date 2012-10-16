@@ -18,9 +18,7 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 import junit.framework.TestCase;
-import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.utils.PrivateCredentials;
-import dat255.grupp06.bibbla.SampleSession;
+import dat255.grupp06.bibbla.SessionFactory;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -30,13 +28,21 @@ public class LoginJobTest extends TestCase {
 	
 	@Override
 	public void setUp() {
-		session = SampleSession.getSession();
+		// Get a new Session object.
+		session = SessionFactory.getSession();
 	}
 	
 	public void testRun() {
-		LoginJob loginJob = new LoginJob(session);
-		Message result = loginJob.run();
-		assertTrue(result.loggedIn); 
+		
+		// Run tests only if we have login credentials. Otherwise, auto-succeed.
+		if (session.getHasCredentials()) {
+			LoginJob loginJob = new LoginJob(session);
+			Message result = loginJob.run();
+			assertTrue(result.loggedIn);			
+		}
+		
+ 
 	}
+	
 
 }
