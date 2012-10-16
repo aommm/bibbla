@@ -96,10 +96,9 @@ ActionBar.TabListener {
 			// TODO Check format of input
 			// Retry if bad credentials.
 			if (cred == null) {
-				loginManager.loginIfNeeded(this, loginDoneCallback);
+				loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
 			} else {
-				backend.saveCredentials(cred);
-				backend.arildLogin(loginDoneCallback);
+				loginManager.login(cred, loginDoneCallback);
 			}
 			break;
 		default:
@@ -129,7 +128,7 @@ ActionBar.TabListener {
 					}
 				};
 				// Prompt login
-				loginManager.loginIfNeeded(this, loginDoneCallback);
+				loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
 		}
 	}
 	
@@ -146,7 +145,7 @@ ActionBar.TabListener {
 				ft.commit();
 			}
 		} else {
-			loginManager.loginIfNeeded(this, loginDoneCallback);
+			loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
 		}
 	}
 
