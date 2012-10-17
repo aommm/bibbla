@@ -51,9 +51,11 @@ public class SearchJobTest extends TestCase {
 		assertFalse((List<?>) searchJobHej.run().obj == ((List<?>) searchJobPotter.run().obj));
 		
 		// Test for different page numbers
+		SearchJob searchJob0 = new SearchJob("Potter",0); 
 		SearchJob searchJob1 = new SearchJob("potter", 1);
 		SearchJob searchJob2 = new SearchJob("potter", 2);
 		assertFalse((List<?>) searchJob1.run().obj == (List<?>) searchJob2.run().obj);
+		assertTrue((List<?>) searchJob0.run().obj == (List<?>) searchJob1.run().obj)
 		
 		// Test weird string
 		SearchJob searchJobDifficult = new SearchJob("?^~QXZX");
