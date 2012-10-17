@@ -1,0 +1,10 @@
+When it came to testing, we had a problem.
+
+Much of our code was functionality for logged-in users only, and if we were to have high test coverage (a percentage of how much of our code that had tests), we would have to test this logged-in code as well. The problem was: we used our own personal details while developing.
+
+Obviously, we couldn't add these to our git repo. Tests should ideally pass for anyone who wants to run them, not just people who have login credentials of their own. Since the actual code required credentials, we had two options:
+
+* Write tests which if no login credentials were present, passed automatically.
+* Write our own bogus server, which simulated gotlib and returned the expected HTML.
+
+We chose option #1. We realised that writing a server component solely for testing would be a bad use of our time. We're going to signal clearly that login details are needed to run most of the tests fully, to avoid confusion. We can now focus on implementing features and write good tests, this last week of the course. We will still be able to run the tests to verify that our code is working properly, and that's what's most important.
