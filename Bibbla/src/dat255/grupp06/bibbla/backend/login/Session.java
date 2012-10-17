@@ -140,20 +140,6 @@ public class Session implements Serializable {
 	}
 	
 	/**
-	 * Temporary debug method to examine cookies contents
-	 * @param <E>
-	 * @param <F>
-	 */
-	public static <E, F> void debugMapContents(Map<E,F> map) {
-		StringBuffer buffer = new StringBuffer();
-		for (Map.Entry<E,F> entry: map.entrySet()) {
-			buffer.append(entry.getKey().toString()).append(" = ")
-			.append(entry.getValue()).append('\n');
-		}
-		System.out.println(buffer.toString());
-	}
-	
-	/**
 	 * Tries to fetch the user's profile URL.
 	 * Does this by visiting a bogus URL, and following the redirect.
 	 * 
