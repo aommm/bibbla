@@ -83,11 +83,13 @@ public class SearchListFragment extends SherlockListFragment {
     }
     
     public void appendList(List<Book> books) {
+    	int selection = currentBooks.size();
     	currentBooks.addAll(books);
     	currentBooks.add(new Book());
     	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), currentBooks, true);
     	currentBooks.remove(currentBooks.size()-1);
     	this.setListAdapter(adapter);
+    	this.setSelection(selection);
     }
     
     public void setLastSearchString(String s) {

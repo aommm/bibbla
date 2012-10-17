@@ -92,7 +92,7 @@ public class BookListAdapter extends BaseAdapter {
 		
 		View view;
 		
-		if(position < list.size()-1) {
+		if(position < list.size()-1 || list.size() < 50) {
 	
 			view = activity.getLayoutInflater().inflate(
 					R.layout.list_item_book, parent, false);

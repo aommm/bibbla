@@ -47,7 +47,7 @@ ActionBar.TabListener {
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
+        setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
         
         // We want a fancy spinner for marking progress.
