@@ -22,7 +22,11 @@ import dat255.grupp06.bibbla.SessionFactory;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Message;
 
-
+/**
+ * Tests LoginJob, by trying to log in with both bad and good credentials. 
+ * 
+ * @author Niklas Logren
+ */
 public class LoginJobTest extends TestCase {
 	Session session;
 	
@@ -32,17 +36,31 @@ public class LoginJobTest extends TestCase {
 		session = SessionFactory.getSession();
 	}
 	
-	public void testRun() {
+	/**
+	 * Tries to login with wrong login details.
+	 */
+	public void testBogusCredentials() {
+		Session bogusSession = new Session("a","b","c");
+		LoginJob loginJob = new LoginJob(bogusSession);
+		Message result = loginJob.run();
 		
-		// Run tests only if we have login credentials. Otherwise, auto-succeed.
+		assertNotNull(result.error);
+		assertFalse(result.loggedIn);
+	}
+	
+	/**
+	 * Tries to login with correct login details.
+	 */
+	public void testNormalCredentials() {
+		
+		// Run test only if we have login credentials. Otherwise, auto-succeed.
 		if (session.getHasCredentials()) {
 			LoginJob loginJob = new LoginJob(session);
 			Message result = loginJob.run();
-			assertTrue(result.loggedIn);			
+			
+			assertTrue(result.loggedIn);
+			assertNull(result.error);
 		}
-		
- 
 	}
-	
 
 }
