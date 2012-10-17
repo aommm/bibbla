@@ -37,6 +37,11 @@ import dat255.grupp06.bibbla.utils.Message;
  */
 public class ReserveJob {
 
+	static final String KEY_LIBCODE = "locx00";
+	static final String KEY_YEAR = "needby_Year", VAL_YEAR = "Year";
+	static final String KEY_MONTH = "needby_Month", VAL_MONTH = "Month";
+	static final String KEY_DAY = "needby_Day", VAL_DAY = "Day";
+
 	/**
 	 * Performs the reservation.
 	 * 
@@ -76,10 +81,10 @@ public class ReserveJob {
 		Map<String,String> postData = new HashMap<String,String>() {
 			private static final long serialVersionUID = 5883265540089660691L;
 			{
-		    	put("locx00", libraryCode);
-		    	put("needby_Year", "Year");
-		    	put("needby_Month", "Month");
-		    	put("needby_Day", "Day");
+		    	put(KEY_LIBCODE, libraryCode);
+		    	put(KEY_YEAR, VAL_YEAR);
+		    	put(KEY_MONTH, VAL_MONTH);
+		    	put(KEY_DAY, VAL_DAY);
 			}
 		};
 		return postData;
