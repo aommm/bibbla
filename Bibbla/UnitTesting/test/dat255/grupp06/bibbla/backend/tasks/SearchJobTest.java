@@ -44,6 +44,17 @@ public class SearchJobTest extends TestCase {
 		assertTrue(result.obj instanceof List<?>);
 		assertFalse(((List<?>) result.obj).isEmpty());
 		
+		// Test that we get unique results for different search phrases
+		
+		SearchJob searchJobPotter =  new SearchJob("potter");
+		SearchJob searchJobHej = new SearchJob("hej");
+		assertFalse((List<?>) searchJobHej.run().obj == ((List<?>) searchJobPotter.run().obj));
+		
+		// Test for different page numbers
+		SearchJob searchJob1 = new SearchJob("potter", 1);
+		SearchJob searchJob2 = new SearchJob("potter", 2);
+		assertFalse((List<?>) searchJob1.run().obj == (List<?>) searchJob2.run().obj);
+		
 		// Test weird string
 		SearchJob searchJobDifficult = new SearchJob("?^~QXZX");
 		result = searchJobDifficult.run();
@@ -54,7 +65,7 @@ public class SearchJobTest extends TestCase {
 		// Test empty string
 		SearchJob searchJobEmpty = new SearchJob("");
 		result = searchJobEmpty.run();
-		assertTrue(((List<Book>)result.obj).size() == 0);
+		assertTrue(((List<?>)result.obj).size() == 0);
 		assertNull(result.error);
 		// Perhaps we should check for more info?
 	}
