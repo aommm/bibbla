@@ -17,7 +17,7 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +27,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -38,25 +36,6 @@ import dat255.grupp06.bibbla.utils.Message;
  * @author Niklas Logren
  */
 public class ReserveJob {
-	private Book book;
-	private Session session;
-	private Message message;
-	private String libraryCode;
-	Response httpResponse;
-	
-	/**
-	 * Creates a new ReserveJob which will try to reserve a book at the given library.
-	 * 
-	 * @param book - The book to reserve. Needs reserveUrl set.
-	 * @param libraryCode - The code of the library to send the book to. See library-codes.txt.
-	 * @param session - The session the book should be reserved using. User account is specified here.
-	 */
-	public ReserveJob(Book book, final String libraryCode, Session session){
-		this.book = book;
-		this.libraryCode = libraryCode;
-		this.session = session;
-		this.message = new Message();
-	}
 
 	/**
 	 * Performs the reservation.
@@ -66,83 +45,106 @@ public class ReserveJob {
 	 * detailing which library the book will be sent to.
 	 * If reservation failed, obj will be a string containing the error message.
 	 */
-	public Message run(){
+	public static Message run(String reserveUrl, final String libraryCode, Map<String,String> cookies){
+		Message message = new Message();
 		
-		System.out.println("****** ReserveJob: ");
+		// Define hashMap containing post data.
+		Map<String, String> postData = createPostData(libraryCode);
+
+		// Attempt reservation
+		Response reserveResponse;
 		try {
-			System.out.println("*** Step 1: Verifying logged in");
-			if (!session.checkLogin()) {
-				message.error = Error.LOGIN_FAILED;
-				throw new Exception("session.checkLogin() failed!");
-			}
-			System.out.println("Step 1 done! ***");
-			
-			System.out.println("*** Step 2: Post our reservation");
-			postReservation();
-			System.out.println("Step 2 done! ***");
-			
-			System.out.println("*** Step 3: Parse the results");
-			parseResults();
-			System.out.println("Step 3 done! ***");
-			
-		} catch (Exception e) {
-			message.error = (message.error!=null) ? message.error : Error.RESERVE_FAILED;
-			System.out.println("Failed: "+e.getMessage()+" ***");
+			reserveResponse = postReservation(reserveUrl, libraryCode, cookies,
+					postData);
+		} catch (IOException e) {
+			message.error = Error.RESERVE_FAILED;
+			return message;
 		}
-		
+		// Assert success
+		Message parseReport = parseResults(reserveResponse);
+		message.obj = parseReport;
 		return message;
-		
+	}
+
+	/**
+	 * Creates a map of post data to send with the reservation request.
+	 * @param libraryCode code identifying a library
+	 * @return a map modelled by { "locx00" = <var>libraryCode</var>;
+	 * "needby_Year" = "Year"; "needby_Month" = "Month"; "needby_Day" = "Day" }
+	 */
+	static Map<String, String> createPostData(final String libraryCode) {
+		Map<String,String> postData = new HashMap<String,String>() {
+			private static final long serialVersionUID = 5883265540089660691L;
+			{
+		    	put("locx00", libraryCode);
+		    	put("needby_Year", "Year");
+		    	put("needby_Month", "Month");
+		    	put("needby_Day", "Day");
+			}
+		};
+		return postData;
 	}
 	
 	/**
 	 * POSTs the reservation, and saves the response.
-	 * 
-	 * @throws Exception if connection failed.
+	 * @throws IOException if connection failed.
 	 */
-	private void postReservation() throws Exception {
-		
-		// Define hashMap containing post data.
-		Map<String,String> postData = new HashMap<String,String>() {{
-	    	put("locx00", libraryCode);
-	    	put("needby_Year", "Year");
-	    	put("needby_Month", "Month");
-	    	put("needby_Day", "Day");
-	    }};
+	static Response postReservation(String reserveUrl, final String
+			libraryCode, Map<String,String> cookies, Map<String,String>
+			postData) throws IOException {
 	    
-	    // Send request and save response.
-	    httpResponse = Jsoup.connect(book.getReserveUrl())
+	    // Send request and return response.
+	    Response httpResponse = Jsoup.connect(reserveUrl)
 			    .method(Method.POST)
-			    .cookies(session.getCookies())
+			    .cookies(cookies)
 			    .data(postData)
 			    .execute();
+	    return httpResponse;
 	}
 	
 	/**
-	 * Parses the response HTML saved by postReservation().
-	 * 
-	 * @throws Exception if reservation failed, or if parsing otherwise failed.
+	 * Parses the response HTML to see if everything went fine.
+	 * @return the library where the book will arrive if successful, or error
+	 * message otherwise
 	 */
-	private void parseResults() throws Exception {
-		
-		// Prepare for parsing.
-	    Document html = httpResponse.parse();
+	static Message parseResults(Response reserveResponse) {
+		// Identfy the div element with our data.
+		Element div = findDiv(reserveResponse);
+		if (div == null) {
+			Message parseFailedMessage = new Message();
+			parseFailedMessage.error = Error.RESERVE_FAILED;
+			return parseFailedMessage;
+		}
 
-	    // All information we need lies in this div.
-	    Element div = html.getElementById("singlecolumn");
-	    
-	    // Font tag implies error.
-	    if (div.getElementsByTag("font").size() > 0) {
-	    	message.error = Error.RESERVE_FAILED;
-	    	// The error message is inside the font tag.
-	    	String errorMessage = div.getElementsByTag("font").first().text();
-	    	message.obj = errorMessage;
-	    	throw new Exception("Reservation failed: "+errorMessage);
-	    } 
-	    // We're all set!
-	    else {
-	    	// Return which library the book will arrive in.
-	    	message.obj = div.getElementsByTag("b").first().text();
-	    }
+		// Font tag implies error.
+		if (div.getElementsByTag("font").size() > 0) {
+			Message failedMessage = new Message();
+			failedMessage.error = Error.RESERVE_FAILED;
+			failedMessage.obj = div.getElementsByTag("font").first().text();
+			return failedMessage;
+		} else {
+			// We're all set! Return which library the book will arrive in.
+			Message successMessage = new Message();
+			successMessage.obj = div.getElementsByTag("b").first().text();
+			return successMessage;
+		}
+	}
+
+	/**
+	 * Finds the relevant data in the response generated from a book
+	 * reservation.
+	 * @param reserveResponse 
+	 * @return a div element containing information about the result, or null
+	 * if it was not found.
+	 */
+	static Element findDiv(Response reserveResponse) {
+		try {
+			Document html = reserveResponse.parse();
+			Element div = html.getElementById("singlecolumn");
+			return div;
+		} catch (Exception e) { // IO or NullPointer
+			return null;
+		}
 	}
 
 }
