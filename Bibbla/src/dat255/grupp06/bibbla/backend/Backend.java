@@ -156,7 +156,8 @@ public final class Backend {
 		Task task = new Task(frontendCallback) {
 			@Override
 			protected Void doInBackground(String... arg0) {
-				MyReservationsJob job = new MyReservationsJob(session);
+				MyReservationsJob job = new MyReservationsJob(isLoggedIn2(),
+						settings.getCredentials(), session);
 				message = job.run();
 				return null;
 			}
@@ -175,7 +176,8 @@ public final class Backend {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				MyBooksJob job = new MyBooksJob(session);
+				MyBooksJob job = new MyBooksJob(isLoggedIn2(),
+						settings.getCredentials(), session);
 				message = job.run();
 				return null;
 			}
