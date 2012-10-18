@@ -29,11 +29,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchJob {
+	
 	
 	private String searchPhrase = null;
 	private Message message = new Message();
@@ -55,7 +57,6 @@ public class SearchJob {
 	 */
 	public SearchJob(String s, int pageNumber){
 		searchPhrase = s;
-		System.out.println("s: "+s);
 		message = new Message();
 		this.pageNumber = pageNumber;
 	}
@@ -65,13 +66,30 @@ public class SearchJob {
 	 * @returns a Message, which has a List<Book> as its object if successful.
 	 */
 	public Message run(){
-					
+		
 		try {
 			System.out.print("\n****** SearchJob\n");
-			System.out.print("* step 1: fetch search results ");
-			fetchSearchResults();
-			System.out.print("succeeded! *\n");
-			System.out.print("* step 2: parse search results ");
+			System.out.print("* step 1: fetch search results... ");
+			
+			// Retry network connection a specified number of times. 
+			int failureCounter = 0;
+			while(true) {
+				try {					
+					fetchSearchResults();
+					System.out.print("succeeded! *\n");
+					break; // Break if we succeed.
+				} catch (Exception e) {
+					failureCounter++;
+				}
+				// If max attempts has been reached, abort Job.
+				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
+					throw new Exception("Network connection failed.");
+				} else {
+					System.out.print("failed. retrying... ");
+				}
+			}
+			
+			System.out.print("* step 2: parse search results... ");
 			parseSearchResults();
 			System.out.print("succeeded! *\n*");
 			System.out.print("****** SearchJob done \n");
@@ -103,6 +121,7 @@ public class SearchJob {
 		// Send HTTP request.
 		httpResponse = Jsoup.connect(url)
 					.method(Method.GET)
+					.timeout(Backend.CONNECTION_TIMEOUT)
 					.execute();
 	}
 	
