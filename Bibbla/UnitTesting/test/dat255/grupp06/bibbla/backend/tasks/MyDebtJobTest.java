@@ -19,22 +19,44 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import dat255.grupp06.bibbla.SessionFactory;
 import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.utils.Message;
 import junit.framework.TestCase;
 
 public class MyDebtJobTest extends TestCase {
 
 	Session session;
+	Message message;
+	Integer debt;
 	
 	public void setUp(){
+		
 		session = SessionFactory.getSession();
-		
-	}
-	
-	public void testDebtValue(){
-		
-		if(session.getHasCredentials()){
+		if (session.getHasCredentials()){
+			MyDebtJob myDebtJob = new MyDebtJob(session);
+			message = myDebtJob.run();
 			
 		}
-		
 	}
+	
+	/**
+	 * Test that we dont get null object.
+	 */
+	public void testObjectNotNull(){
+		if(session.getHasCredentials()){
+			assertNotNull(message.obj);			
+		}
+	}
+	
+
+	/**
+	 * Test that we get an integer object
+	 */
+	public void testDebtObject(){
+		
+		if(session.getHasCredentials()){
+			assertTrue(message.obj instanceof Integer);
+			debt = (Integer) message.obj;	
+		}
+	}
+	
 }
