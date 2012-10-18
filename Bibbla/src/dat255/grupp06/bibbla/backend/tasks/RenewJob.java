@@ -57,7 +57,7 @@ public class RenewJob {
 	 * 
 	 * Note: Assumes that all books has their renewId set!
 	 */
-	public RenewJob(Session session, List<Book> books) {
+	public RenewJob(List<Book> books, Session session) {
 		this(session);
 		this.books = books;
 	}
@@ -68,7 +68,7 @@ public class RenewJob {
 	 * 
 	 * Note: Assumes that the book has its renewId set!
 	 */
-	public RenewJob(Session session, Book book) {
+	public RenewJob(Book book, Session session) {
 		this(session);
 		books = new ArrayList<Book>();
 		books.add(book);

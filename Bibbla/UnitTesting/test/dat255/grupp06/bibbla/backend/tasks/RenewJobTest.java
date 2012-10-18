@@ -75,7 +75,7 @@ public class RenewJobTest extends TestCase {
 				// Select first book of our loaned books.
 				Book firstBook = loanedBooks.get(0);
 				// Run RenewJob.
-				RenewJob renewJob = new RenewJob(session, firstBook);
+				RenewJob renewJob = new RenewJob(firstBook, session);
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);
@@ -128,13 +128,13 @@ public class RenewJobTest extends TestCase {
 				Book firstBook = loanedBooks.get(0);
 				
 				// Run RenewJob.
-				RenewJob firstRenewJob = new RenewJob(session, firstBook);
+				RenewJob firstRenewJob = new RenewJob(firstBook, session);
 				Message firstResult = firstRenewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(firstResult);
 				
 				// Run RenewJob again, on the same book.
-				RenewJob secondRenewJob = new RenewJob(session, firstBook);
+				RenewJob secondRenewJob = new RenewJob(firstBook, session);
 				Message secondResult = secondRenewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(secondResult);
@@ -200,7 +200,7 @@ public class RenewJobTest extends TestCase {
 				booksToRenew.add(secondBook);
 				
 				// Run RenewJob on the list.
-				RenewJob renewJob = new RenewJob(session, booksToRenew);
+				RenewJob renewJob = new RenewJob(booksToRenew, session);
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);

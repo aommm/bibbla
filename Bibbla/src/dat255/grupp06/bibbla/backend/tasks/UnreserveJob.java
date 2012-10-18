@@ -57,7 +57,7 @@ public class UnreserveJob {
 	 * 
 	 * Note: Assumes that all books has their unreserveId set!
 	 */
-	public UnreserveJob(Session session, List<Book> books) {
+	public UnreserveJob(List<Book> books, Session session) {
 		this(session);
 		this.books = books;
 	}
@@ -68,7 +68,7 @@ public class UnreserveJob {
 	 * 
 	 * Note: Assumes that the book has its unreserveId set!
 	 */
-	public UnreserveJob(Session session, Book book) {
+	public UnreserveJob(Book book, Session session) {
 		this(session);
 		books = new ArrayList<Book>();
 		books.add(book);
