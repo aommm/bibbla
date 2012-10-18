@@ -17,24 +17,35 @@
 
 package dat255.grupp06.bibbla.frontend;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
+import dat255.grupp06.bibbla.fragments.SearchListFragment;
+import dat255.grupp06.bibbla.model.Book;
 
 
 
 public class BookOverlayActivity extends SherlockActivity {
-
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
+    	setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_overlay);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
+        
+        Intent intent = getIntent();
+        String title = intent.getStringExtra(SearchListFragment.BOOK_TITLE);
+        String author = intent.getStringExtra(SearchListFragment.BOOK_AUTHOR);
+        
+        ((TextView)findViewById(R.id.overlay_book_title)).setText(title);
+        ((TextView)findViewById(R.id.overlay_book_author)).setText(author);
     }
 }

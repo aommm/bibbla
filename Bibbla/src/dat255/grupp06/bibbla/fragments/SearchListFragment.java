@@ -40,7 +40,8 @@ import dat255.grupp06.bibbla.model.Book;
  *
  */
 public class SearchListFragment extends SherlockListFragment {
-	
+	public final static String BOOK_AUTHOR = "dat255.grupp06.bibbla.AUTHOR";
+	public final static String BOOK_TITLE = "dat255.grupp06.bibbla.TITLE";
 	private ArrayList<Book> currentBooks;
 	private int currentPage;
 	private String lastSearch;
@@ -60,6 +61,8 @@ public class SearchListFragment extends SherlockListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
     	if(position < currentBooks.size()) {
 	    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
+	    	intent.putExtra(BOOK_AUTHOR, currentBooks.get(position).getAuthor());
+	    	intent.putExtra(BOOK_TITLE, currentBooks.get(position).getName());
 	    	startActivity(intent);
     	} else {
     		currentPage++;
