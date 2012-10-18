@@ -21,6 +21,7 @@ import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.MyDebtJob;
 import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
+import dat255.grupp06.bibbla.backend.tasks.ReserveJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
 import dat255.grupp06.bibbla.model.Book;
@@ -143,7 +144,7 @@ public class Backend {
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void fetchReservations(Callback frontendCallback) {
+	public void fetchReservations(final Callback frontendCallback) {
 		Task task = new Task(frontendCallback) {
 			@Override
 			protected Void doInBackground(String... arg0) {
@@ -160,13 +161,37 @@ public class Backend {
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void fetchLoans(Callback frontendCallback) {
+	public void fetchLoans(final Callback frontendCallback) {
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
 				MyBooksJob job = new MyBooksJob(session);
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
+	}
+
+	/**
+	 *  Reserves the supplied book. Result is reported via callback.
+	 *  
+	 *  @param book - the book to reserve. Needs to have its reserveUrl property set.
+	 *  @param libraryCode - the code of the library the book should be sent to.
+	 *   TODO: change to Library!
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void reserve(final Book book, final String libraryCode,
+			final Callback frontendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				ReserveJob job = new ReserveJob(book, libraryCode, session);
 				message = job.run();
 				return null;
 			}

@@ -33,40 +33,60 @@ public class SearchJobTest extends TestCase {
 		session = SessionFactory.getSession();
 	}
 	
-	public void testRun() {
-		
+	/**
+	 * Test normal string
+	 */
+	public void testRun1() {
 		Message result;
-		
-		// Test normal string
 		SearchJob searchJob = new SearchJob("hej");
 		result = searchJob.run();
 		assertNotNull(result.obj);
 		assertTrue(result.obj instanceof List<?>);
 		assertFalse(((List<?>) result.obj).isEmpty());
-		
-		// Test that we get unique results for different search phrases
-		
+	}
+	
+	/**
+	 * Test that we get unique results for different search phrases
+	 */
+	public void testRun2(){
 		SearchJob searchJobPotter =  new SearchJob("potter");
 		SearchJob searchJobHej = new SearchJob("hej");
-		assertFalse((List<?>) searchJobHej.run().obj == ((List<?>) searchJobPotter.run().obj));
-		
-		// Test for different page numbers
+		assertFalse(((List<Book>) searchJobHej.run().obj).equals((List<Book>) searchJobPotter.run().obj));
+	}
+	/**
+	 * Test for different page numbers
+	 */
+	
+	public void testRun3(){
+		SearchJob searchJob0 = new SearchJob("Potter",0); 
 		SearchJob searchJob1 = new SearchJob("potter", 1);
 		SearchJob searchJob2 = new SearchJob("potter", 2);
-		assertFalse((List<?>) searchJob1.run().obj == (List<?>) searchJob2.run().obj);
-		
-		// Test weird string
+		assertFalse(((List<Book>) searchJob1.run().obj).equals((List<Book>) searchJob2.run().obj));
+		assertTrue(((List<Book>) searchJob0.run().obj).equals((List<Book>) searchJob1.run().obj));
+	}
+	
+	/**
+	 * Test weird string
+	 */
+	
+	public void testRun4(){
+		Message result;
 		SearchJob searchJobDifficult = new SearchJob("?^~QXZX");
 		result = searchJobDifficult.run();
 		assertNotNull(result.obj);
 		assertTrue(result.obj instanceof List<?>);
 		assertTrue(((List<?>)result.obj).isEmpty());
-		
-		// Test empty string
+	}
+	
+	/**
+	 * Test empty string
+	 */
+	
+	public void testRun5(){
+		Message result;
 		SearchJob searchJobEmpty = new SearchJob("");
 		result = searchJobEmpty.run();
 		assertTrue(((List<?>)result.obj).size() == 0);
 		assertNull(result.error);
-		// Perhaps we should check for more info?
 	}
 }
