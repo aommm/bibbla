@@ -28,6 +28,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.PhysicalBook;
 import dat255.grupp06.bibbla.utils.Error;
@@ -58,11 +59,34 @@ public class DetailedViewJob {
 	public Message run(){
 		
 		try {
-			fetchBookDetails();
+			System.out.print("\n****** DetailedViewJob\n");
+			System.out.print("* step 1: fetch book details... ");
+			
+			// Retry network connection a specified number of times. 
+			int failureCounter = 0;
+			while(true) {
+				try {					
+					fetchBookDetails();
+					System.out.print("succeeded! *\n");
+					break; // Break if we succeed.
+				} catch (Exception e) {
+					failureCounter++;
+				}
+				// If max attempts has been reached, abort Job.
+				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
+					throw new Exception("Network connection failed.");
+				} else {
+					System.out.print("failed. retrying... ");
+				}
+			}
+
+			System.out.print("* step 2: parse book details... ");
 			parseBookDetails();
+			System.out.print("succeeded! *\n*");
+			System.out.print("****** DetailedViewJob done \n");
+			
 		} catch (Exception e) {
 			message.error = (message.error!=null) ? message.error : Error.DETAILED_VIEW_FAILED;
-			System.out.println("Something went wrong dude!");
 		}
 		
 		return message;
@@ -77,6 +101,7 @@ public class DetailedViewJob {
 		
 	    httpResponse = Jsoup.connect(originalBook.getUrl())
 			    .method(Method.GET)
+			    .timeout(Backend.CONNECTION_TIMEOUT)
 			    .execute();		
 	}
 	
@@ -126,7 +151,7 @@ public class DetailedViewJob {
 	    	
 	    	// If we find a note,
 	       	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")) {
-	       		// Save the text on row ¤1 
+	       		// Save the text on row #1 
 	    		notes += (rows.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
 				// And save text of possible following rows that has no label.
