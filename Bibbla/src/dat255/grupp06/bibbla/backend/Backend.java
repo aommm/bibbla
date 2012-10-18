@@ -75,6 +75,7 @@ public final class Backend {
 	/**
 	 * New version of login, weird name in order not to break things with
 	 * previous login method.
+	 * @deprecated
 	 */
 	public void arildLogin(final Callback frontendCallback) {
 		// Check if already logged in

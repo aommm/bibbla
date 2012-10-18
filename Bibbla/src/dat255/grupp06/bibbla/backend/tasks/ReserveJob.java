@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -19,7 +20,7 @@ import dat255.grupp06.bibbla.utils.Message;
  * 
  * @author Niklas Logren
  */
-public class ReserveJob implements AuthorizedJob {
+public class ReserveJob extends AuthorizedJob {
 	private Book book;
 	private Session session;
 	private Message message;
@@ -33,7 +34,9 @@ public class ReserveJob implements AuthorizedJob {
 	 * @param libraryCode - The code of the library to send the book to. See library-codes.txt.
 	 * @param session - The session the book should be reserved using. User account is specified here.
 	 */
-	public ReserveJob(Book book, final String libraryCode, Session session){
+	public ReserveJob(boolean loggedIn, Credentials credentials, Book book,
+			final String libraryCode, Session session){
+		super(loggedIn, credentials);
 		this.book = book;
 		this.libraryCode = libraryCode;
 		this.session = session;
@@ -49,14 +52,15 @@ public class ReserveJob implements AuthorizedJob {
 	 * If reservation failed, obj will be a string containing the error message.
 	 */
 	public Message run(){
+		login();
 		
 		System.out.println("****** ReserveJob: ");
 		try {
 			System.out.println("*** Step 1: Verifying logged in");
-			if (!session.checkLogin()) {
-				message.error = Error.LOGIN_FAILED;
-				throw new Exception("session.checkLogin() failed!");
-			}
+//			if (!session.checkLogin()) {
+//				message.error = Error.LOGIN_FAILED;
+//				throw new Exception("session.checkLogin() failed!");
+//			}
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: Post our reservation");
@@ -84,6 +88,7 @@ public class ReserveJob implements AuthorizedJob {
 	private void postReservation() throws Exception {
 		
 		// Define hashMap containing post data.
+		@SuppressWarnings("serial")
 		Map<String,String> postData = new HashMap<String,String>() {{
 	    	put("locx00", libraryCode);
 	    	put("needby_Year", "Year");

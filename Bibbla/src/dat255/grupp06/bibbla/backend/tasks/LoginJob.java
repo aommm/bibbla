@@ -138,6 +138,7 @@ public class LoginJob {
 	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE");
 		
 	    // Prepare POST data.
+	    @SuppressWarnings("serial")
 	    Map<String,String> postData = new HashMap<String,String>() {{
 	    	put("name", credentials.name);
 	    	put("code", credentials.card);

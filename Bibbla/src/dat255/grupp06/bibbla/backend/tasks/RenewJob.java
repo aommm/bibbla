@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -22,7 +23,7 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class RenewJob implements AuthorizedJob {
+public class RenewJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	private List<Book> books;
@@ -33,7 +34,9 @@ public class RenewJob implements AuthorizedJob {
 	 * Creates a new RenewJob,
 	 * which will try to renew all of the user's currently loaned books. 
 	 */
-	public RenewJob(Session session) {
+	public RenewJob(boolean loggedIn, Credentials credentials,
+			Session session) {
+		super(loggedIn, credentials);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -44,8 +47,9 @@ public class RenewJob implements AuthorizedJob {
 	 * 
 	 * Note: Assumes that all books has their renewId set!
 	 */
-	public RenewJob(Session session, List<Book> books) {
-		this(session);
+	public RenewJob(boolean loggedIn, Credentials credentials,
+			Session session, List<Book> books) {
+		this(loggedIn, credentials, session);
 		this.books = books;
 	}
 	
@@ -55,8 +59,9 @@ public class RenewJob implements AuthorizedJob {
 	 * 
 	 * Note: Assumes that the book has its renewId set!
 	 */
-	public RenewJob(Session session, Book book) {
-		this(session);
+	public RenewJob(boolean loggedIn, Credentials credentials,
+			Session session, Book book) {
+		this(loggedIn, credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}
@@ -68,6 +73,7 @@ public class RenewJob implements AuthorizedJob {
 	 * 	their message attribute set. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** RenewJob: ");
 		try {
 			// Get user URL.
@@ -106,6 +112,7 @@ public class RenewJob implements AuthorizedJob {
 	private void postRenewal() throws Exception {
 		
 	    // Prepare POST data.
+	    @SuppressWarnings("serial")
 	    Map<String,String> postData = new HashMap<String,String>() {{
 	    	
 	    	// No specified books? Renew everything.

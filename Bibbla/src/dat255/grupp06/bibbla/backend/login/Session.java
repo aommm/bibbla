@@ -116,6 +116,7 @@ public class Session implements Serializable {
  	 * @returns the success of the login.
  	 * @deprecated
 	 */
+	@SuppressWarnings("unchecked")
 	public Message login() {
 		Message message = new Message();
 

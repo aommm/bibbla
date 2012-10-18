@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -22,7 +23,7 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class UnreserveJob implements AuthorizedJob {
+public class UnreserveJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	private List<Book> books;
@@ -33,7 +34,9 @@ public class UnreserveJob implements AuthorizedJob {
 	 * Creates a new UnreserveJob,
 	 * which will try to unreserve all of the user's current reservations. 
 	 */
-	public UnreserveJob(Session session) {
+	public UnreserveJob(boolean loggedIn, Credentials credentials,
+			Session session) {
+		super(loggedIn, credentials);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -44,8 +47,9 @@ public class UnreserveJob implements AuthorizedJob {
 	 * 
 	 * Note: Assumes that all books has their unreserveId set!
 	 */
-	public UnreserveJob(Session session, List<Book> books) {
-		this(session);
+	public UnreserveJob(boolean loggedIn, Credentials credentials,
+			Session session, List<Book> books) {
+		this(loggedIn, credentials, session);
 		this.books = books;
 	}
 	
@@ -55,8 +59,9 @@ public class UnreserveJob implements AuthorizedJob {
 	 * 
 	 * Note: Assumes that the book has its unreserveId set!
 	 */
-	public UnreserveJob(Session session, Book book) {
-		this(session);
+	public UnreserveJob(boolean loggedIn, Credentials credentials,
+			Session session, Book book) {
+		this(loggedIn, credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}
@@ -68,6 +73,7 @@ public class UnreserveJob implements AuthorizedJob {
 	 * 	their message attribute set. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** UnreserveJob: ");
 		try {
 			// Get user URL.
@@ -106,7 +112,8 @@ public class UnreserveJob implements AuthorizedJob {
 	private void postUnreservation() throws Exception {
 		
 	    // Prepare POST data.
-	    Map<String,String> postData = new HashMap<String,String>() {{
+	    @SuppressWarnings("serial")
+		Map<String,String> postData = new HashMap<String,String>() {{
 	    	
 	    	// No specified books? Unreserve everything.
 	    	if (books == null) {

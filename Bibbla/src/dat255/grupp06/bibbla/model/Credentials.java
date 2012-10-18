@@ -12,4 +12,6 @@ public final class Credentials implements Serializable {
 		this.card = card;
 		this.pin = pin;
 	}
+	
+	// TODO Implement clone, equals, etc.
 }
