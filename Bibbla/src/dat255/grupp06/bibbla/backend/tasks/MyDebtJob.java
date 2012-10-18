@@ -22,6 +22,7 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -68,7 +69,23 @@ public class MyDebtJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: fetch user page");
-			fetchUserPage();
+			// Retry network connection a specified number of times. 
+			int failureCounter = 0;
+			while(true) {
+				try {
+					fetchUserPage();
+					System.out.print("succeeded! *\n");
+					break; // Break if we succeed.
+				} catch (Exception e) {
+					failureCounter++;
+				}
+				// If max attempts has been reached, abort Job.
+				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
+					throw new Exception("Network connection failed.");
+				} else {
+					System.out.print("failed. retrying... ");
+				}
+			}
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse debt");
