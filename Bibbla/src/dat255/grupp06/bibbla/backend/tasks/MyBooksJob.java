@@ -25,6 +25,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.CommonParsing;
@@ -67,8 +68,25 @@ public class MyBooksJob {
 			userUrl += "items";
 			System.out.println("Step 1 done! ***");
 			
+			
 			System.out.println("*** Step 2: fetch loaned books");
-			fetchLoanedBooks();
+			// Retry network connection a specified number of times. 
+			int failureCounter = 0;
+			while(true) {
+				try {
+					fetchLoanedBooks();
+					System.out.print("succeeded! *\n");
+					break; // Break if we succeed.
+				} catch (Exception e) {
+					failureCounter++;
+				}
+				// If max attempts has been reached, abort Job.
+				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
+					throw new Exception("Network connection failed.");
+				} else {
+					System.out.print("failed. retrying... ");
+				}
+			}
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse loaned books");
