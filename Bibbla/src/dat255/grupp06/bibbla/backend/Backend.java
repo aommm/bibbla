@@ -40,6 +40,8 @@ import dat255.grupp06.bibbla.utils.PrivateCredentials;
  */
 public class Backend {
 	
+	public final static int CONNECTION_ATTEMPTS = 5;
+	public final static int CONNECTION_TIMEOUT = 2000;
 	private Settings settings;
 	private Session session;
 	
