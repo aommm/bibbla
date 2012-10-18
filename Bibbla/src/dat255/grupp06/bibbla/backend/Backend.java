@@ -17,6 +17,8 @@
 
 package dat255.grupp06.bibbla.backend;
 
+import java.util.List;
+
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.MyDebtJob;
@@ -24,6 +26,7 @@ import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
 import dat255.grupp06.bibbla.backend.tasks.ReserveJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
+import dat255.grupp06.bibbla.backend.tasks.UnreserveJob;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.PrivateCredentials;
@@ -192,6 +195,68 @@ public class Backend {
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
 				ReserveJob job = new ReserveJob(book, libraryCode, session);
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
+	}
+
+	/**
+	 *  Unreserves all supplied books. Result is reported via callback.
+	 *  
+	 *  @param books - A list of books to unreserve. Needs to have their unreserveIds property set.
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void unreserve(final List<Book> books, final Callback frontendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				UnreserveJob job = new UnreserveJob(books, session);
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
+	}
+	
+	/**
+	 *  Unreserves the supplied book. Result is reported via callback.
+	 *  
+	 *  @param book - The book to unreserve. Needs to have its unreserveId property set.
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void unreserve(final Book book, final Callback frontendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				UnreserveJob job = new UnreserveJob(book, session);
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
+	}
+	
+	/**
+	 *  Unreserves all reserved books. Result is reported via callback.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void unreserve(final Callback frontendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				UnreserveJob job = new UnreserveJob(session);
 				message = job.run();
 				return null;
 			}
