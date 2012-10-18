@@ -25,6 +25,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.*;
@@ -96,7 +97,23 @@ public class UnreserveJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: post our unreservation");
-			postUnreservation();
+			// Retry network connection a specified number of times.
+			int failureCounter = 0;
+			while(true) {
+				try {
+					postUnreservation();
+					System.out.print("succeeded! *\n");
+					break; // Break if we succeed.
+				} catch (Exception e) {
+					failureCounter++;
+				}
+				// If max attempts has been reached, abort Job.
+				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
+					throw new Exception("Network connection failed.");
+				} else {
+					System.out.print("failed. retrying... ");
+				}
+			}
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse the results");
