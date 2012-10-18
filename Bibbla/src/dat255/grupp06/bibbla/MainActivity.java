@@ -15,6 +15,7 @@ import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.frontend.LoginOverlayActivity;
 import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements
@@ -26,6 +27,7 @@ ActionBar.TabListener {
 	
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
+	private Callback loginDoneCallback;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,11 +90,13 @@ ActionBar.TabListener {
 			// TODO Check format of input
 			if (cred == null) {
 				// Retry login form (recursive)
-				Intent intent = new Intent(this, LoginOverlayActivity.class);
-				startActivityForResult(intent, RESULT_LOGIN_FORM);
+				showCredentialsDialog(loginDoneCallback);
 			} else {
 				backend.saveCredentials(cred);
 			}
+			loginDoneCallback.handleMessage(new Message());
+			// The callback should be handled more than once.
+			loginDoneCallback = null;
 		default:
 			throw new IllegalArgumentException("onActivityResult was called "+
 					"with an unknown request code");
@@ -177,5 +181,11 @@ ActionBar.TabListener {
 	
 	public void searchClicked(View view) {
 		searchFragment.searchClicked();
+	}
+	
+	public void showCredentialsDialog(Callback callback) {
+		this.loginDoneCallback = callback;
+		Intent intent = new Intent(this, LoginOverlayActivity.class);
+		startActivityForResult(intent, RESULT_LOGIN_FORM);
 	}
 }

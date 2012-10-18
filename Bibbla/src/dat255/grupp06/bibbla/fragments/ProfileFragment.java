@@ -3,7 +3,6 @@ package dat255.grupp06.bibbla.fragments;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
-import dat255.grupp06.bibbla.frontend.LoginOverlayActivity;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.CredentialsMissingException;
@@ -93,8 +91,13 @@ public class ProfileFragment extends SherlockFragment {
 			}});
 		}
 		catch (CredentialsMissingException e) {
-			Intent intent = new Intent(activity, LoginOverlayActivity.class);
-			startActivityForResult(intent, MainActivity.RESULT_LOGIN_FORM);
+			// call activity.showCredentialsDialog() with a callback to updateFromBackend as param?
+			// MainActivity saves this callback as instant variable, and in onActivityResult it calls it.
+			// TODO Circdep!!
+			showCredentialsDialog(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					updateFromBackend();
+			}});
 		}
 	}
 	
