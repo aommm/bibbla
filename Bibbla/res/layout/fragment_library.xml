@@ -5,14 +5,14 @@
     android:orientation="vertical"
     android:background="#ff00ff">
     <TextView 
-        android:id="@+id/text"
+        android:id="@+id/textSomething"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="@string/text"
         android:textColor="#000000"
         android:gravity="center"
-        android:textSize="60dp"
+        android:textSize="40dp"
         ></TextView>
     <ListView
         android:id="@+id/lib_list"

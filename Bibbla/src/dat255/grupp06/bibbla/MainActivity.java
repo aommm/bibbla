@@ -31,6 +31,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.fragments.LibraryFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.utils.Callback;
@@ -44,6 +45,7 @@ ActionBar.TabListener {
 	// TODO These should probably go into a list or something.
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
+	LibraryFragment libraryFragment;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ ActionBar.TabListener {
         //Create the tabs
         ActionBar.Tab searchTab = getSupportActionBar().newTab();
         ActionBar.Tab profileTab = getSupportActionBar().newTab();
+        ActionBar.Tab libraryTab = getSupportActionBar().newTab();
         
         //Set tab properties
         searchTab.setContentDescription("Sök");
@@ -77,9 +80,14 @@ ActionBar.TabListener {
         profileTab.setIcon(android.R.drawable.ic_menu_share);
         profileTab.setTabListener(this);
    
+        libraryTab.setContentDescription("Bibliotek");
+        libraryTab.setIcon(android.R.drawable.ic_menu_directions);
+        libraryTab.setTabListener(this);
+        
         //Add the tabs to the action bar
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
+        getSupportActionBar().addTab(libraryTab);
         
         Log.d("Jonis", "main finished");
     }
@@ -112,6 +120,15 @@ ActionBar.TabListener {
 					ft.attach(profileFragment);
 				}
 				break;
+			case 2:
+				if(libraryFragment == null) {
+					libraryFragment = new LibraryFragment();
+					libraryFragment.setBackend(backend);
+			        ft.add(R.id.fragment_container, libraryFragment);
+				} else {
+					ft.attach(libraryFragment);
+				}
+				break;
 		}
 	}
 
@@ -129,6 +146,9 @@ ActionBar.TabListener {
 		case 1:
 			ft.detach(profileFragment);
 			break;
+		case 2:
+			ft.detach(libraryFragment);
+			break;	
 		}
 	}
 

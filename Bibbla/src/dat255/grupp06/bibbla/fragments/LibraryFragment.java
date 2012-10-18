@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.frontend;
+package dat255.grupp06.bibbla.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -25,8 +25,8 @@ import dat255.grupp06.bibbla.backend.Backend;
 public class LibraryFragment extends SherlockFragment {
 
 	Backend backend;
-	SearchListFragment listFragment;
-	TextView text;
+//	SearchListFragment listFragment;
+	TextView textSomething;
 	ListView libList;
 	
 	@Override
@@ -35,5 +35,8 @@ public class LibraryFragment extends SherlockFragment {
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {		
 		return inflater.inflate(R.layout.fragment_library, container, false);
+	}
+	public void setBackend(Backend b) {
+		backend = b;
 	}
 }
