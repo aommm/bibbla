@@ -39,6 +39,7 @@ public class MyReservationsJob extends AuthorizedJob {
 	 * @returns a Message, containing a List of the user's current reservations. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyReservationsJob: ");
 		try {
 			// Get user URL.

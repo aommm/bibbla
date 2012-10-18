@@ -38,6 +38,7 @@ public class MyBooksJob extends AuthorizedJob {
 	 * @returns a Message, containing a List of the user's current loans. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyBooksJob: ");
 		try {
 			// Get user URL.
