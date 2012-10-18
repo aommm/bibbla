@@ -13,21 +13,19 @@ import com.actionbarsherlock.view.Window;
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
-import dat255.grupp06.bibbla.frontend.LoginManager;
+import dat255.grupp06.bibbla.frontend.LoginOverlayActivity;
 import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener {	
 
 	private Backend backend;
-	public static final String EXTRA_BACKEND = "backend";
+	public static final int RESULT_LOGIN_FORM = 0;
+	public static final String EXTRA_CREDENTIALS = "credentials";
 	
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
-	LoginManager loginManager;
-	private Callback loginDoneCallback;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +41,6 @@ ActionBar.TabListener {
         setSupportProgressBarIndeterminateVisibility(false);
 
         backend = new Backend();
-        loginManager = new LoginManager(backend);
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -85,24 +82,20 @@ ActionBar.TabListener {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case LoginManager.RESULT_LOGIN_FORM:
-			// Read credentials
-			Credentials cred;
-			try {
-				cred = (Credentials) data.getSerializableExtra(LoginManager.EXTRA_CREDENTIALS);
-			} catch (ClassCastException e) {
-				cred = null;
-			}
+		case RESULT_LOGIN_FORM:
+			// Get credentials
+			Credentials cred = (Credentials) data.getSerializableExtra(EXTRA_CREDENTIALS);
 			// TODO Check format of input
-			// Retry if bad credentials.
 			if (cred == null) {
-				loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
+				// Retry login form (recursive)
+				Intent intent = new Intent(this, LoginOverlayActivity.class);
+				startActivityForResult(intent, RESULT_LOGIN_FORM);
 			} else {
-				loginManager.login(cred, loginDoneCallback);
+				backend.saveCredentials(cred);
 			}
-			break;
 		default:
-			System.out.println("onActivityResult was called with an unknown request code");
+			throw new IllegalArgumentException("onActivityResult was called "+
+					"with an unknown request code");
 		}
 	}
 	
@@ -120,18 +113,17 @@ ActionBar.TabListener {
 				}
 				break;
 			case 1:
-				// Specify what to do when logged in
-				loginDoneCallback = new Callback() {
-					@Override
-					public void handleMessage(Message msg) {
-						MainActivity.this.showProfileTab(msg);
-					}
-				};
-				// Prompt login
-				loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
+				if (profileFragment == null) {
+					profileFragment = new ProfileFragment();
+					profileFragment.setBackend(backend);
+					ft.add(R.id.fragment_container, profileFragment);
+				} else {
+					ft.attach(profileFragment);
+				}
 		}
 	}
 	
+	/** @deprecated*/
 	public void showProfileTab(Message msg) {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		if (msg.error == null) {
@@ -145,7 +137,7 @@ ActionBar.TabListener {
 				ft.commit();
 			}
 		} else {
-			loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
+//			loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
 		}
 	}
 
@@ -170,7 +162,7 @@ ActionBar.TabListener {
 	 * @param view
 	 */
 	public void logout(View view) {
-		loginManager.logout();
+		backend.logOut();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		if (searchFragment == null) {
 			searchFragment = new SearchFragment();

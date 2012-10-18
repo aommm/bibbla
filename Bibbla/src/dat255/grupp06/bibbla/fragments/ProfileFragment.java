@@ -3,6 +3,7 @@ package dat255.grupp06.bibbla.fragments;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,13 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.frontend.LoginOverlayActivity;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Message;
 
 /**
@@ -54,35 +58,44 @@ public class ProfileFragment extends SherlockFragment {
 	 * @throws IllegalStateException if the backend is not set.
 	 * @see setBackend(Backend)
 	 */
-	private void updateFromBackend() throws IllegalStateException {
+	public void updateFromBackend() throws IllegalStateException {
 		if (backend == null)
 			throw new IllegalStateException();
 		
 		Activity activity = getSherlockActivity();
-		// Name header
-		String name = backend.getUserName();
-		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
-		nameHeading.setText(name);
-		// Current debt
-		int debt = backend.getUserDebt();
-		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
-		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
 		
-		// The lists take some time so let's use Callback.
-		// TODO Loading spinner
-		Callback loansCallback = new Callback() {
-			@Override public void handleMessage(Message msg) {
-				ProfileFragment.this.loansUpdateDone(msg);
-			}
-		};
-		backend.fetchLoans(loansCallback);
-		
-		Callback reservationsCallback = new Callback() {
-			@Override public void handleMessage(Message msg) {
-				ProfileFragment.this.reservationsUpdateDone(msg);
-			}
-		};
-		backend.fetchReservations(reservationsCallback);
+		// These backend calls need user credentials.
+		try {
+			// Name header
+			String name = backend.getUserName();
+			TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
+			nameHeading.setText(name);
+			
+			// The lists take some time so let's use Callback.
+			// TODO Loading spinner
+	
+			// Current debt
+			backend.fetchLoans(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					ProfileFragment.this.fetchDebtDone(msg);
+			}});
+			
+			// Current loans
+			backend.fetchLoans(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					ProfileFragment.this.loansUpdateDone(msg);
+			}});
+			
+			// Current reservations
+			backend.fetchReservations(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					ProfileFragment.this.reservationsUpdateDone(msg);
+			}});
+		}
+		catch (CredentialsMissingException e) {
+			Intent intent = new Intent(activity, LoginOverlayActivity.class);
+			startActivityForResult(intent, MainActivity.RESULT_LOGIN_FORM);
+		}
 	}
 	
 	/**
@@ -120,4 +133,14 @@ public class ProfileFragment extends SherlockFragment {
 		
 	}
 	
+	/**
+	 * Update the debt TextView.
+	 * @param msg Backend response, 
+	 */
+	private void fetchDebtDone(Message msg) {
+		Activity activity = getSherlockActivity();
+		int debt = (Integer) msg.obj;
+		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
+		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
+	}
 }

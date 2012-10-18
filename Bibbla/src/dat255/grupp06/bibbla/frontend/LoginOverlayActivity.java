@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
 
+import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.model.Credentials;
 
@@ -46,9 +47,7 @@ public class LoginOverlayActivity extends SherlockActivity {
 					cardET.getText().toString(), pinET.getText().toString());
 			// Send it back to whoever asked
 			Intent resultIntent = new Intent();
-			resultIntent.putExtra(LoginManager.EXTRA_CALLBACK, getIntent().
-					getSerializableExtra(LoginManager.EXTRA_CALLBACK));
-			resultIntent.putExtra(LoginManager.EXTRA_CREDENTIALS, cred);
+			resultIntent.putExtra(MainActivity.EXTRA_CREDENTIALS, cred);
 			setResult(Activity.RESULT_OK, resultIntent);
 			finish();
 		}
