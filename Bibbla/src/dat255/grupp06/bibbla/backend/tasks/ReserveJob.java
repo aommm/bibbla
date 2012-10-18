@@ -17,7 +17,6 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 

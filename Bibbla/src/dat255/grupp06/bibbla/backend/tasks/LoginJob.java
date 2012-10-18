@@ -17,8 +17,6 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,9 +27,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Error;
-//import java.net.CookieManager;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
  * Logs the user into gotlib.

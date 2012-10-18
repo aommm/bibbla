@@ -31,7 +31,7 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyDebtJob {
+public class MyDebtJob implements AuthorizedJob {
 	private Session session;
 	private Message message;
 	
