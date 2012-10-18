@@ -19,7 +19,7 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyReservationsJob {
+public class MyReservationsJob implements AuthorizedJob {
 	private Session session;
 	private Message message;
 	

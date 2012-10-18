@@ -1,24 +1,28 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.jsoup.Connection.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.*;
+import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
  * Fetches a list of the user's currently loaned books.
  *
  * @author Niklas Logren
  */
-public class RenewJob {
+public class RenewJob implements AuthorizedJob {
 	private Session session;
 	private Message message;
 	private List<Book> books;
