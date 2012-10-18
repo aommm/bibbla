@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
@@ -46,6 +48,24 @@ ActionBar.TabListener {
 	ProfileFragment profileFragment;
 	
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		/*
+		menu.add("button")
+		.setActionView(R.layout.actionbar_search_button)
+		.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		
+		menu.add("Search")
+			.setActionView(R.layout.actionbar_search_field)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		
+		*/
+		
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;	
+	}
+	
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
@@ -54,7 +74,7 @@ ActionBar.TabListener {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_main);
-       
+        
         // Hide progress bar by default.
         setSupportProgressBarIndeterminateVisibility(false);
 
