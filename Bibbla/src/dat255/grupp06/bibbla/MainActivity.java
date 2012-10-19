@@ -96,8 +96,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 				backend.saveCredentials(cred);
 			}
 			loginDoneCallback.handleMessage(new Message());
-			// The callback should be handled more than once.
+			// The callback should not be handled more than once.
 			loginDoneCallback = null;
+			break;
 		default:
 			throw new IllegalArgumentException("onActivityResult was called "+
 					"with an unknown request code");
