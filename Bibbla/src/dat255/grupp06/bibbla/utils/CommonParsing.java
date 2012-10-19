@@ -110,7 +110,8 @@ public class CommonParsing {
 	    	book.setUrl(row.select("td.patFuncTitle").first().attr("abs:href"));
 	    	if (parseReservations) {
 	    		book.setUnreserveId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("name"));
-	    		book.setFreezeId(row.select("td.patFuncFreeze").first().getElementsByTag("input").first().attr("name"));
+	    		if (row.select("td.patFuncFreeze").first().getElementsByTag("input").first() != null)
+	    			book.setFreezeId(row.select("td.patFuncFreeze").first().getElementsByTag("input").first().attr("name"));
 	    	} else {
 	    		book.setRenewId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("value"));
 	    	}
