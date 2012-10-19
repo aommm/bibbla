@@ -14,6 +14,9 @@ public class Settings implements Serializable {
 	private static final long serialVersionUID = 6558963742577293894L;
 	private String name, code, pin;
 
+	public Settings() {}
+	
+	/** @deprecated */
 	public Settings(String name, String code, String pin) {
 		this.name = name;
 		this.code = code;

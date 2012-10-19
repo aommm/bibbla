@@ -13,7 +13,6 @@ import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.utils.PrivateCredentials;
 
 /**
  * Performs tasks like searching, reserving and logging in.
@@ -31,7 +30,7 @@ public final class Backend {
 	 * Initialises a new session and fetches settings.
 	 */
 	public Backend() {
-		settings = new Settings(PrivateCredentials.name,PrivateCredentials.code,PrivateCredentials.pin);
+		settings = new Settings(/*PrivateCredentials.name,PrivateCredentials.code,PrivateCredentials.pin*/);
 		session = new Session(settings.getName(), settings.getCode(), settings.getPin());
 	}
 	
