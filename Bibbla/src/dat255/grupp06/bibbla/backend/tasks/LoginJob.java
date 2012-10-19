@@ -14,7 +14,6 @@ import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
-//import java.net.CookieManager;
 
 /**
  * Logs the user into gotlib.
@@ -74,15 +73,17 @@ public class LoginJob {
 			getLoginForm();
 			System.out.print("succeeded! *\n");
 			System.out.print("* postLoginForm(): ");
-			postLoginForm();
+			Response response = postLoginForm();
 			System.out.print("succeeded! *\n");
-//			System.out.print("* loginTest(): ");
-//			loginTest("hej");
-//			System.out.print("succeeded! *\n");
+			System.out.print("* loginTest(): ");
+			String url = parseUserUrl(response);
+			session.setUserUrl(url);
+			System.out.print("succeeded! *\n");
 			System.out.print("****** LoginJob done \n");
 			// We made it through.
 			message.obj = sessionCookies;
 			message.loggedIn = true;
+			session.setCookies(sessionCookies);
 		}
 		catch (Exception e) {
 			message.loggedIn = false;
@@ -135,7 +136,7 @@ public class LoginJob {
 	 * Step 2: POSTs login credentials.
 	 * Saves new session cookies, which will be used in all requests hereafter.
 	 */
-	private void postLoginForm() throws Exception {
+	private Response postLoginForm() throws Exception {
 		
 		// Prepare POST url (spoiler: contains variables!)
 	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE");
@@ -165,46 +166,22 @@ public class LoginJob {
 			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
 		} System.out.print("\n");
 		
-		arildLoginTest(response);
+		return response;
 	}
 	
 	/**
-	 * Performs a test search, to see if login was successful.
+	 * Parse the user's "profile" URL in Session for later use.
+	 * @param response Response from postLoginForm()
+	 * @return URL for the user's personal page
+	 * @throws IOException if parsing failed or the URL could't be found (for
+	 * any reason)
 	 */
-	private void loginTest(String searchString) throws Exception {
-		
-	    String url = "http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchString+"__Orightresult__U1?lang=swe&suite=pearl";
-	    
-	    // Send a GET request and save response.
-	    Response response = Jsoup.connect(url)
-	    		.method(Method.GET)
-	    		.cookies(sessionCookies)
-	    		.execute();
-	    
-	    // Prepare for parsing.
-	    Document html = response.parse();
-	    
-	    // Is login link present?
-	    if (html.select("a[id=patronLogoutLinkComponent]").size() == 0) {
-	    	// Yep. Login failed.
-	    	System.out.println("login link present.");
-	    	throw new Exception("Login test failed.");
-	    }
-
-	    // Debugging
-		for (Entry<String, String> c : sessionCookies.entrySet()) {
-			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
-		}
-		System.out.print("\n");
-	    
-	    // We made it here without exceptions? Yay!
-	}
-	
-	private void arildLoginTest(Response response) throws Exception {
+	private static String parseUserUrl(Response response) throws IOException {
 		Document html = response.parse();
 		String url = html.select(".myAccountLink").attr("href");
-		if (url.equals("")) throw new Exception("no link found");
-		session.setUserUrl(url);
+		if (url.equals("")) throw new IOException("no link found");
+		if (!url.matches("/$")) url += "/";
+		return url;
 	}
 	
 }
