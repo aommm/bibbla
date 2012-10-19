@@ -17,8 +17,8 @@ import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Callback;
-import dat255.grupp06.bibbla.utils.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Message;
 
 /**

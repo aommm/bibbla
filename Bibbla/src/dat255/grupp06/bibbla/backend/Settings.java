@@ -3,7 +3,7 @@ package dat255.grupp06.bibbla.backend;
 import java.io.Serializable;
 
 import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.utils.CredentialsMissingException;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 
 /** A class for storing the user's settings.
  *

@@ -2,7 +2,6 @@ package dat255.grupp06.bibbla.model;
 
 import java.io.Serializable;
 
-import dat255.grupp06.bibbla.utils.CredentialsMissingException;
 
 /**
  * Holds a set of credentials used to login with Gotlib. Credentials are

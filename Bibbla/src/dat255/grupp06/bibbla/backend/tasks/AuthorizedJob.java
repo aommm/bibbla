@@ -2,7 +2,7 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.utils.CredentialsMissingException;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Message;
 
 /**

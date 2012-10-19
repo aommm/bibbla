@@ -1,4 +1,4 @@
-package dat255.grupp06.bibbla.utils;
+package dat255.grupp06.bibbla.model;
 
 /**
  * Thrown from a method in Backend when user must be logged in and there are no
