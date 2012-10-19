@@ -47,8 +47,10 @@ public final class Backend {
 	 *  @returns the user's current debt.
 	 *  TODO: Implement.
 	 */
-	public int getUserDebt() {
-		return (int)(Math.random()*500);
+	public void getUserDebt(Callback callback) {
+		Message message = new Message();
+		message.obj = (int)(Math.random()*500);
+		callback.handleMessage(message);
 	}
 	
 	/**
@@ -211,6 +213,7 @@ public final class Backend {
 	}
 	
 	public void saveCredentials(Credentials cred) {
-		saveCredentials(cred.name, cred.card, cred.pin);
+		if (cred != null)
+			saveCredentials(cred.name, cred.card, cred.pin);
 	}
 }

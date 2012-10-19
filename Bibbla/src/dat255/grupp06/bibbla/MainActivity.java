@@ -13,13 +13,14 @@ import com.actionbarsherlock.view.Window;
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
+import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.frontend.LoginOverlayActivity;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements
-ActionBar.TabListener {	
+ActionBar.TabListener, LoginCallbackHandler {	
 
 	private Backend backend;
 	public static final int RESULT_LOGIN_FORM = 0;
@@ -73,7 +74,7 @@ ActionBar.TabListener {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@inheritdoc}
 	 * 
 	 * This is called when a user is done with LoginOverlayActivity. Saves the
 	 * specified credentials and tells Backend to log in.
@@ -110,6 +111,7 @@ ActionBar.TabListener {
 			case 0:
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
+			        // TODO Why don't we pass Backend as a constructor param?
 			        searchFragment.setBackend(backend);
 			        ft.add(R.id.fragment_container, searchFragment);
 				} else {
@@ -183,6 +185,7 @@ ActionBar.TabListener {
 		searchFragment.searchClicked();
 	}
 	
+	@Override
 	public void showCredentialsDialog(Callback callback) {
 		this.loginDoneCallback = callback;
 		Intent intent = new Intent(this, LoginOverlayActivity.class);

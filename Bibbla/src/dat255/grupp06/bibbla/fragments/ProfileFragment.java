@@ -13,9 +13,9 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.CredentialsMissingException;
@@ -30,10 +30,26 @@ public class ProfileFragment extends SherlockFragment {
 
 	Backend backend;
 	
+	/**
+	 * Reference to the class that can produce a login form. Is set on attach.
+	 */
+	private LoginCallbackHandler loginCallbackHandler;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.profile_fragment, container, false);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			loginCallbackHandler = (LoginCallbackHandler) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() +
+					"must implement LoginCallbackHandler");
+		}
 	}
 	
 	/**
@@ -73,7 +89,8 @@ public class ProfileFragment extends SherlockFragment {
 			// TODO Loading spinner
 	
 			// Current debt
-			backend.fetchLoans(new Callback() {
+//			backend.getUserDebt();
+			backend.getUserDebt(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.fetchDebtDone(msg);
 			}});
@@ -91,10 +108,7 @@ public class ProfileFragment extends SherlockFragment {
 			}});
 		}
 		catch (CredentialsMissingException e) {
-			// call activity.showCredentialsDialog() with a callback to updateFromBackend as param?
-			// MainActivity saves this callback as instant variable, and in onActivityResult it calls it.
-			// TODO Circdep!!
-			showCredentialsDialog(new Callback() {
+			loginCallbackHandler.showCredentialsDialog(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					updateFromBackend();
 			}});
