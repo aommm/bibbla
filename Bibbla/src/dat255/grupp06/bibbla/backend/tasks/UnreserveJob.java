@@ -36,7 +36,7 @@ public class UnreserveJob extends AuthorizedJob {
 	 */
 	public UnreserveJob(boolean loggedIn, Credentials credentials,
 			Session session) {
-		super(loggedIn, credentials);
+		super(loggedIn, credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}

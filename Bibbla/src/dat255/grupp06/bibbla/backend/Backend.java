@@ -91,7 +91,7 @@ public final class Backend {
 				@SuppressWarnings("unchecked")
 				@Override
 				protected Void doInBackground(String... params) {
-					LoginJob job = new LoginJob(settings.getCredentials());
+					LoginJob job = new LoginJob(settings.getCredentials(), session);
 					message = job.run();
 					if (message.loggedIn) {
 						try {

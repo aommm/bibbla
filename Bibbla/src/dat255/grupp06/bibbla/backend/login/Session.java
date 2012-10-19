@@ -149,9 +149,9 @@ public class Session implements Serializable {
 	private String fetchUserUrl() throws Exception {
 		
 		// We have need to be logged in for "user url" to make sense.
-		if (!checkLogin()) {
-			return "";
-		}
+//		if (!checkLogin()) {
+//			return "";
+//		}
 		
 		// Prepare url. (This URL will 302 redirect us)
 		String url = "https://www.gotlib.goteborg.se/patroninfo~S6*swe/1/";

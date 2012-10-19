@@ -29,7 +29,7 @@ public class MyReservationsJob extends AuthorizedJob {
 	
 	public MyReservationsJob(boolean loggedIn, Credentials credentials,
 			Session session) {
-		super(loggedIn, credentials);
+		super(loggedIn, credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}

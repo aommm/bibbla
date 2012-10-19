@@ -1,5 +1,6 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +35,7 @@ public class LoginJob {
 	/** @deprecated */
 	String name, code, pin;
 	private final Credentials credentials;
+	private Session session;
 	
 	/**
 	 * @deprecated
@@ -50,9 +52,10 @@ public class LoginJob {
 		sessionCookies = new HashMap<String, String>();
 	}
 	
-	public LoginJob(Credentials credentials) {
+	public LoginJob(Credentials credentials, Session session) {
 		this.credentials = credentials;
 		message = new Message();
+		this.session = session;
 		
 		// Initialise maps.
 		sessionVariables = new HashMap<String, String>();
@@ -73,9 +76,9 @@ public class LoginJob {
 			System.out.print("* postLoginForm(): ");
 			postLoginForm();
 			System.out.print("succeeded! *\n");
-			System.out.print("* loginTest(): ");
-			loginTest("hej");
-			System.out.print("succeeded! *\n");
+//			System.out.print("* loginTest(): ");
+//			loginTest("hej");
+//			System.out.print("succeeded! *\n");
 			System.out.print("****** LoginJob done \n");
 			// We made it through.
 			message.obj = sessionCookies;
@@ -161,6 +164,8 @@ public class LoginJob {
 		for (Entry<String, String> c : sessionCookies.entrySet()) {
 			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
 		} System.out.print("\n");
+		
+		arildLoginTest(response);
 	}
 	
 	/**
@@ -193,6 +198,13 @@ public class LoginJob {
 		System.out.print("\n");
 	    
 	    // We made it here without exceptions? Yay!
+	}
+	
+	private void arildLoginTest(Response response) throws Exception {
+		Document html = response.parse();
+		String url = html.select(".myAccountLink").attr("href");
+		if (url.equals("")) throw new Exception("no link found");
+		session.setUserUrl(url);
 	}
 	
 }

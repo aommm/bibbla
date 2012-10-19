@@ -1,5 +1,6 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Message;
@@ -14,16 +15,19 @@ public abstract class AuthorizedJob {
 	
 	protected final boolean loggedIn;
 	protected final Credentials credentials;
+	protected final Session session;
 	
 	/**
 	 * Construct a job that requires being logged in.
 	 * @param loggedIn Whether the user is already logged in.
 	 * @param credentials Which credentials to use otherwise.
 	 */
-	public AuthorizedJob(boolean loggedIn, Credentials credentials) {
+	public AuthorizedJob(boolean loggedIn, Credentials credentials,
+			Session session) {
 		if (credentials == null);
 		this.loggedIn = loggedIn;
 		this.credentials = credentials;
+		this.session = session;
 	}
 	
 	/**
@@ -36,7 +40,7 @@ public abstract class AuthorizedJob {
 	public void login() throws CredentialsMissingException {
 		if (loggedIn)
 			return;
-		LoginJob loginJob = new LoginJob(credentials);
+		LoginJob loginJob = new LoginJob(credentials, session);
 		Message message = loginJob.run();
 		if (!message.loggedIn) {
 			// If the login failed we can at least require updated credentials 

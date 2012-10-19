@@ -36,7 +36,7 @@ public class ReserveJob extends AuthorizedJob {
 	 */
 	public ReserveJob(boolean loggedIn, Credentials credentials, Book book,
 			final String libraryCode, Session session){
-		super(loggedIn, credentials);
+		super(loggedIn, credentials, session);
 		this.book = book;
 		this.libraryCode = libraryCode;
 		this.session = session;
