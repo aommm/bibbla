@@ -31,25 +31,8 @@ public class LoginJob {
 	Map<String, String> sessionVariables;
 	Message message;
 	
-	/** @deprecated */
-	String name, code, pin;
 	private final Credentials credentials;
 	private Session session;
-	
-	/**
-	 * @deprecated
-	 */
-	public LoginJob(Session session) {
-		name = session.getName();
-		code = session.getCode();
-		pin = session.getPin();
-		message = new Message();
-		credentials = null;
-		
-		// Initialise maps.
-		sessionVariables = new HashMap<String, String>();
-		sessionCookies = new HashMap<String, String>();
-	}
 	
 	public LoginJob(Credentials credentials, Session session) {
 		this.credentials = credentials;
@@ -139,6 +122,7 @@ public class LoginJob {
 	private Response postLoginForm() throws Exception {
 		
 		// Prepare POST url (spoiler: contains variables!)
+		// TODO Um... confusing sessionVariables with sessionCookies? But it works?
 	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE");
 		
 	    // Prepare POST data.

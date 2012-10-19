@@ -27,8 +27,8 @@ public class MyBooksJob extends AuthorizedJob {
 	private Response httpResponse;
 	private String userUrl;
 	
-	public MyBooksJob(boolean loggedIn, Credentials credentials, Session session) {
-		super(loggedIn, credentials, session);
+	public MyBooksJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}

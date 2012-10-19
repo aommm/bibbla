@@ -34,9 +34,8 @@ public class UnreserveJob extends AuthorizedJob {
 	 * Creates a new UnreserveJob,
 	 * which will try to unreserve all of the user's current reservations. 
 	 */
-	public UnreserveJob(boolean loggedIn, Credentials credentials,
-			Session session) {
-		super(loggedIn, credentials, session);
+	public UnreserveJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -47,9 +46,9 @@ public class UnreserveJob extends AuthorizedJob {
 	 * 
 	 * Note: Assumes that all books has their unreserveId set!
 	 */
-	public UnreserveJob(boolean loggedIn, Credentials credentials,
-			Session session, List<Book> books) {
-		this(loggedIn, credentials, session);
+	public UnreserveJob(Credentials credentials, Session session,
+			List<Book> books) {
+		this(credentials, session);
 		this.books = books;
 	}
 	
@@ -59,9 +58,8 @@ public class UnreserveJob extends AuthorizedJob {
 	 * 
 	 * Note: Assumes that the book has its unreserveId set!
 	 */
-	public UnreserveJob(boolean loggedIn, Credentials credentials,
-			Session session, Book book) {
-		this(loggedIn, credentials, session);
+	public UnreserveJob(Credentials credentials, Session session, Book book) {
+		this(credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}

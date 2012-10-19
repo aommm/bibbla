@@ -27,9 +27,8 @@ public class MyReservationsJob extends AuthorizedJob {
 	private Response httpResponse;
 	private String userUrl;
 	
-	public MyReservationsJob(boolean loggedIn, Credentials credentials,
-			Session session) {
-		super(loggedIn, credentials, session);
+	public MyReservationsJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}

@@ -16,13 +16,6 @@ public class Settings implements Serializable {
 
 	public Settings() {}
 	
-	/** @deprecated */
-	public Settings(String name, String code, String pin) {
-		this.name = name;
-		this.code = code;
-		this.pin = pin;
-	}
-	
 	/********************************
 	 * Getters/setters
 	 ********************************/

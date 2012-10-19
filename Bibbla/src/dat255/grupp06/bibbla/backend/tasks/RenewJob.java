@@ -34,9 +34,8 @@ public class RenewJob extends AuthorizedJob {
 	 * Creates a new RenewJob,
 	 * which will try to renew all of the user's currently loaned books. 
 	 */
-	public RenewJob(boolean loggedIn, Credentials credentials,
-			Session session) {
-		super(loggedIn, credentials, session);
+	public RenewJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -47,9 +46,9 @@ public class RenewJob extends AuthorizedJob {
 	 * 
 	 * Note: Assumes that all books has their renewId set!
 	 */
-	public RenewJob(boolean loggedIn, Credentials credentials,
-			Session session, List<Book> books) {
-		this(loggedIn, credentials, session);
+	public RenewJob(Credentials credentials, Session session,
+			List<Book> books) {
+		this(credentials, session);
 		this.books = books;
 	}
 	
@@ -59,9 +58,8 @@ public class RenewJob extends AuthorizedJob {
 	 * 
 	 * Note: Assumes that the book has its renewId set!
 	 */
-	public RenewJob(boolean loggedIn, Credentials credentials,
-			Session session, Book book) {
-		this(loggedIn, credentials, session);
+	public RenewJob(Credentials credentials, Session session, Book book) {
+		this(credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}

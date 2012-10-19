@@ -34,9 +34,9 @@ public class ReserveJob extends AuthorizedJob {
 	 * @param libraryCode - The code of the library to send the book to. See library-codes.txt.
 	 * @param session - The session the book should be reserved using. User account is specified here.
 	 */
-	public ReserveJob(boolean loggedIn, Credentials credentials, Book book,
+	public ReserveJob(Credentials credentials, Book book,
 			final String libraryCode, Session session){
-		super(loggedIn, credentials, session);
+		super(credentials, session);
 		this.book = book;
 		this.libraryCode = libraryCode;
 		this.session = session;
@@ -56,20 +56,13 @@ public class ReserveJob extends AuthorizedJob {
 		
 		System.out.println("****** ReserveJob: ");
 		try {
-			System.out.println("*** Step 1: Verifying logged in");
-//			if (!session.checkLogin()) {
-//				message.error = Error.LOGIN_FAILED;
-//				throw new Exception("session.checkLogin() failed!");
-//			}
+			System.out.println("*** Step 1: Post our reservation");
+			postReservation();
 			System.out.println("Step 1 done! ***");
 			
-			System.out.println("*** Step 2: Post our reservation");
-			postReservation();
-			System.out.println("Step 2 done! ***");
-			
-			System.out.println("*** Step 3: Parse the results");
+			System.out.println("*** Step 2: Parse the results");
 			parseResults();
-			System.out.println("Step 3 done! ***");
+			System.out.println("Step 2 done! ***");
 			
 		} catch (Exception e) {
 			message.error = (message.error!=null) ? message.error : Error.RESERVE_FAILED;

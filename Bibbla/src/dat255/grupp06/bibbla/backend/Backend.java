@@ -1,10 +1,7 @@
 package dat255.grupp06.bibbla.backend;
 
-import java.util.Map;
-
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
-import dat255.grupp06.bibbla.backend.tasks.LoginJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
@@ -30,7 +27,7 @@ public final class Backend {
 	 * Initialises a new session and fetches settings.
 	 */
 	public Backend() {
-		settings = new Settings(/*PrivateCredentials.name,PrivateCredentials.code,PrivateCredentials.pin*/);
+		settings = new Settings();
 		session = new Session(settings.getName(), settings.getCode(), settings.getPin());
 	}
 	
@@ -50,61 +47,6 @@ public final class Backend {
 		Message message = new Message();
 		message.obj = (int)(Math.random()*500);
 		callback.handleMessage(message);
-	}
-	
-	/**
-	 * Starts the login process. Reports results using callback.
-	 * 
-	 * @param frontendCallback - the callback object which will be called when logging in is done.
-	 * @deprecated
-	 */
-	public void login(final Callback frontendCallback) {
-
-		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
-			@Override
-			// The code that's run in the Task (on new thread).
-			protected Void doInBackground(String... params) {
-				message = session.login();
-				return null;
-			}
-		};
-		// Start the task.
-		task.execute();
-	}
-	
-	/**
-	 * New version of login, weird name in order not to break things with
-	 * previous login method.
-	 * @deprecated
-	 */
-	public void arildLogin(final Callback frontendCallback) {
-		// Check if already logged in
-		if (isLoggedIn2()) {
-			// Call back with success
-			Message message = new Message();
-			message.loggedIn = true;
-			frontendCallback.handleMessage(message);
-		} else {
-			// Log in through LoginJob, using credentials from settings
-			Task task = new Task(frontendCallback) {
-				@SuppressWarnings("unchecked")
-				@Override
-				protected Void doInBackground(String... params) {
-					LoginJob job = new LoginJob(settings.getCredentials(), session);
-					message = job.run();
-					if (message.loggedIn) {
-						try {
-							session.setCookies((Map<String,String>) message.obj);
-						} catch (ClassCastException e) {
-							session.setCookies(null);
-						}
-					}
-					return null;
-				}
-			};
-			task.execute();
-		}
 	}
 
 	/**
@@ -155,7 +97,7 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchReservations(Callback frontendCallback) {
-		final MyReservationsJob job = new MyReservationsJob(isLoggedIn2(),
+		final MyReservationsJob job = new MyReservationsJob(
 				settings.getCredentials(), session);
 		Task task = new Task(frontendCallback) {
 			@Override
@@ -173,8 +115,7 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void fetchLoans(Callback frontendCallback) {
-		final MyBooksJob job = new MyBooksJob(isLoggedIn2(),
-				settings.getCredentials(), session);
+		final MyBooksJob job = new MyBooksJob(settings.getCredentials(), session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
@@ -195,24 +136,11 @@ public final class Backend {
 		session = new Session();	
 	}
 	
-	/** @deprecated */
-	public boolean isLoggedIn() {
-		return session.checkLogin();
-	}
-	
-	public boolean isLoggedIn2() {
-		return session.isActive();
-	}
-
-	// TODO Change settings to use Credentials
-	public void saveCredentials(String name, String card, String pin) {
-		settings.setName(name);
-		settings.setCode(card);
-		settings.setPin(pin);
-	}
-	
 	public void saveCredentials(Credentials cred) {
-		if (cred != null)
-			saveCredentials(cred.name, cred.card, cred.pin);
+		if (cred != null) {
+			settings.setName(cred.name);
+			settings.setCode(cred.card);
+			settings.setPin(cred.pin);
+		}
 	}
 }

@@ -13,7 +13,6 @@ import dat255.grupp06.bibbla.utils.Message;
  */
 public abstract class AuthorizedJob {
 	
-	protected final boolean loggedIn;
 	protected final Credentials credentials;
 	protected final Session session;
 	
@@ -22,10 +21,8 @@ public abstract class AuthorizedJob {
 	 * @param loggedIn Whether the user is already logged in.
 	 * @param credentials Which credentials to use otherwise.
 	 */
-	public AuthorizedJob(boolean loggedIn, Credentials credentials,
-			Session session) {
+	public AuthorizedJob(Credentials credentials, Session session) {
 		if (credentials == null);
-		this.loggedIn = loggedIn;
 		this.credentials = credentials;
 		this.session = session;
 	}
@@ -38,7 +35,7 @@ public abstract class AuthorizedJob {
 	 * TODO Replace with something semantically correct
 	 */
 	public void login() throws CredentialsMissingException {
-		if (loggedIn)
+		if (session.isActive())
 			return;
 		LoginJob loginJob = new LoginJob(credentials, session);
 		Message message = loginJob.run();

@@ -129,24 +129,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 				}
 		}
 	}
-	
-	/** @deprecated*/
-	public void showProfileTab(Message msg) {
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		if (msg.error == null) {
-			if (profileFragment == null) {
-				profileFragment = new ProfileFragment();
-				profileFragment.setBackend(backend);
-				ft.add(R.id.fragment_container, profileFragment);
-				ft.commit();
-			} else {
-				ft.attach(profileFragment);
-				ft.commit();
-			}
-		} else {
-//			loginManager.promptIfNotLoggedIn(this, loginDoneCallback);
-		}
-	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {

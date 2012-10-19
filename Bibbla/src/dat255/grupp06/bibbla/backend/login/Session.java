@@ -5,14 +5,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsoup.Connection.Method;
-import org.jsoup.Connection.Response;
-import org.jsoup.Jsoup;
-
-import dat255.grupp06.bibbla.backend.tasks.LoginJob;
-import dat255.grupp06.bibbla.utils.Error;
-import dat255.grupp06.bibbla.utils.Message;
-
 public class Session implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
@@ -76,29 +68,6 @@ public class Session implements Serializable {
 			// else
 			this.loggedIn = false;
 		}
-	}	
-	
-	/**
-	 * Checks if the user is logged in.
-	 * If not, tries to login. If that also fails, returns false.
-	 * @returns our logged in state.
-	 * @deprecated
-	 */
-	public boolean checkLogin() {
-		// Do we lack the user's credentials?
-		if (!hasCredentials) {
-			return false;
-		}
-		// Not logged in?
-		if (!loggedIn) {
-			// Try again. 
-			if (!login().loggedIn) {
-				// Attempt #2 failed. Die.
-				return false; 
-			}
-		}
-		// We were logged in.
-		return true;
 	}
 	
 	/**
@@ -108,71 +77,6 @@ public class Session implements Serializable {
 	// TODO This should actually check whether cookie has expired.
 	public boolean isActive() {
 		return loggedIn;
-	}
-	
-	/**
-	 * Starts login, and waits for it to finish.
-	 * Updates our member variables accordingly.
- 	 * @returns the success of the login.
- 	 * @deprecated
-	 */
-	@SuppressWarnings("unchecked")
-	public Message login() {
-		Message message = new Message();
-
-		// Do we lack the user's credentials?
-		if (!hasCredentials) {
-			message.error = Error.MISSING_CREDENTIALS;
-			return message;
-		}
-		
-		synchronized(this) {
-			// Create a new login job, and run it.
-			LoginJob job = new LoginJob(this);
-			message = job.run();
-			// Did job succeed?
-			loggedIn = message.loggedIn;
-			if (loggedIn) {
-				setCookies((Map<String, String>) message.obj);
-			}
-		}
-		
-		return message;
-	}
-	
-	/**
-	 * Tries to fetch the user's profile URL.
-	 * Does this by visiting a bogus URL, and following the redirect.
-	 * 
-	 * @throws Exception - If redirection doesn't take place.
-	 */
-	private String fetchUserUrl() throws Exception {
-		
-		// We have need to be logged in for "user url" to make sense.
-//		if (!checkLogin()) {
-//			return "";
-//		}
-		
-		// Prepare url. (This URL will 302 redirect us)
-		String url = "https://www.gotlib.goteborg.se/patroninfo~S6*swe/1/";
-	    Response response = Jsoup.connect(url)
-	    		.method(Method.GET)
-	    		.followRedirects(false)
-	    		.cookies(getCookies())
-	    		.execute();
-	    
-	    // Were we not redirected?
-	    if (response.statusCode() != 302) {
-	    	return "";
-	    }
-	    
-	    // Are we not logged in?
-	    if (response.parse().select("div.loginPage").size()>0) {
-	    	return "";
-	    }
-	    
-	    // This is the URL which is unique to the user.
-	    return "https://www.gotlib.goteborg.se" + response.header("Location");
 	}
 
 	/**
@@ -194,13 +98,7 @@ public class Session implements Serializable {
 	 */
 	public String getUserUrl() {
 		synchronized(userUrl) {
-			// If URL is empty, try to fetch a new one.
-			if ("".equals(userUrl)) {
-				try {
-					userUrl = fetchUserUrl();
-				} catch (Exception e) {}
-			}
-			// Return the URL, empty or not.
+			// set during login for sure
 			return userUrl;
 		}
 	}

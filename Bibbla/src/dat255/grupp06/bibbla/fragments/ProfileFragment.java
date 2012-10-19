@@ -89,7 +89,6 @@ public class ProfileFragment extends SherlockFragment {
 			// TODO Loading spinner
 	
 			// Current debt
-//			backend.getUserDebt();
 			backend.getUserDebt(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.fetchDebtDone(msg);
