@@ -21,6 +21,7 @@ public abstract class AuthorizedJob {
 	 * @param credentials Which credentials to use otherwise.
 	 */
 	public AuthorizedJob(boolean loggedIn, Credentials credentials) {
+		if (credentials == null);
 		this.loggedIn = loggedIn;
 		this.credentials = credentials;
 	}
@@ -37,7 +38,8 @@ public abstract class AuthorizedJob {
 		Message message = loginJob.run();
 		if (!message.loggedIn) {
 			// If the login failed we can at least require updated credentials 
-			throw new CredentialsMissingException();
+			// TODO Replace with something semantically correct
+			throw new CredentialsMissingException("Login failed.");
 		}
 	}
 }

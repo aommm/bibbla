@@ -7,5 +7,14 @@ package dat255.grupp06.bibbla.utils;
  */
 public class CredentialsMissingException extends RuntimeException {
 	private static final long serialVersionUID = 2572442705876238218L;
+	
+	public CredentialsMissingException() {
+		super();
+	}
+
+	public CredentialsMissingException(String string) {
+		super(string);
+	}
+
 	// TODO Should implement more?
 }
