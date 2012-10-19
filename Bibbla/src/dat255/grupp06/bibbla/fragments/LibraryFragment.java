@@ -68,19 +68,32 @@ public class LibraryFragment extends SherlockFragment {
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
-		FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		
-		if(liblistFragment == null) {
-	        liblistFragment = new LibListFragment();
-	        fragmentTransaction.add(R.id.lib_list, liblistFragment);
-		} else {
-			fragmentTransaction.attach(liblistFragment);
-		}
-
-        fragmentTransaction.commit();
+//		FragmentManager fragmentManager = getFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//		
+//		if(liblistFragment == null) {
+//	        liblistFragment = new LibListFragment();
+//	        fragmentTransaction.add(R.id.lib_list, liblistFragment);
+//		} else {
+//			fragmentTransaction.attach(liblistFragment);
+//		}
+//
+//        fragmentTransaction.commit();
 
 		return inflater.inflate(R.layout.fragment_library, container, false);
+	
+//		public void onCreate(Bundle saveInstanceState) {
+//			setContentView(R.layout.your_layout);
+//			lv = (ListView) findViewById(R.id.your_list_view_id);
+//			your_array_list.add("foo");
+//			your_array_list.add("bar");
+//			// This is the array adapter, it takes the context of the activity as a first // parameter, the type of list view as a second parameter and your array as a third parameter
+//			ArrayAdapter<String> arrayAdapter =      
+//				new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, your_array_list);
+//			lv.setAdapter(arrayAdapter); 
+//		}
+
+	
 	}
 	
 	@Override
@@ -92,16 +105,16 @@ public class LibraryFragment extends SherlockFragment {
         super.onDestroyView();
 	}
 	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		System.out.println("LibFrag:onActivityCreated()");
-		Log.d("Malla", "LibFrag:onActivityCreated()");
-		super.onActivityCreated(savedInstanceState);
-				
-		
-		//listAppear(tempLibList());
-		updateInfo();
-	}
+//	@Override
+//	public void onActivityCreated(Bundle savedInstanceState) {
+//		System.out.println("LibFrag:onActivityCreated()");
+//		Log.d("Malla", "LibFrag:onActivityCreated()");
+//		super.onActivityCreated(savedInstanceState);
+//				
+//		
+//		//listAppear(tempLibList());
+//		updateInfo();
+//	}
 	
 	private void listAppear(ArrayList<Library> libs) {
 		System.out.println("LibFrag:listAppear()");
