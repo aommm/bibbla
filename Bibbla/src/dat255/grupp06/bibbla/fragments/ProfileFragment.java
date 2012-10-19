@@ -32,7 +32,9 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -45,10 +47,26 @@ public class ProfileFragment extends SherlockFragment {
 
 	Backend backend;
 	
+	/**
+	 * Reference to the class that can produce a login form. Is set on attach.
+	 */
+	private LoginCallbackHandler loginCallbackHandler;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.profile_fragment, container, false);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			loginCallbackHandler = (LoginCallbackHandler) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() +
+					"must implement LoginCallbackHandler");
+		}
 	}
 	
 	/**
@@ -71,37 +89,46 @@ public class ProfileFragment extends SherlockFragment {
 	 * @throws IllegalStateException if the backend is not set.
 	 * @see setBackend(Backend)
 	 */
-	private void updateFromBackend() throws IllegalStateException {
+	public void updateFromBackend() throws IllegalStateException {
 		if (backend == null)
 			throw new IllegalStateException();
 		
 		Activity activity = getSherlockActivity();
-		// Name header
-		String name = backend.getUserName();
-		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
-		nameHeading.setText(name);
-		// Current debt
-		// TODO fix callback instead
-		// int debt = backend.fetchUserDebt();
-		int debt = 500;
-		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
-		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
 		
-		// The lists take some time so let's use Callback.
-		// TODO Loading spinner
-		Callback loansCallback = new Callback() {
-			@Override public void handleMessage(Message msg) {
-				ProfileFragment.this.loansUpdateDone(msg);
-			}
-		};
-		backend.fetchLoans(loansCallback);
-		
-		Callback reservationsCallback = new Callback() {
-			@Override public void handleMessage(Message msg) {
-				ProfileFragment.this.reservationsUpdateDone(msg);
-			}
-		};
-		backend.fetchReservations(reservationsCallback);
+		// These backend calls need user credentials.
+		try {
+			// Name header
+			String name = backend.getUserName();
+			TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
+			nameHeading.setText(name);
+			
+			// The lists take some time so let's use Callback.
+			// TODO Loading spinner
+	
+			// Current debt
+			backend.fetchUserDebt(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					ProfileFragment.this.fetchDebtDone(msg);
+			}});
+			
+			// Current loans
+			backend.fetchLoans(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					ProfileFragment.this.loansUpdateDone(msg);
+			}});
+			
+			// Current reservations
+			backend.fetchReservations(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					ProfileFragment.this.reservationsUpdateDone(msg);
+			}});
+		}
+		catch (CredentialsMissingException e) {
+			loginCallbackHandler.showCredentialsDialog(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					updateFromBackend();
+			}});
+		}
 	}
 	
 	/**
@@ -139,4 +166,14 @@ public class ProfileFragment extends SherlockFragment {
 		
 	}
 	
+	/**
+	 * Update the debt TextView.
+	 * @param msg Backend response, 
+	 */
+	private void fetchDebtDone(Message msg) {
+		Activity activity = getSherlockActivity();
+		int debt = (Integer) msg.obj;
+		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
+		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
+	}
 }

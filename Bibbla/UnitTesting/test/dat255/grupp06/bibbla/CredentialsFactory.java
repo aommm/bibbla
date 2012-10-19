@@ -17,7 +17,7 @@
 
 package dat255.grupp06.bibbla;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.model.Credentials;
 
 /**
  * Creates session objects.
@@ -26,7 +26,7 @@ import dat255.grupp06.bibbla.backend.Session;
  * 
  * @author Niklas Logren
  */
-public class SessionFactory {
+public class CredentialsFactory {
 
 	/**
 	 * Returns a normal session if PrivateCredentials class is present,
@@ -36,7 +36,7 @@ public class SessionFactory {
 	 * All login-needed test code should automatically return success if 
 	 * the session is anonymous!
 	 */
-	public static Session getSession() {
+	public static Credentials getCredentials() {
 
 		// Try to use PrivateCredentials.
 		Class<?> c;
@@ -50,11 +50,11 @@ public class SessionFactory {
 			pin = (String) c.getField("pin").get(null);
 		} catch (Exception e) {
 			// PrivateCredentials / its fields not found? Return an anonymous session.
-			return new Session();
+			return null;
 		}
 
 		// Create a new normal Session, which keeps track of our session cookies.
-		return new Session(name, code, pin);
+		return new Credentials(name, code, pin);
 	}
 
 }

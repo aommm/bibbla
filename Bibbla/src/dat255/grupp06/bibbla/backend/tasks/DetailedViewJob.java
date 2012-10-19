@@ -17,7 +17,6 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,8 +124,8 @@ public class DetailedViewJob {
 	    	}
 	    	
 	    	// If we find a note,
-	       	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")) {
-	       		// Save the text on row ¤1 
+	       	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "Anmï¿½rkning")) {
+	       		// Save the text on row ï¿½1 
 	    		notes += (rows.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
 				// And save text of possible following rows that has no label.

@@ -21,9 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import dat255.grupp06.bibbla.SessionFactory;
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.CredentialsFactory;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Message;
 
 /**
@@ -41,18 +42,18 @@ import dat255.grupp06.bibbla.utils.Message;
  * @author Niklas Logren
  */
 public class RenewJobTest extends TestCase {
-	Session session;
+	Credentials credentials;
 	List<Book> loanedBooks;
 	
 	@Override
 	public void setUp() {
 		// Get a new Session object.
-		session = SessionFactory.getSession();
+		credentials = CredentialsFactory.getCredentials();
 		
 		// If we have login details,
-		if (session.getHasCredentials()) {
+		if (credentials != null) {
 			// Get our currently loaned books.
-			MyBooksJob myBooksJob = new MyBooksJob(session);
+			MyBooksJob myBooksJob = new MyBooksJob(credentials, new Session());
 			loanedBooks = (List<Book>)myBooksJob.run().obj;
 			// Assert that MyBooksJob succeeded.
 			assertTrue(loanedBooks instanceof List<?>);
@@ -66,7 +67,7 @@ public class RenewJobTest extends TestCase {
 	public void testSingleRenewal() {
 
 		// Run test only if we have login credentials. Otherwise, auto-succeed.
-		if (session.getHasCredentials()) {
+		if (credentials != null) {
 			
 			// If no loaned books, auto-succeed.
 			int loanedBooksCount =loanedBooks.size(); 
@@ -75,7 +76,8 @@ public class RenewJobTest extends TestCase {
 				// Select first book of our loaned books.
 				Book firstBook = loanedBooks.get(0);
 				// Run RenewJob.
-				RenewJob renewJob = new RenewJob(firstBook, session);
+				RenewJob renewJob = new RenewJob(firstBook, credentials,
+						new Session());
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);
@@ -118,7 +120,7 @@ public class RenewJobTest extends TestCase {
 	public void testSingleRenewalTwice() {
 
 		// Run test only if we have login credentials. Otherwise, auto-succeed.
-		if (session.getHasCredentials()) {
+		if (credentials != null) {
 			
 			// If no loaned books, auto-succeed.
 			int loanedBooksCount =loanedBooks.size(); 
@@ -128,13 +130,15 @@ public class RenewJobTest extends TestCase {
 				Book firstBook = loanedBooks.get(0);
 				
 				// Run RenewJob.
-				RenewJob firstRenewJob = new RenewJob(firstBook, session);
+				RenewJob firstRenewJob = new RenewJob(firstBook, credentials,
+						new Session());
 				Message firstResult = firstRenewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(firstResult);
 				
 				// Run RenewJob again, on the same book.
-				RenewJob secondRenewJob = new RenewJob(firstBook, session);
+				RenewJob secondRenewJob = new RenewJob(firstBook, credentials,
+						new Session());
 				Message secondResult = secondRenewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(secondResult);
@@ -184,7 +188,7 @@ public class RenewJobTest extends TestCase {
 	public void testDoubleRenewal() {
 
 		// Run test only if we have login credentials. Otherwise, auto-succeed.
-		if (session.getHasCredentials()) {
+		if (credentials != null) {
 			
 			// If less than two loaned books, auto-succeed.
 			int loanedBooksCount =loanedBooks.size();
@@ -200,7 +204,8 @@ public class RenewJobTest extends TestCase {
 				booksToRenew.add(secondBook);
 				
 				// Run RenewJob on the list.
-				RenewJob renewJob = new RenewJob(booksToRenew, session);
+				RenewJob renewJob = new RenewJob(booksToRenew, credentials,
+						new Session());
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);
@@ -240,14 +245,14 @@ public class RenewJobTest extends TestCase {
 	public void testRenewAll() {
 
 		// Run test only if we have login credentials. Otherwise, auto-succeed.
-		if (session.getHasCredentials()) {
+		if (credentials != null) {
 			
 			// If no loaned books, auto-succeed.
 			int loanedBooksCount = loanedBooks.size();
 			if (loanedBooksCount>0) {
 				
 				// Run RenewJob for all books.
-				RenewJob renewJob = new RenewJob(session);
+				RenewJob renewJob = new RenewJob(credentials, new Session());
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);

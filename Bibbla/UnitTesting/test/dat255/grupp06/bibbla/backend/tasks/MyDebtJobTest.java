@@ -17,22 +17,23 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import dat255.grupp06.bibbla.SessionFactory;
-import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.utils.Message;
 import junit.framework.TestCase;
+import dat255.grupp06.bibbla.CredentialsFactory;
+import dat255.grupp06.bibbla.backend.login.Session;
+import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.utils.Message;
 
 public class MyDebtJobTest extends TestCase {
 
-	Session session;
+	Credentials credentials;
 	Message message;
 	Integer debt;
 	
 	public void setUp(){
 		
-		session = SessionFactory.getSession();
-		if (session.getHasCredentials()){
-			MyDebtJob myDebtJob = new MyDebtJob(session);
+		credentials = CredentialsFactory.getCredentials();
+		if (credentials != null){
+			MyDebtJob myDebtJob = new MyDebtJob(credentials, new Session());
 			message = myDebtJob.run();
 			
 		}
@@ -42,7 +43,7 @@ public class MyDebtJobTest extends TestCase {
 	 * Test that we dont get null object.
 	 */
 	public void testObjectNotNull(){
-		if(session.getHasCredentials()){
+		if(credentials != null){
 			assertNotNull(message.obj);			
 		}
 	}
@@ -53,7 +54,7 @@ public class MyDebtJobTest extends TestCase {
 	 */
 	public void testDebtObject(){
 		
-		if(session.getHasCredentials()){
+		if(credentials != null){
 			assertTrue(message.obj instanceof Integer);
 			debt = (Integer) message.obj;	
 		}

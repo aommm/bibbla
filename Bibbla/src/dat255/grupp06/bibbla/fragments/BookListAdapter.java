@@ -46,9 +46,11 @@ public class BookListAdapter extends BaseAdapter {
 	 * @param list A list of books to present. 
 	 */
 	// TODO Bad style to pass activity?
+	@SuppressWarnings("unchecked")
 	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable) {
-		// TODO Clone needed?
-		this.list = (List<Book>) ((ArrayList<Book>) list).clone();
+		this.list = (list != null) ?
+				(List<Book>) ((ArrayList<Book>) list).clone() :
+					new ArrayList<Book>();
 		this.activity = activity;
 		this.showAvailable = showAvailable;
 	}

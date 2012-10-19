@@ -24,7 +24,8 @@
         </activity>
         
         <activity android:name=".frontend.BookOverlayActivity" />
-        
+
+        <activity android:name=".frontend.LoginOverlayActivity" />
     </application>
 
 </manifest>

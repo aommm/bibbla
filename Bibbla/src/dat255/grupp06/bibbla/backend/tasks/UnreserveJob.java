@@ -17,25 +17,30 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.jsoup.Connection.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.*;
+import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
  * Fetches a list of the user's currently loaned books.
  *
  * @author Niklas Logren
  */
-public class UnreserveJob {
+public class UnreserveJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	private List<Book> books;
@@ -46,7 +51,8 @@ public class UnreserveJob {
 	 * Creates a new UnreserveJob,
 	 * which will try to unreserve all of the user's current reservations. 
 	 */
-	public UnreserveJob(Session session) {
+	public UnreserveJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -57,8 +63,9 @@ public class UnreserveJob {
 	 * 
 	 * Note: Assumes that all books has their unreserveId set!
 	 */
-	public UnreserveJob(List<Book> books, Session session) {
-		this(session);
+	public UnreserveJob(List<Book> books, Credentials credentials,
+			Session session) {
+		this(credentials, session);
 		this.books = books;
 	}
 	
@@ -68,8 +75,8 @@ public class UnreserveJob {
 	 * 
 	 * Note: Assumes that the book has its unreserveId set!
 	 */
-	public UnreserveJob(Book book, Session session) {
-		this(session);
+	public UnreserveJob(Book book, Credentials credentials, Session session) {
+		this(credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}
@@ -81,6 +88,7 @@ public class UnreserveJob {
 	 * 	their message attribute set. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** UnreserveJob: ");
 		try {
 			// Get user URL.
@@ -119,7 +127,8 @@ public class UnreserveJob {
 	private void postUnreservation() throws Exception {
 		
 	    // Prepare POST data.
-	    Map<String,String> postData = new HashMap<String,String>() {{
+	    @SuppressWarnings("serial")
+		Map<String,String> postData = new HashMap<String,String>() {{
 	    	
 	    	// No specified books? Unreserve everything.
 	    	if (books == null) {

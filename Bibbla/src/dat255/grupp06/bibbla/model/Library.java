@@ -1,7 +1,5 @@
 package dat255.grupp06.bibbla.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -19,7 +17,6 @@ public class Library {
 	private String phoneNr;
 	private String visAdr;
 	private String email;
-	private String allLibInfo;
 	private String openH;
 //	private List<Library> allLibraries;
 	

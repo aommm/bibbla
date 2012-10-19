@@ -18,12 +18,12 @@
 package dat255.grupp06.bibbla;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -33,22 +33,27 @@ import com.actionbarsherlock.view.Window;
 import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
+import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
+import dat255.grupp06.bibbla.frontend.LoginOverlayActivity;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements
-ActionBar.TabListener {	
+ActionBar.TabListener, LoginCallbackHandler {	
 
-	Backend backend;
+	private Backend backend;
+	public static final int RESULT_LOGIN_FORM = 0;
+	public static final String EXTRA_CREDENTIALS = "credentials";
 	
-	// TODO These should probably go into a list or something.
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
+	private Callback loginDoneCallback;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
+        setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
         
         // We want a fancy spinner for marking progress.
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -90,13 +95,46 @@ ActionBar.TabListener {
 		// Nothing atm
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * 
+	 * This is called when a user is done with LoginOverlayActivity. Saves the
+	 * specified credentials and tells Backend to log in.
+	 * @param data should contain a Credentials object as an Extra, identified
+	 * by LoginManager.EXTRA_CREDENTIALS
+	 */
 	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case RESULT_LOGIN_FORM:
+			// Get credentials
+			Credentials cred = (Credentials) data.getSerializableExtra(EXTRA_CREDENTIALS);
+			// TODO Check format of input
+			if (cred == null) {
+				// Retry login form (recursive)
+				showCredentialsDialog(loginDoneCallback);
+			} else {
+				backend.saveCredentials(cred);
+			}
+			loginDoneCallback.handleMessage(new Message());
+			// The callback should not be handled more than once.
+			loginDoneCallback = null;
+			break;
+		default:
+			throw new IllegalArgumentException("onActivityResult was called "+
+					"with an unknown request code");
+		}
+	}
+	
+	@Override
+	public void onTabSelected(final Tab tab, final FragmentTransaction ft) {
 		// TODO Refactor to eliminate duplicate code?
 		switch(tab.getPosition()) {
 			case 0:
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
+			        // TODO Why don't we pass Backend as a constructor param?
 			        searchFragment.setBackend(backend);
 			        ft.add(R.id.fragment_container, searchFragment);
 				} else {
@@ -111,7 +149,6 @@ ActionBar.TabListener {
 				} else {
 					ft.attach(profileFragment);
 				}
-				break;
 		}
 	}
 
@@ -135,37 +172,22 @@ ActionBar.TabListener {
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 	}
-	
-	public void login(View view) {
-//		EditText nameET = (EditText) findViewById(R.id.login_name_field);
-//		EditText cardET = (EditText) findViewById(R.id.login_card_field);
-//		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
-		// TODO Loading spinner
-		Callback loginCallback = new Callback() {
-			@Override
-			public void handleMessage(Message msg) {
-				MainActivity.this.loginDone(msg);
-			}
-		};
-		// TODO Wtf, no credentials?
-		backend.login(loginCallback);
-	}
-	
-	public void loginDone(Message msg) {
-		if (msg.loggedIn) {
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.fragment_container, profileFragment);
-			ft.commit();
-		} else {
-			Toast.makeText(this, R.string.login_fail_msg,
-				Toast.LENGTH_SHORT).show();
-		}
-	}
-	
+
+	/**
+	 * Logs out and switches to the Search fragment.
+	 * @param view
+	 */
 	public void logout(View view) {
 		backend.logOut();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_container, profileFragment);
+		if (searchFragment == null) {
+			searchFragment = new SearchFragment();
+			searchFragment.setBackend(backend);
+			ft.add(R.id.fragment_container, searchFragment);
+		} else {
+			ft.attach(searchFragment);
+			// detach...?
+		}
 		ft.commit();
 	}
 	
@@ -187,5 +209,12 @@ ActionBar.TabListener {
 	private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
+	}
+
+	@Override
+	public void showCredentialsDialog(Callback callback) {
+		this.loginDoneCallback = callback;
+		Intent intent = new Intent(this, LoginOverlayActivity.class);
+		startActivityForResult(intent, RESULT_LOGIN_FORM);
 	}
 }
