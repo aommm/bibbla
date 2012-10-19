@@ -30,6 +30,8 @@ public abstract class AuthorizedJob {
 	 * Log in if needed (which is determined by the loggedIn constructor
 	 * param). Should be called in ancestor's run() before login-dependent
 	 * connections are made.
+	 * @throws CredentialsMissingException if login fails
+	 * TODO Replace with something semantically correct
 	 */
 	public void login() throws CredentialsMissingException {
 		if (loggedIn)
@@ -38,7 +40,6 @@ public abstract class AuthorizedJob {
 		Message message = loginJob.run();
 		if (!message.loggedIn) {
 			// If the login failed we can at least require updated credentials 
-			// TODO Replace with something semantically correct
 			throw new CredentialsMissingException("Login failed.");
 		}
 	}

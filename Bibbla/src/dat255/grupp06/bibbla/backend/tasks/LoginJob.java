@@ -180,7 +180,7 @@ public class LoginJob {
 	    Document html = response.parse();
 	    
 	    // Is login link present?
-	    if (html.select("a[id=loginLinkComponent]").size() > 0) {
+	    if (html.select("a[id=patronLogoutLinkComponent]").size() == 0) {
 	    	// Yep. Login failed.
 	    	System.out.println("login link present.");
 	    	throw new Exception("Login test failed.");
