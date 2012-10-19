@@ -20,6 +20,7 @@ package dat255.grupp06.bibbla.backend;
 import java.util.List;
 
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
+import dat255.grupp06.bibbla.backend.tasks.LibInfoJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.MyDebtJob;
 import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
@@ -337,5 +338,25 @@ public class Backend {
 	
 	public boolean isLoggedIn() {
 		return session.checkLogin();
+	}
+	
+	/**
+	 *  Searches backend for the library information.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void libInfo( final Callback frontendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				LibInfoJob job = new LibInfoJob();
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
 	}
 }
