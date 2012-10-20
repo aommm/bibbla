@@ -68,14 +68,13 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when logging in is done. 
 	 */
 	public void fetchUserDebt(Callback frontendCallback) {
-		
+		final MyDebtJob job = new MyDebtJob(settings.getCredentials(),
+				session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				MyDebtJob job = new MyDebtJob(settings.getCredentials(),
-						session);
 				message = job.run();
 				return null;
 			}
@@ -174,13 +173,13 @@ public final class Backend {
 	 */
 	public void reserve(final Book book, final String libraryCode,
 			final Callback frontendCallback) {
+		final ReserveJob job = new ReserveJob(book, libraryCode,
+				settings.getCredentials(), session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				ReserveJob job = new ReserveJob(book, libraryCode,
-						settings.getCredentials(), session);
 				message = job.run();
 				return null;
 			}
@@ -196,13 +195,13 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void unreserve(final Book book, final Callback frontendCallback) {
+		final UnreserveJob job = new UnreserveJob(book,
+				settings.getCredentials(), session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				UnreserveJob job = new UnreserveJob(book,
-						settings.getCredentials(), session);
 				message = job.run();
 				return null;
 			}
@@ -218,13 +217,13 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void unreserve(final List<Book> books, final Callback frontendCallback) {
+		final UnreserveJob job = new UnreserveJob(books,
+				settings.getCredentials(), session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				UnreserveJob job = new UnreserveJob(books,
-						settings.getCredentials(), session);
 				message = job.run();
 				return null;
 			}
@@ -239,13 +238,13 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void unreserve(final Callback frontendCallback) {
+		final UnreserveJob job = new UnreserveJob(settings.getCredentials(),
+				session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				UnreserveJob job = new UnreserveJob(settings.getCredentials(),
-						session);
 				message = job.run();
 				return null;
 			}
@@ -261,13 +260,13 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void renew(final Book book, final Callback frontendCallback) {
+		final RenewJob job = new RenewJob(book, settings.getCredentials(),
+				session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				RenewJob job = new RenewJob(book, settings.getCredentials(),
-						session);
 				message = job.run();
 				return null;
 			}
@@ -283,13 +282,13 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void renew(final List<Book> books, final Callback frontendCallback) {
+		final RenewJob job = new RenewJob(books, settings.getCredentials(),
+				session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				RenewJob job = new RenewJob(books, settings.getCredentials(),
-						session);
 				message = job.run();
 				return null;
 			}
@@ -304,13 +303,12 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void renew(final Callback frontendCallback) {
+		final RenewJob job = new RenewJob(settings.getCredentials(), session);
 		// Create a new Task and define its body.
 		Task task = new Task(frontendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
-				RenewJob job = new RenewJob(settings.getCredentials(),
-						session);
 				message = job.run();
 				return null;
 			}

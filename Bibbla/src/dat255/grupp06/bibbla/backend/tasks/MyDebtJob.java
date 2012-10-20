@@ -55,6 +55,7 @@ public class MyDebtJob extends AuthorizedJob {
 	 * @returns a float, which is the user's current total debt. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyDebtJob: ");
 		try {
 			// Get user URL.
