@@ -31,11 +31,10 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyDebtJob {
+public class MyDebtJob extends Job {
 	private Session session;
 	private Message message;
 	
-	private Response httpResponse;
 	private String userUrl;
 	
 	private Integer debt;
@@ -68,11 +67,11 @@ public class MyDebtJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: fetch user page");
-			fetchUserPage();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse debt");
-			parseDebt();
+			parseDebt(response);
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -83,18 +82,20 @@ public class MyDebtJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Connects to gotlib, and downloads the HTML of the user's profile page.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchUserPage() throws Exception {
+	protected Response connect() throws Exception {
 
 	    // Send GET request and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();   
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -102,9 +103,9 @@ public class MyDebtJob {
 	 * 
 	 * @throws Exception if we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseDebt() throws Exception {
+	private void parseDebt(Response response) throws Exception {
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {

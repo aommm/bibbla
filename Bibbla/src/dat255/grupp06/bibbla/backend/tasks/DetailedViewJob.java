@@ -17,7 +17,6 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.PhysicalBook;
 import dat255.grupp06.bibbla.utils.Error;
@@ -39,11 +39,10 @@ import dat255.grupp06.bibbla.utils.Message;
  * 
  * @author Fahad Al-Khameesi
  */
-public class DetailedViewJob {
+public class DetailedViewJob extends Job {
 	
 	private Book originalBook, newBook;
 	private Message message = new Message();
-	private Response httpResponse; 
 	
 	public DetailedViewJob(Book book){
 		this.originalBook = book;
@@ -58,26 +57,34 @@ public class DetailedViewJob {
 	public Message run(){
 		
 		try {
-			fetchBookDetails();
-			parseBookDetails();
+			System.out.print("\n****** DetailedViewJob\n");
+			System.out.print("* step 1: fetch book details... ");
+			Response response = connectAndRetry();
+			System.out.print("* step 2: parse book details... ");
+			parseBookDetails(response);
+			System.out.print("succeeded! *\n*");
+			System.out.print("****** DetailedViewJob done \n");
+			
 		} catch (Exception e) {
 			message.error = (message.error!=null) ? message.error : Error.DETAILED_VIEW_FAILED;
-			System.out.println("Something went wrong dude!");
 		}
 		
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Fetches the details of the supplied book.
 	 * 
 	 * @throws Exception if HTTP connection failed.
 	 */
-	private void fetchBookDetails() throws Exception {
-		
-	    httpResponse = Jsoup.connect(originalBook.getUrl())
+	protected Response connect() throws Exception {
+		// Performs connection using Jsoup.
+	    Response r = Jsoup.connect(originalBook.getUrl())
 			    .method(Method.GET)
-			    .execute();		
+			    .timeout(Backend.CONNECTION_TIMEOUT)
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -85,10 +92,10 @@ public class DetailedViewJob {
 	 * 
 	 * @throws Exception if parsing fails.
 	 */
-	private void parseBookDetails() throws Exception{
+	private void parseBookDetails(Response response) throws Exception{
 
 		// Prepare HTML for parsing.
-		Document html = httpResponse.parse();
+		Document html = response.parse();
 		
 	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
 	    Elements tableRows = html.select("table.bibItems").select("tr.bibItemsEntry");
@@ -126,7 +133,7 @@ public class DetailedViewJob {
 	    	
 	    	// If we find a note,
 	       	if(rows.get(i).select("td.bibInfoLabel").text().equals((String) "Anmärkning")) {
-	       		// Save the text on row ¤1 
+	       		// Save the text on row #1 
 	    		notes += (rows.get(i)).select("td.bibInfoData").text();
 				int n = i+1;
 				// And save text of possible following rows that has no label.
@@ -150,4 +157,5 @@ public class DetailedViewJob {
 	    
 	    message.obj = newBook;
 	}
+
 }

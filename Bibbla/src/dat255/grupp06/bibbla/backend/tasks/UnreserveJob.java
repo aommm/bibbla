@@ -17,29 +17,33 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.jsoup.Connection.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.*;
+import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
  * Fetches a list of the user's currently loaned books.
  *
  * @author Niklas Logren
  */
-public class UnreserveJob {
+public class UnreserveJob extends Job {
 	private Session session;
 	private Message message;
+	
 	private List<Book> books;
-	private Response httpResponse;
 	private String userUrl;
 	
 	/**
@@ -96,11 +100,11 @@ public class UnreserveJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: post our unreservation");
-			postUnreservation();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse the results");
-			parseResults();
+			parseResults(response);
 			System.out.println("Step 3 done! ***");		
 			
 		} catch (Exception e) {
@@ -111,12 +115,13 @@ public class UnreserveJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * POSTs the form which unreserves our books.
 	 * @throws Exception if connection failed,
 	 * 		the user isn't logged in, or if the server complained.  
 	 */
-	private void postUnreservation() throws Exception {
+	protected Response connect() throws Exception {
 		
 	    // Prepare POST data.
 	    Map<String,String> postData = new HashMap<String,String>() {{
@@ -143,11 +148,12 @@ public class UnreserveJob {
 	    System.out.println(postData);
 	    
 	    // Send POST request to user url and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -155,10 +161,10 @@ public class UnreserveJob {
 	 * 
 	 * @throws Exception if we're not logged in, or if parsing otherwise failed.
 	 */
-	private void parseResults() throws Exception {
+	private void parseResults(Response response) throws Exception {
 		
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
