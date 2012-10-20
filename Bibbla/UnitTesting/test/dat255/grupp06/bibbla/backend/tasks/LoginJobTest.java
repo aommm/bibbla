@@ -56,7 +56,7 @@ public class LoginJobTest extends TestCase {
 		Message loginResult = null;
 		boolean gotCredentialsError2 = false;
 		try {
-			Credentials bogusCredentials = new Credentials("name","0123456789","0000");
+			Credentials bogusCredentials = new Credentials("namebame","0123456789","0000");
 			LoginJob job = new LoginJob(bogusCredentials, new Session());
 			loginResult = job.run();
 		} catch (CredentialsMissingException ex) {
