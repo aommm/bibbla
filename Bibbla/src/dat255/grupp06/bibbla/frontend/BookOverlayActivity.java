@@ -20,6 +20,7 @@ package dat255.grupp06.bibbla.frontend;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -27,11 +28,20 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
+import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.fragments.SearchListFragment;
+
+import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 
 
 
 public class BookOverlayActivity extends SherlockActivity {
+	
+	Book book;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,12 +54,37 @@ public class BookOverlayActivity extends SherlockActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         
         Intent intent = getIntent();
-        String title = intent.getStringExtra(SearchListFragment.BOOK_TITLE);
-        String author = intent.getStringExtra(SearchListFragment.BOOK_AUTHOR);
+        book =(Book)intent.getSerializableExtra(SearchListFragment.BOOK);
         
-        Log.d("Jonis", title + author);
-        
-        ((TextView)findViewById(R.id.overlay_book_title)).setText(title);
-        ((TextView)findViewById(R.id.overlay_book_author)).setText(author);
+        ((TextView)findViewById(R.id.overlay_book_title)).setText(book.getName());
+        ((TextView)findViewById(R.id.overlay_book_author)).setText(book.getAuthor());
     }
+    
+    public void reserveDone(Message msg) {
+    	((TextView)findViewById(R.id.text_reserve_book)).setText("Klar!");
+    }
+    
+    
+    public void reserveBook(View view) {
+    	
+    	Callback c = new Callback() {
+			public void handleMessage(Message msg) {
+				BookOverlayActivity.this.reserveDone(msg);
+			}
+		};
+		
+		try {
+			Backend.getBackend().reserve(book, "An", c);
+			((TextView)findViewById(R.id.text_reserve_book)).setText("Reserverar bok...");
+		} catch (CredentialsMissingException e) {
+		}
+    }
+    
+    /*
+    @Override
+    public void onBackPressed() {
+    	this.onPause();
+>>>>>>> the-singleton-project
+    }
+    */
 }

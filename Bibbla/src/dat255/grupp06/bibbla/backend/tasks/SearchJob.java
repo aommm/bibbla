@@ -18,7 +18,6 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,15 +28,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
-public class SearchJob {
+public class SearchJob extends Job {
 	
 	private String searchPhrase = null;
 	private Message message = new Message();
-	private Response httpResponse;
 	private int pageNumber;
 
 	/**
@@ -55,7 +54,6 @@ public class SearchJob {
 	 */
 	public SearchJob(String s, int pageNumber){
 		searchPhrase = s;
-		System.out.println("s: "+s);
 		message = new Message();
 		this.pageNumber = pageNumber;
 	}
@@ -65,14 +63,13 @@ public class SearchJob {
 	 * @returns a Message, which has a List<Book> as its object if successful.
 	 */
 	public Message run(){
-					
+		
 		try {
 			System.out.print("\n****** SearchJob\n");
-			System.out.print("* step 1: fetch search results ");
-			fetchSearchResults();
-			System.out.print("succeeded! *\n");
-			System.out.print("* step 2: parse search results ");
-			parseSearchResults();
+			System.out.print("* step 1: fetch search results... ");
+			Response response = connectAndRetry();
+			System.out.print("* step 2: parse search results... ");
+			parseSearchResults(response);
 			System.out.print("succeeded! *\n*");
 			System.out.print("****** SearchJob done \n");
 		}
@@ -89,7 +86,7 @@ public class SearchJob {
 	 *   
 	 * @throws Exception if HTTP connection fails.
 	 */
-	private void fetchSearchResults() throws Exception {
+	protected Response connect() throws Exception {
 		
 		String url;
 		// Fetch first page?
@@ -101,9 +98,11 @@ public class SearchJob {
 		}
 		
 		// Send HTTP request.
-		httpResponse = Jsoup.connect(url)
+		Response r = Jsoup.connect(url)
 					.method(Method.GET)
+					.timeout(Backend.CONNECTION_TIMEOUT)
 					.execute();
+		return r;
 	}
 	
 	/**
@@ -111,12 +110,12 @@ public class SearchJob {
 	 * 
 	 * @throws Exception if parsing fails. 
 	 */
-	private void parseSearchResults() throws Exception {		
+	private void parseSearchResults(Response response) throws Exception {		
 	
 		List<Book> results = new ArrayList<Book>();
 		
 		// Prepare HTML for parsing.
-		Document html = httpResponse.parse();
+		Document html = response.parse();
 		
 		// Each result lies in its own table - loop through them all.
 		Elements tables = html.select("table.breifCitTable");

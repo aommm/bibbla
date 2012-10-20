@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -40,8 +39,7 @@ import dat255.grupp06.bibbla.model.Book;
  *
  */
 public class SearchListFragment extends SherlockListFragment {
-	public final static String BOOK_AUTHOR = "dat255.grupp06.bibbla.AUTHOR";
-	public final static String BOOK_TITLE = "dat255.grupp06.bibbla.TITLE";
+	public final static String BOOK = "dat255.grupp06.bibbla.AUTHOR";
 	private ArrayList<Book> currentBooks;
 	private int currentPage;
 	private String lastSearch;
@@ -61,8 +59,7 @@ public class SearchListFragment extends SherlockListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
     	if(position < currentBooks.size()) {
 	    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
-	    	intent.putExtra(BOOK_AUTHOR, currentBooks.get(position).getAuthor());
-	    	intent.putExtra(BOOK_TITLE, currentBooks.get(position).getName());
+	    	intent.putExtra(BOOK, currentBooks.get(position));
 	    	startActivity(intent);
     	} else {
     		currentPage++;

@@ -20,17 +20,17 @@ package dat255.grupp06.bibbla.backend.tasks;
 import java.util.List;
 
 import junit.framework.TestCase;
-import dat255.grupp06.bibbla.SessionFactory;
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.CredentialsFactory;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchJobTest extends TestCase {
-	Session session;
+	Credentials credentials;
 	
 	@Override
 	public void setUp() {
-		session = SessionFactory.getSession();
+		credentials = CredentialsFactory.getCredentials();
 	}
 	
 	/**

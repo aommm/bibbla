@@ -17,7 +17,6 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +26,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -37,12 +37,11 @@ import dat255.grupp06.bibbla.utils.Message;
  * 
  * @author Niklas Logren
  */
-public class ReserveJob {
+public class ReserveJob extends AuthorizedJob {
 	private Book book;
 	private Session session;
 	private Message message;
 	private String libraryCode;
-	Response httpResponse;
 	
 	/**
 	 * Creates a new ReserveJob which will try to reserve a book at the given library.
@@ -51,7 +50,9 @@ public class ReserveJob {
 	 * @param libraryCode - The code of the library to send the book to. See library-codes.txt.
 	 * @param session - The session the book should be reserved using. User account is specified here.
 	 */
-	public ReserveJob(Book book, final String libraryCode, Session session){
+	public ReserveJob(Book book, String libraryCode, Credentials credentials,
+			Session session) {
+		super(credentials, session);
 		this.book = book;
 		this.libraryCode = libraryCode;
 		this.session = session;
@@ -67,23 +68,17 @@ public class ReserveJob {
 	 * If reservation failed, obj will be a string containing the error message.
 	 */
 	public Message run(){
+		login();
 		
 		System.out.println("****** ReserveJob: ");
 		try {
-			System.out.println("*** Step 1: Verifying logged in");
-			if (!session.checkLogin()) {
-				message.error = Error.LOGIN_FAILED;
-				throw new Exception("session.checkLogin() failed!");
-			}
+			System.out.println("*** Step 1: Post our reservation");
+			Response response = connect();
 			System.out.println("Step 1 done! ***");
 			
-			System.out.println("*** Step 2: Post our reservation");
-			postReservation();
+			System.out.println("*** Step 2: Parse the results");
+			parseResults(response);
 			System.out.println("Step 2 done! ***");
-			
-			System.out.println("*** Step 3: Parse the results");
-			parseResults();
-			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
 			message.error = (message.error!=null) ? message.error : Error.RESERVE_FAILED;
@@ -94,14 +89,16 @@ public class ReserveJob {
 		
 	}
 	
+	@Override
 	/**
 	 * POSTs the reservation, and saves the response.
 	 * 
 	 * @throws Exception if connection failed.
 	 */
-	private void postReservation() throws Exception {
+	protected Response connect() throws Exception {
 		
 		// Define hashMap containing post data.
+		@SuppressWarnings("serial")
 		Map<String,String> postData = new HashMap<String,String>() {{
 	    	put("locx00", libraryCode);
 	    	put("needby_Year", "Year");
@@ -110,11 +107,12 @@ public class ReserveJob {
 	    }};
 	    
 	    // Send request and save response.
-	    httpResponse = Jsoup.connect(book.getReserveUrl())
+	    Response r = Jsoup.connect(book.getReserveUrl())
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -122,10 +120,10 @@ public class ReserveJob {
 	 * 
 	 * @throws Exception if reservation failed, or if parsing otherwise failed.
 	 */
-	private void parseResults() throws Exception {
+	private void parseResults(Response response) throws Exception {
 		
 		// Prepare for parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // All information we need lies in this div.
 	    Element div = html.getElementById("singlecolumn");

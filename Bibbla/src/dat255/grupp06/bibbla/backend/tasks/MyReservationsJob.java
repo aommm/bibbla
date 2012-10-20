@@ -25,8 +25,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -36,11 +37,10 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyReservationsJob {
+public class MyReservationsJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	
-	private Response httpResponse;
 	private String userUrl;
 	
 	/**
@@ -48,7 +48,8 @@ public class MyReservationsJob {
 	 * 
 	 * @param session - the session to use. Is required since this is for logged-in users only.
 	 */
-	public MyReservationsJob(Session session) {
+	public MyReservationsJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -58,6 +59,7 @@ public class MyReservationsJob {
 	 * @returns a Message, containing a List of the user's current reservations. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyReservationsJob: ");
 		try {
 			// Get user URL.
@@ -73,11 +75,11 @@ public class MyReservationsJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: fetch reservations");
-			fetchReservations();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse reservations");
-			parseReservedBooks();
+			parseReservedBooks(response);
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -88,18 +90,19 @@ public class MyReservationsJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Connects to gotlib, and downloads the HTML of the reservations page.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchReservations() throws Exception {
-
+	protected Response connect() throws Exception {
 	    // Send GET request and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();   
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -107,9 +110,9 @@ public class MyReservationsJob {
 	 * 
 	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseReservedBooks() throws Exception {
+	private void parseReservedBooks(Response response) throws Exception {
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {

@@ -17,6 +17,7 @@
 
 package dat255.grupp06.bibbla.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,32 @@ import java.util.List;
  *  TODO: Needs many more properties and methods. Atm just for testing.
  *  @author Niklas Logren
  */ 
-public class Book {
+public class Book implements Serializable{
 	
 	private String name;
 	private String author;
 	private int available;
+	private String type;
+	
+	private String url;
+	private String reserveUrl;
+	
+	// Id's, used for renewing and unreserving.
+	private String renewId;
+	private String unreserveId;
+	private String freezeId;
+	
+	// Details
+	private String publisher; 
+	private String physicalDescription;
+	private String notes;
+	private String isbn;
+	private List<PhysicalBook> physicalBooks;
+	
 	@Override
+	/**
+	 * Returns the hashcode of this book.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -42,6 +63,10 @@ public class Book {
 	}
 
 	@Override
+	/**
+	 * Compares this book to the supplied one.
+	 * Compares author, name and type.
+	 */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -67,23 +92,6 @@ public class Book {
 			return false;
 		return true;
 	}
-
-	private String type;
-	
-	private String url;
-	private String reserveUrl;
-	
-	// Id's, used for renewing and unreserving.
-	private String renewId;
-	private String unreserveId;
-	private String freezeId;
-	
-	// Details
-	private String publisher; 
-	private String physicalDescription;
-	private String notes;
-	private String isbn;
-	private List<PhysicalBook> physicalBooks;
 	
 	/**
 	 * Prints the book's name&author, and whether it has urls/details specified.
