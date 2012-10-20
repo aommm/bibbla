@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
@@ -12,6 +13,7 @@ import com.actionbarsherlock.view.Window;
 import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 
 /**
  * A form for login credentials. Start this with startActivityForResult();
@@ -43,8 +45,15 @@ public class LoginOverlayActivity extends SherlockActivity {
 		EditText nameET = (EditText) findViewById(R.id.login_name_field);
 		EditText cardET = (EditText) findViewById(R.id.login_card_field);
 		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
-		Credentials cred = new Credentials(nameET.getText().toString(),
-				cardET.getText().toString(), pinET.getText().toString());
+		Credentials cred;
+		try {
+			cred = new Credentials(nameET.getText().toString(),
+					cardET.getText().toString(), pinET.getText().toString());
+		} catch (CredentialsMissingException e) {
+			Toast.makeText(this, R.string.login_fail_msg, Toast.LENGTH_SHORT)
+					.show();
+			return;
+		}
 		// Send it back to whoever asked
 		Intent resultIntent = new Intent();
 		resultIntent.putExtra(MainActivity.EXTRA_CREDENTIALS, cred);
