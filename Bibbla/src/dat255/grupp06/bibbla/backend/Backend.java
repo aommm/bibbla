@@ -53,7 +53,7 @@ public final class Backend {
 	 */
 	public Backend() {
 		settings = new Settings();
-		session = new Session(settings.getName(), settings.getCode(), settings.getPin());
+		session = new Session();
 	}
 	
 	/**
@@ -333,7 +333,8 @@ public final class Backend {
 	 * Logs the user out.
 	 */
 	public void logOut(){
-		session = new Session();	
+		session = new Session();
+		settings = new Settings();
 	}
 	
 	public void saveCredentials(Credentials cred) {
