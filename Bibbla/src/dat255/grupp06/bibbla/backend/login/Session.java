@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import dat255.grupp06.bibbla.model.Credentials;
+
 public class Session implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
@@ -46,6 +48,22 @@ public class Session implements Serializable {
 		
 		cookies = new HashMap<String, String>();
 	}
+	
+	/**
+	 * Creates a new session, using the data from the supplied Credentials.
+	 */
+	public Session(Credentials credentials) {
+		loggedIn = false;
+		hasCredentials = false;
+		this.name = credentials.name;
+		this.code = credentials.card;
+		this.pin = credentials.pin;
+		this.userUrl = "";
+		
+		updateHasCredentials();
+		cookies = new HashMap<String, String>();
+	}
+	
 	/**
 	 * Creates a new anonymous session.
 	 */
