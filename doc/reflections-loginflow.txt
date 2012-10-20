@@ -1,0 +1,95 @@
+Refaktorering: loginrutin
+Arild Matsson 2012-10-20
+
+Läs först Developer's guide och/eller Arkitekturspecifikation.
+
+Till att börja med kunde man mest söka efter böcker. Efter det fortsatte vi på
+olika håll parallellt: fler jobs i backend och fler flikar och fragment till
+frontenden. När allt fler bitar började falla på plats insåg vi att vi inte hade
+bestämt hur inloggning skulle hanteras. Vi lade det ansvaret på mig.
+
+Om inloggning på Gotlib
+Man kan logga in på webbtjänsten om man har ett lånekort. Man anger efternamn,
+lånekortsnummer och pinkod. Som inloggad kan man främst reservera och
+avreservera böcker, och förlänga lån.
+
+Gamla flödet
+Det vi hade dittills, för att prova oss fram, var statiska klasser som innehöll
+våra inloggningsuppgifter och som ignorerades av Git så att vi slapp publicera
+dem på GitHub. Vi har en Session-klass som egentligen bara skulle innehålla
+cookies som vi kunde skicka med varje anslutning, men som också fick ansvaret
+att logga in via LoginJob. Detta orsakade cirkulärt beroende eftersom (nästan)
+alla jobs i sin tur använde sig av Session. Det vi behövde fixa var alltså dels
+att inloggningsuppgifterna skulle gå att spara från frontend, dels att flytta
+ansvaret för inloggning.
+
+Nya flödet
+Dessa var mina första tankar om hur det borde gå till:
+• För att kolla om en användare är inloggad tillfrågas Backend.
+• För att logga in fyller användaren i sina uppgifter i GUI och Backend kör
+LoginJob med uppgifterna som parameter. Backend rapporterar resultatet och
+uppgifterna sparas i Settingsobjektet.
+• Om Session:en går ut för att användaren är inaktiv, loggas man in i bakgrunden
+eftersom Backend har sparat inloggningsuppgifterna.
+• Logga ut blir helt enkelt att kasta bort Session-objektet och nollställa
+inloggninsuppgifterna i Settings.
+
+Försök 1
+Jag skissade på ett sekvensdiagram på papper, för ett nytt flöde. (Det var
+väldigt hjälpsamt för att jag slapp leta mig fram genom alla anrop i koden; med
+hela kedjan uppritad framför mig var det mycket lättare att få en övergripande
+koll.)
+
+Nytt var LoginManager. Den skulle prata med Backend om inloggning så att inte
+det hamnade en massa sådan kod i övriga aktiviteter och fragment. Den var alltså
+inte en Activity men berodde på Androids bibliotek.
+
+LoginJob skulle inte längre skötas av Session utan av Backend, och bara om det
+behövdes (dvs om Session inte hade gått ut). När LoginJob var klar skulle den
+anropa en callback som skickades med från LoginManager, så utfördes det som
+inloggningen behövdes till.
+
+Resultat
+En egenskap hos denna design var att en callback behövde skickas till och från
+LoginOverlayActivity (formulär för inloggningsuppgifter) så den anropande
+Activityn visste vad den skulle göra efter inloggningen. Det görs som bekant med
+putExtra(int,Serializable), men Callback gick inte att göra Serializable
+eftersom den behöver referenser till ickeserialiserbara objekt (t ex den
+anropande aktiviteten).
+
+Dessutom kändes LoginManager omotiverad eftersom den anropande aktiviteten ändå
+behövde en del kod för att hantera inloggningen
+
+Försök 2
+Jag funderade och gjorde nya sekvensdiagram. LoginManager tog jag bort. I den
+anropande aktiviteten ska egentligen inte behövas mer än ett Backend-anrop.
+Backend kollar då så att användaren är inloggad. Om det inte finns sparade
+inloggningsuppgifter kastas en Exception och frontend visar upp formuläret så
+att uppgifterna kan sparas. Ansvaret att kontrollera att användaren är inloggad
+flyttas alltså från frontend till Backend. Det kändes också vettigt att börja
+använda Exceptions.
+
+Resultat - det nuvarande flödet
+Från frontend anropas metoder i Backend. Om de kräver inloggning (vilket i stort
+sett alla gör) kan de kasta en CredentialsMissingException om användaren inte
+har fyllt i inloggningsuppgifter. Den skall förstås fångas, så att man kan visa
+inloggningsformuläret LoginOverlayActivity. När användaren är färdig med
+formuläret anropas Backend-metoden på nytt, via en Callback.
+
+I Backend fungerar (de flesta) metoderna så här: en Job-klass instansieras med
+inloggningsinformation till förälderklassen AuthorizedJob. Om det saknas
+inloggningsuppgifter kommer anropet till getCredentials() att ge en
+CredentialsMissingException.
+
+I annat fall skapas sedan en Task (som ärver Androids AsyncTask) som kör jobbet
+och efteråt anropar Callback:en. Job-klassernas run() skall börja med att anropa
+förälderns login(), för att säkerställa att användaren är inloggad.
+
+När sessionen har gått ut kommer nästa anrop av login() att logga in på nytt.
+
+Möjliga nackdelar
+(Ej åtgärdade i skrivande stund)
+
+Alla Job får tillgång till det enda Session-objektet. Detta för att kunna logga
+in. Eftersom vissa jobb dessutom påverkar sessionen, så är klassen muterbar.
+
