@@ -17,7 +17,6 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +39,10 @@ import dat255.grupp06.bibbla.utils.Message;
  * 
  * @author Fahad Al-Khameesi
  */
-public class DetailedViewJob {
+public class DetailedViewJob extends Job {
 	
 	private Book originalBook, newBook;
 	private Message message = new Message();
-	private Response httpResponse; 
 	
 	public DetailedViewJob(Book book){
 		this.originalBook = book;
@@ -61,27 +59,9 @@ public class DetailedViewJob {
 		try {
 			System.out.print("\n****** DetailedViewJob\n");
 			System.out.print("* step 1: fetch book details... ");
-			
-			// Retry network connection a specified number of times. 
-			int failureCounter = 0;
-			while(true) {
-				try {					
-					fetchBookDetails();
-					System.out.print("succeeded! *\n");
-					break; // Break if we succeed.
-				} catch (Exception e) {
-					failureCounter++;
-				}
-				// If max attempts has been reached, abort Job.
-				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
-					throw new Exception("Network connection failed.");
-				} else {
-					System.out.print("failed. retrying... ");
-				}
-			}
-
+			Response response = connectAndRetry();
 			System.out.print("* step 2: parse book details... ");
-			parseBookDetails();
+			parseBookDetails(response);
 			System.out.print("succeeded! *\n*");
 			System.out.print("****** DetailedViewJob done \n");
 			
@@ -92,17 +72,19 @@ public class DetailedViewJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Fetches the details of the supplied book.
 	 * 
 	 * @throws Exception if HTTP connection failed.
 	 */
-	private void fetchBookDetails() throws Exception {
-		
-	    httpResponse = Jsoup.connect(originalBook.getUrl())
+	protected Response connect() throws Exception {
+		// Performs connection using Jsoup.
+	    Response r = Jsoup.connect(originalBook.getUrl())
 			    .method(Method.GET)
 			    .timeout(Backend.CONNECTION_TIMEOUT)
-			    .execute();		
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -110,10 +92,10 @@ public class DetailedViewJob {
 	 * 
 	 * @throws Exception if parsing fails.
 	 */
-	private void parseBookDetails() throws Exception{
+	private void parseBookDetails(Response response) throws Exception{
 
 		// Prepare HTML for parsing.
-		Document html = httpResponse.parse();
+		Document html = response.parse();
 		
 	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
 	    Elements tableRows = html.select("table.bibItems").select("tr.bibItemsEntry");
@@ -175,4 +157,5 @@ public class DetailedViewJob {
 	    
 	    message.obj = newBook;
 	}
+
 }

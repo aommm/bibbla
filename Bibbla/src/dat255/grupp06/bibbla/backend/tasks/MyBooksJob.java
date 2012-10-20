@@ -25,7 +25,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.CommonParsing;
@@ -37,11 +36,10 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyBooksJob {
+public class MyBooksJob extends Job {
 	private Session session;
 	private Message message;
 	
-	private Response httpResponse;
 	private String userUrl;
 	
 	public MyBooksJob(Session session) {
@@ -67,30 +65,11 @@ public class MyBooksJob {
 			// Append "items" to user URL.
 			userUrl += "items";
 			System.out.println("Step 1 done! ***");
-			
-			
-			System.out.println("*** Step 2: fetch loaned books");
-			// Retry network connection a specified number of times. 
-			int failureCounter = 0;
-			while(true) {
-				try {
-					fetchLoanedBooks();
-					System.out.print("succeeded! *\n");
-					break; // Break if we succeed.
-				} catch (Exception e) {
-					failureCounter++;
-				}
-				// If max attempts has been reached, abort Job.
-				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
-					throw new Exception("Network connection failed.");
-				} else {
-					System.out.print("failed. retrying... ");
-				}
-			}
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse loaned books");
-			parseLoanedBooks();
+			parseLoanedBooks(response);
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -101,18 +80,19 @@ public class MyBooksJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Connects to gotlib, and downloads the HTML of 'loaned books'.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchLoanedBooks() throws Exception {
-
+	protected Response connect() throws Exception {
 	    // Send GET request and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();   
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -120,9 +100,9 @@ public class MyBooksJob {
 	 * 
 	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseLoanedBooks() throws Exception {
+	private void parseLoanedBooks(Response response) throws Exception {
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {

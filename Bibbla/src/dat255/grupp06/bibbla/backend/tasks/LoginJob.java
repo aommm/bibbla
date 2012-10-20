@@ -73,7 +73,7 @@ public class LoginJob {
 
 		// Retry login job a specified number of times. 
 		int failureCounter = 0;
-		while(failureCounter < Backend.CONNECTION_ATTEMPTS) {
+		while(failureCounter < Backend.MAX_CONNECTION_ATTEMPTS) {
 			try {					
 				System.out.print("\n****** LoginJob \n");
 				System.out.print("* getLoginForm(): ");
@@ -96,7 +96,7 @@ public class LoginJob {
 			}
 		}
 		// Did we fail?
-		if (failureCounter >= Backend.CONNECTION_ATTEMPTS) {
+		if (failureCounter >= Backend.MAX_CONNECTION_ATTEMPTS) {
 			message.error = (message.error!=null) ? message.error : Error.LOGIN_FAILED;
 			System.out.print("\n****** LoginJob failed.\n");
 		} 
@@ -113,7 +113,9 @@ public class LoginJob {
 	 */
 	private void getLoginForm() throws Exception {
 
-		String url = "https://www.gotlib.goteborg.se/iii/cas/login?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang=swe";
+		String url = "https://www.gotlib.goteborg.se/iii/cas/login?service=" +
+				"http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore" +
+				"%2Fj_acegi_cas_security_check&lang=swe";
 
 		// Create a request, and retrieve the response.
 		Response response = Jsoup.connect(url)
@@ -134,7 +136,8 @@ public class LoginJob {
 		// Tests.
 		if ((sessionVariables.get("lt") == null) ||
 		   (sessionCookies.get("JSESSIONID") == null) ||
-		   (sessionCookies.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE") == null)) {
+		   (sessionCookies.get("org.springframework.web.servlet." +
+		   		"i18n.CookieLocaleResolver.LOCALE") == null)) {
 			throw new Exception("missing cookies/variables.");
 		}
 	}
@@ -146,7 +149,11 @@ public class LoginJob {
 	private void postLoginForm() throws Exception {
 		
 		// Prepare POST url (spoiler: contains variables!)
-	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE");
+	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="
+		+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.got" +
+				"lib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_c" +
+				"heck&lang="+sessionVariables.get("org.springframework.web.se" +
+						"rvlet.i18n.CookieLocaleResolver.LOCALE");
 		
 	    // Prepare POST data.
 	    Map<String,String> postData = new HashMap<String,String>() {{
@@ -181,7 +188,8 @@ public class LoginJob {
 	 */
 	private void loginTest(String searchString) throws Exception {
 		
-	    String url = "http://encore.gotlib.goteborg.se/iii/encore/search/C__S"+searchString+"__Orightresult__U1?lang=swe&suite=pearl";
+	    String url = "http://encore.gotlib.goteborg.se/iii/encore/search/C__S"
+	    +searchString+"__Orightresult__U1?lang=swe&suite=pearl";
 	    
 	    // Send a GET request and save response.
 	    Response response = Jsoup.connect(url)

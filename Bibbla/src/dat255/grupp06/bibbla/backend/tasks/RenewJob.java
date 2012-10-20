@@ -17,30 +17,33 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.jsoup.Connection.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.*;
+import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
  * Fetches a list of the user's currently loaned books.
  *
  * @author Niklas Logren
  */
-public class RenewJob {
+public class RenewJob extends Job {
 	private Session session;
 	private Message message;
+	
 	private List<Book> books;
-	private Response httpResponse;
 	private String userUrl;
 	
 	/**
@@ -97,27 +100,11 @@ public class RenewJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: post our renewal");
-			// Retry network connection a specified number of times. 
-			int failureCounter = 0;
-			while(true) {
-				try {
-					postRenewal();
-					System.out.print("succeeded! *\n");
-					break; // Break if we succeed.
-				} catch (Exception e) {
-					failureCounter++;
-				}
-				// If max attempts has been reached, abort Job.
-				if (failureCounter > Backend.CONNECTION_ATTEMPTS) {
-					throw new Exception("Network connection failed.");
-				} else {
-					System.out.print("failed. retrying... ");
-				}
-			}
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse the results");
-			parseResults();
+			parseResults(response);
 			System.out.println("Step 3 done! ***");		
 			
 		} catch (Exception e) {
@@ -127,13 +114,14 @@ public class RenewJob {
 		
 		return message;
 	}
-	
+
+	@Override
 	/**
 	 * POSTs the form which renews our books.
 	 * @throws Exception if connection failed,
 	 * 		the user isn't logged in, or if the server complained.  
 	 */
-	private void postRenewal() throws Exception {
+	protected Response connect() throws Exception {
 		
 	    // Prepare POST data.
 	    Map<String,String> postData = new HashMap<String,String>() {{
@@ -154,12 +142,12 @@ public class RenewJob {
 	    }};
 	    
 	    // Send POST request to user url and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
-
+	    return r;
 	}
 	
 	/**
@@ -167,10 +155,10 @@ public class RenewJob {
 	 * 
 	 * @throws Exception if we're not logged in, or if parsing otherwise failed.
 	 */
-	private void parseResults() throws Exception {
+	private void parseResults(Response response) throws Exception {
 		
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
