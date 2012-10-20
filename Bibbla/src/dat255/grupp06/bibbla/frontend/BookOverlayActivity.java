@@ -19,6 +19,7 @@ package dat255.grupp06.bibbla.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -29,6 +30,7 @@ import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.fragments.SearchListFragment;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -58,15 +60,20 @@ public class BookOverlayActivity extends SherlockActivity {
     	((TextView)findViewById(R.id.text_reserve_book)).setText("Klar!");
     }
     
-    public void reserveBook() {
-    	((TextView)findViewById(R.id.text_reserve_book)).setText("Reserverar bok...");
+    
+    public void reserveBook(View view) {
+    	
     	Callback c = new Callback() {
 			public void handleMessage(Message msg) {
 				BookOverlayActivity.this.reserveDone(msg);
 			}
 		};
 		
-		//Backend.getBackend().reserve(book, "An", c);
+		try {
+			Backend.getBackend().reserve(book, "An", c);
+			((TextView)findViewById(R.id.text_reserve_book)).setText("Reserverar bok...");
+		} catch (CredentialsMissingException e) {
+		}
     }
     
     /*
