@@ -22,7 +22,6 @@ import dat255.grupp06.bibbla.utils.Message;
  */
 public class LibInfoJob {
 
-	//	private String searchPhrase = null;
 	private Message message = new Message();
 	private Document resultsDocument;
 	private List<Library> results = new ArrayList<Library>();
@@ -46,7 +45,6 @@ public class LibInfoJob {
 
 	/**
 	 * Creates a new LibInfoJob, which returns the first page of the search results.
-	 * @param s - The string to search for.
 	 */
 
 	public LibInfoJob(){
@@ -64,7 +62,7 @@ public class LibInfoJob {
 		}
 		catch (Exception e) {
 			System.out.print("failed: "+e.getMessage()+" *** \n");
-			message.error = Error.SEARCH_FAILED;
+			message.error = Error.FETCHING_INFO_FAILED;
 		}
 		return message;
 	}
@@ -79,12 +77,9 @@ public class LibInfoJob {
 	}
 
 	private void step2() {		
-		//	List<Library> results = new ArrayList<Library>();
-		System.out.println("Came into step2");
-		//	System.out.println(resultsDocument.html());
 		Element searchResult = resultsDocument.select("ul.unit-list").first();// resultsDocument.select("li.odd js-unit"); //odd js-unit??
 
-		Elements children = searchResult.children();
+			Elements children = searchResult.children();
 		for(Element e : children){
 
 			Library library = new Library();
@@ -95,26 +90,41 @@ public class LibInfoJob {
 			Element div = e.child(1);
 			Element adr=div.select("div.adr").first();
 
-			//Set library visiting address
-			String adress = adr.select("span.street-address").first().text();
-			library.setAddress(adress);
+			//Set library visiting address if exists
+			Elements visitElement =adr.select("span.street-address");
+			if (visitElement.size()!=0){
+				String adress = adr.select("span.street-address").first().text();
+				library.setAddress(adress);
+			}
+			
+			//Set library postal code if exists
+			Elements pcElement =adr.select("span.postal-code");
+			if (pcElement.size()!=0){
+				String pC = adr.select("span.postal-code").first().text();
+				library.setPostCode(pC);
+			}
+			
+			//Set library area if exists
+			Elements areaElement =adr.select("span.locality");
+			if (areaElement.size()!=0){
+				String area = adr.select("span.locality").first().text();
+				library.setArea(area);
+			}
 
-			//Set library postal code
-			String pC = adr.select("span.postal-code").first().text();
-			library.setPostCode(pC);
+			//Set library phone number if exists
+			Elements telElement =div.select("div.tel");
+			if (telElement.size()!=0){
+				String phoneNr = div.select("div.tel").first().select("span.value").first().select("a.phone-link").first().text();
+				library.setPhoneNr(phoneNr);	
+			}
 
-			//Set library area
-			String area = adr.select("span.locality").first().text();
-			library.setArea(area);
-
-			//Set library phone number
-			String phoneNr = div.select("div.tel").first().select("span.value").first().select("a.phone-link").first().text();
-			library.setPhoneNr(phoneNr);	
-
-			//Set library open hours
-			String openH = div.select("div.hours").first().select("span").first().text();
-			library.setOpenH(openH);	
-
+			//Set library open hours if exists
+			Elements hoursElement =div.select("div.hours");
+			if (hoursElement.size()!=0){
+				String openH = div.select("div.hours").first().select("span").first().text();
+				library.setOpenH(openH);	
+			}
+			
 			//Set library email if exists
 			Elements emailElement =div.select("div.email");
 			if (emailElement.size()!=0){
@@ -133,11 +143,10 @@ public class LibInfoJob {
 
 		message.obj = results;
 	}
+		
 	/**
 	 * Returns the list of Libraries that the class has parsed from the internet.
 	 * @return	A list of Library objects.
 	 */
-	public List<Library> getLibraries(){
-		return results;
-	}
+
 }

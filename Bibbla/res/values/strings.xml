@@ -12,8 +12,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
- -->
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
 <resources>
 
@@ -34,8 +34,7 @@
     <string name="login_heading">Logga in</string>
     <string name="login_info">Logga in med ditt lånekort för att nå personliga
         funktioner såsom att reservera böcker eller se över dina lån. Om du
-        inte har ett lånekort kan gå till något av biblioteken och be om ett.
-        </string>
+        inte har ett lånekort kan gå till något av biblioteken och be om ett.</string>
     <string name="login_name_hint">Efternamn</string>
     <string name="login_card_hint">Lånekortsnummer</string>
     <string name="login_pin_hint">PIN-kod</string>
@@ -55,8 +54,7 @@
     <string name="login_heading">Logga in</string>
     <string name="login_info">Logga in med ditt lånekort för att nå personliga
         funktioner såsom att reservera böcker eller se över dina lån. Om du
-        inte har ett lånekort kan gå till något av biblioteken och be om ett.
-        </string>
+        inte har ett lånekort kan gå till något av biblioteken och be om ett.</string>
     <string name="login_name_hint">Efternamn</string>
     <string name="login_card_hint">Lånekortsnummer</string>
     <string name="login_pin_hint">PIN-kod</string>
@@ -71,5 +69,14 @@
     <string name="my_reservations_heading">Mina reservationer</string>
     <string name="loans_list_error">Kunde inte hämta lånlistan</string>
     <string name="reservations_list_error">Kunde inte hämta listan med reservationer</string>
+
+    <!-- Library -->    
+    <string-array name="libNames">
+        <item>lib1</item>
+        <item>lib2</item>
+        <item>lib3</item>
+        <item/>
+    </string-array>
+    <string name="textSomething">Bibbla!!!</string>
 
 </resources>

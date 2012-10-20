@@ -20,6 +20,7 @@ package dat255.grupp06.bibbla.utils;
 public enum Error {
 	LOGIN_FAILED,
 	SEARCH_FAILED,
+	FETCHING_INFO_FAILED,
 	RENEW_FAILED,
 	UNRESERVE_FAILED,
 	RESERVE_FAILED,
