@@ -42,11 +42,12 @@ public class LoginJobTest extends TestCase {
 	 */
 	public void testBogusCredentials() {
 		Credentials bogusCredentials = new Credentials("a","b","c");
-		LoginJob loginJob = new LoginJob(bogusCredentials, new Session());
+		Session session = new Session();
+		LoginJob loginJob = new LoginJob(bogusCredentials, session);
 		Message result = loginJob.run();
 		
 		assertNotNull(result.error);
-		assertFalse(result.loggedIn);
+		assertFalse(session.isActive());
 	}
 	
 	/**
@@ -56,10 +57,11 @@ public class LoginJobTest extends TestCase {
 		
 		// Run test only if we have login credentials. Otherwise, auto-succeed.
 		if (credentials != null) {
-			LoginJob loginJob = new LoginJob(credentials, new Session());
+			Session session = new Session();
+			LoginJob loginJob = new LoginJob(credentials, session);
 			Message result = loginJob.run();
 			
-			assertTrue(result.loggedIn);
+			assertTrue(session.isActive());
 			assertNull(result.error);
 		}
 	}

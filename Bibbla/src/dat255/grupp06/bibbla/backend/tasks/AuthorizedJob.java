@@ -18,8 +18,8 @@ public abstract class AuthorizedJob extends Job {
 	
 	/**
 	 * Construct a job that requires being logged in.
-	 * @param loggedIn Whether the user is already logged in.
-	 * @param credentials Which credentials to use otherwise.
+	 * @param credentials Which credentials to use if not logged in.
+	 * @param session cookies to detect whether logged in.
 	 */
 	public AuthorizedJob(Credentials credentials, Session session) {
 		if (credentials == null);
@@ -31,7 +31,7 @@ public abstract class AuthorizedJob extends Job {
 	 * Log in if needed (which is determined by the session object supplied in
 	 * constructor). Should be called in ancestor's run() before
 	 * login-dependent connections are made.
-	 * @throws CredentialsMissingException if login fails
+	 * @throws RuntimeException if login fails
 	 * TODO Replace with something semantically correct
 	 */
 	public void login() {
@@ -39,8 +39,7 @@ public abstract class AuthorizedJob extends Job {
 			return;
 		LoginJob loginJob = new LoginJob(credentials, session);
 		Message message = loginJob.run();
-		if (!message.loggedIn) {
-			// If the login failed we can at least require updated credentials 
+		if (!session.isActive()) {
 			throw new RuntimeException("Login failed.");
 		}
 	}
