@@ -34,14 +34,14 @@ public abstract class AuthorizedJob extends Job {
 	 * @throws CredentialsMissingException if login fails
 	 * TODO Replace with something semantically correct
 	 */
-	public void login() throws CredentialsMissingException {
+	public void login() {
 		if (session.isActive())
 			return;
 		LoginJob loginJob = new LoginJob(credentials, session);
 		Message message = loginJob.run();
 		if (!message.loggedIn) {
 			// If the login failed we can at least require updated credentials 
-			throw new CredentialsMissingException("Login failed.");
+			throw new RuntimeException("Login failed.");
 		}
 	}
 }
