@@ -110,7 +110,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 		case RESULT_LOGIN_FORM:
 			// Get credentials
 			Credentials cred = (Credentials) data.getSerializableExtra(EXTRA_CREDENTIALS);
-			// TODO Check format of input
 			if (cred == null) {
 				// Retry login form (recursive)
 				showCredentialsDialog(loginDoneCallback);
