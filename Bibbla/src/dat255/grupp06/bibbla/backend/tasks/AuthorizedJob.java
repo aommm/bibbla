@@ -28,9 +28,9 @@ public abstract class AuthorizedJob extends Job {
 	}
 	
 	/**
-	 * Log in if needed (which is determined by the loggedIn constructor
-	 * param). Should be called in ancestor's run() before login-dependent
-	 * connections are made.
+	 * Log in if needed (which is determined by the session object supplied in
+	 * constructor). Should be called in ancestor's run() before
+	 * login-dependent connections are made.
 	 * @throws CredentialsMissingException if login fails
 	 * TODO Replace with something semantically correct
 	 */
