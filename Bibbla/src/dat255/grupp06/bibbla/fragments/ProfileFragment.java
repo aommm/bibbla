@@ -45,8 +45,6 @@ import dat255.grupp06.bibbla.utils.Message;
  */
 public class ProfileFragment extends SherlockFragment {
 
-	Backend backend;
-	
 	/**
 	 * Reference to the class that can produce a login form. Is set on attach.
 	 */
@@ -74,14 +72,6 @@ public class ProfileFragment extends SherlockFragment {
 		}
 	}
 	
-	/**
-	 * Give a reference to the Backend
-	 * @param backend The Backend object used by the application
-	 */
-	public void setBackend(Backend backend) {
-		this.backend = backend;
-	}
-	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -95,8 +85,7 @@ public class ProfileFragment extends SherlockFragment {
 	 * @see setBackend(Backend)
 	 */
 	public void updateFromBackend() throws IllegalStateException {
-		if (backend == null)
-			throw new IllegalStateException();
+		Backend backend = Backend.getBackend();
 		
 		// These backend calls need user credentials.
 		try {

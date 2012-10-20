@@ -134,8 +134,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			case 0:
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
-			        // TODO Why don't we pass Backend as a constructor param?
-			        searchFragment.setBackend(backend);
 			        ft.add(R.id.fragment_container, searchFragment);
 				} else {
 					ft.attach(searchFragment);
@@ -144,7 +142,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			case 1:
 				if (profileFragment == null) {
 					profileFragment = new ProfileFragment();
-					profileFragment.setBackend(backend);
 					ft.add(R.id.fragment_container, profileFragment);
 				} else {
 					ft.attach(profileFragment);
@@ -184,11 +181,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		if (searchFragment == null) {
 			searchFragment = new SearchFragment();
-			searchFragment.setBackend(backend);
 			ft.add(R.id.fragment_container, searchFragment);
 		} else {
 			ft.attach(searchFragment);
-			// detach...?
+			// TODO detach...?
 		}
 		ft.commit();
 	}
