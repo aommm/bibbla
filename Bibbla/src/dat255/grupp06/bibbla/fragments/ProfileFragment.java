@@ -93,18 +93,17 @@ public class ProfileFragment extends SherlockFragment {
 		if (backend == null)
 			throw new IllegalStateException();
 		
-		Activity activity = getSherlockActivity();
-		
 		// These backend calls need user credentials.
 		try {
-			// Name header
-			String name = backend.getUserName();
-			TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
-			nameHeading.setText(name);
-			
 			// The lists take some time so let's use Callback.
 			// TODO Loading spinner
-	
+
+			// Name header
+			backend.getUserName(new Callback() {
+				@Override public void handleMessage(Message msg) {
+					getUserNameDone(msg);
+			}});
+
 			// Current debt
 			backend.fetchUserDebt(new Callback() {
 				@Override public void handleMessage(Message msg) {
@@ -129,6 +128,24 @@ public class ProfileFragment extends SherlockFragment {
 					updateFromBackend();
 			}});
 		}
+	}
+	
+	private void getUserNameDone(Message msg) {
+		Activity activity = getSherlockActivity();
+		String name = (String) msg.obj;
+		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
+		nameHeading.setText(name);
+	}
+	
+	/**
+	 * Update the debt TextView.
+	 * @param msg Backend response, 
+	 */
+	private void fetchDebtDone(Message msg) {
+		Activity activity = getSherlockActivity();
+		int debt = (Integer) msg.obj;
+		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
+		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
 	}
 	
 	/**
@@ -164,16 +181,5 @@ public class ProfileFragment extends SherlockFragment {
 			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
 		}
 		
-	}
-	
-	/**
-	 * Update the debt TextView.
-	 * @param msg Backend response, 
-	 */
-	private void fetchDebtDone(Message msg) {
-		Activity activity = getSherlockActivity();
-		int debt = (Integer) msg.obj;
-		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
-		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
 	}
 }

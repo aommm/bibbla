@@ -81,12 +81,14 @@ public class LoginJob {
 				System.out.print("* loginTest(): ");
 				String url = parseUserUrl(response);
 				session.setUserUrl(url);
+				String name = parseUserName(response);
+				session.setUserName(name);
 				System.out.print("succeeded! *\n");
 				System.out.print("****** LoginJob done \n");
 				// We made it through.
-				message.obj = sessionCookies;
-				message.loggedIn = true;
 				session.setCookies(sessionCookies);
+				message.loggedIn = true;
+				message.obj = session;
 				break; // Break if we succeed.
 			} catch (Exception e) {
 				failureCounter++;
@@ -104,7 +106,7 @@ public class LoginJob {
 
 		return message;
 	}
-	
+
 	/**
 	 * Step 1: Gets login form.
 	 * Saves the initial session cookies, and retrieves three values.  
@@ -196,6 +198,25 @@ public class LoginJob {
 		if (url.equals("")) throw new IOException("no link found");
 		if (!url.matches("/$")) url += "/";
 		return url;
+	}
+	
+	/**
+	 * 
+	 * @param response
+	 * @return
+	 * @throws IOException if parsing went wrong
+	 */
+	private String parseUserName(Response response) throws IOException {
+		Document html = response.parse();
+		// Find name on form "Family-name, First-name"
+		try {
+			String accountInfo = html.select(".myAccountInfo").first().text();
+			String[] splitGreeting = accountInfo.split(" \\|")[0].split(", ");
+			String wholeName = splitGreeting[2]+" "+splitGreeting[1]; 
+			return wholeName;
+		} catch (NullPointerException e) {
+			return "";
+		}
 	}
 	
 }

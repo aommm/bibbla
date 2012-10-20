@@ -29,6 +29,7 @@ import dat255.grupp06.bibbla.backend.tasks.ReserveJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
 import dat255.grupp06.bibbla.backend.tasks.UnreserveJob;
+import dat255.grupp06.bibbla.backend.tasks.UserNameJob;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
@@ -60,8 +61,18 @@ public final class Backend {
 	 *  @returns the user's username.
 	 *  If no name is saved, returns empty string.
 	 */
-	public String getUserName() {
-		return session.getName();
+	public void getUserName(Callback frontendCallback)
+	throws CredentialsMissingException {
+		final UserNameJob job = new UserNameJob(settings.getCredentials(),
+				session);
+		Task task = new Task(frontendCallback) {
+			@Override
+			protected Void doInBackground(String... params) {
+				message = job.run();
+				return null;
+			}
+		};
+		task.execute();
 	}
 	
 	/**

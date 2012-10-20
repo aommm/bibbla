@@ -127,6 +127,12 @@ public class Session implements Serializable {
 			this.userUrl = userUrl;
 		}
 	}
+
+	public void setUserName(String name) {
+		synchronized(this.name) {
+			this.name = name;
+		}
+	}
 	
 	public String getName() {
 		synchronized(name) {
