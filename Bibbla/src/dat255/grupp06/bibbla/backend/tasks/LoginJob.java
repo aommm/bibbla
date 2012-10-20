@@ -87,7 +87,6 @@ public class LoginJob {
 				System.out.print("****** LoginJob done \n");
 				// We made it through.
 				session.setCookies(sessionCookies);
-				message.loggedIn = true;
 				message.obj = session;
 				break; // Break if we succeed.
 			} catch (Exception e) {

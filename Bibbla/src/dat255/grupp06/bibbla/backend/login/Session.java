@@ -73,8 +73,10 @@ public class Session implements Serializable {
 			this.cookies = cookies;
 			if (cookies != null) {
 				String value = cookies.get(COOKIE_LOGGED_IN);
-				if (value != null && value.equals("true"))
+				if (value != null && value.equals("true")) {
 					this.loggedIn = true;
+					return;
+				}
 			}
 			// else
 			this.loggedIn = false;
