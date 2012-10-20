@@ -11,7 +11,7 @@ import java.io.Serializable;
 public final class Credentials implements Serializable {
 	private static final long serialVersionUID = -5535338463939136870L;
 	/** Card number regexp: 9 numbers and possibly a letter; spaces ignored. */
-	public static final String CARD_REGEXP = "^\\s*([0-9]\\s*){9}[A-Za-z]?\\s*$";
+	public static final String CARD_REGEXP = "^\\s*([0-9]\\s*){9,10}[A-Za-z]?\\s*$";
 	/** Pin regexp: 4 numbers, trailing spaces ignored */
 	public static final String PIN_REGEXP = "^[0-9]{4}\\s*$";
 
