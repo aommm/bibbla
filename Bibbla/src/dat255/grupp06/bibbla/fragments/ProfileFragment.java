@@ -144,7 +144,7 @@ public class ProfileFragment extends SherlockFragment {
 		Activity activity = getSherlockActivity();
 		String name = (String) msg.obj;
 		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
-		nameHeading.setText(name);
+		if (nameHeading != null) nameHeading.setText(name);
 		namePending = false;
 		updateSpinnerState();
 	}
@@ -157,7 +157,8 @@ public class ProfileFragment extends SherlockFragment {
 		Activity activity = getSherlockActivity();
 		int debt = (Integer) msg.obj;
 		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
-		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
+		if (debtView != null) debtView.setText(String.
+				format(getString(R.string.debt_view_text), debt));
 		debtPending = false;
 		updateSpinnerState();
 	}
@@ -172,8 +173,8 @@ public class ProfileFragment extends SherlockFragment {
 			@SuppressWarnings("unchecked")
 			List<Book> loans = (List<Book>) msg.obj;
 			ListView loansList = (ListView) activity.findViewById(R.id.loans_list);
-			if (loansList != null)
-				loansList.setAdapter(new BookListAdapter(activity, loans, false)); //
+			if (loansList != null) loansList.setAdapter(
+					new BookListAdapter(activity, loans, false));
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
 		}
@@ -191,8 +192,8 @@ public class ProfileFragment extends SherlockFragment {
 			@SuppressWarnings("unchecked")
 			List<Book> reservations = (List<Book>) msg.obj;
 			ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
-			if (reservationsList != null)
-				reservationsList.setAdapter(new BookListAdapter(activity, reservations, false));
+			if (reservationsList != null) reservationsList.setAdapter(
+					new BookListAdapter(activity, reservations, false));
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
 		}
@@ -204,5 +205,10 @@ public class ProfileFragment extends SherlockFragment {
 	private void updateSpinnerState() {
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
 				namePending||debtPending||loansPending||reservationsPending);
+	}
+
+	public void cancelUpdate() {
+		namePending = debtPending = loansPending = reservationsPending = false;
+		updateSpinnerState();
 	}
 }

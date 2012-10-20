@@ -155,8 +155,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		
-		// If we're switching tabs, hide keyboard.
+		// Hide keyboard and spinner
 		hideKeyboard();
+		setSupportProgressBarIndeterminateVisibility(false);
 		
 		// Detach the correct fragment.
 		switch(tab.getPosition()) {
@@ -165,6 +166,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 			break;
 		case 1:
 			ft.detach(profileFragment);
+			profileFragment.cancelUpdate();
 			break;
 		}
 	}
