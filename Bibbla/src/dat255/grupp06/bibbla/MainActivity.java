@@ -43,6 +43,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, LoginCallbackHandler {	
 
 	private Backend backend;
+	
 	public static final int RESULT_LOGIN_FORM = 0;
 	public static final String EXTRA_CREDENTIALS = "credentials";
 	
@@ -60,10 +61,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 
         setContentView(R.layout.activity_main);
        
+        backend = Backend.getBackend();
+        
         // Hide progress bar by default.
         setSupportProgressBarIndeterminateVisibility(false);
-
-        backend = new Backend();
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

@@ -43,14 +43,22 @@ public final class Backend {
 	
 	private Settings settings;
 	private Session session;
+	private static Backend backendObject;
 	
 	/**
 	 * Creates a new instance of our Backend.
 	 * Initialises a new session and fetches settings.
 	 */
-	public Backend() {
+	private Backend() {
 		settings = new Settings();
 		session = new Session(settings.getName(), settings.getCode(), settings.getPin());
+	}
+	
+	public static Backend getBackend() {
+		if(backendObject == null) {
+			backendObject = new Backend();
+		}
+		return backendObject;
 	}
 	
 	/**
