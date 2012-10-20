@@ -18,6 +18,7 @@
 package dat255.grupp06.bibbla;
 
 import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 
 /**
  * Creates session objects.
@@ -54,7 +55,11 @@ public class CredentialsFactory {
 		}
 
 		// Create a new normal Session, which keeps track of our session cookies.
-		return new Credentials(name, code, pin);
+		try {
+			return new Credentials(name, code, pin);
+		} catch (CredentialsMissingException e) {
+			return null;
+		}
 	}
 
 }
