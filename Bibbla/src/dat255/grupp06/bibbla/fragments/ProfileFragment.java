@@ -51,6 +51,11 @@ public class ProfileFragment extends SherlockFragment {
 	 * Reference to the class that can produce a login form. Is set on attach.
 	 */
 	private LoginCallbackHandler loginCallbackHandler;
+
+	private boolean namePending;
+	private boolean debtPending;
+	private boolean loansPending;
+	private boolean reservationsPending;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,31 +101,36 @@ public class ProfileFragment extends SherlockFragment {
 		// These backend calls need user credentials.
 		try {
 			// The lists take some time so let's use Callback.
-			// TODO Loading spinner
 
 			// Name header
 			backend.getUserName(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					getUserNameDone(msg);
 			}});
+			namePending = true;
 
 			// Current debt
 			backend.fetchUserDebt(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.fetchDebtDone(msg);
 			}});
+			debtPending = true;
 			
 			// Current loans
 			backend.fetchLoans(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.loansUpdateDone(msg);
 			}});
+			loansPending = true;
 			
 			// Current reservations
 			backend.fetchReservations(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.reservationsUpdateDone(msg);
 			}});
+			reservationsPending = true;
+			
+			updateSpinnerState();
 		}
 		catch (CredentialsMissingException e) {
 			loginCallbackHandler.showCredentialsDialog(new Callback() {
@@ -135,6 +145,8 @@ public class ProfileFragment extends SherlockFragment {
 		String name = (String) msg.obj;
 		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
 		nameHeading.setText(name);
+		namePending = false;
+		updateSpinnerState();
 	}
 	
 	/**
@@ -146,6 +158,8 @@ public class ProfileFragment extends SherlockFragment {
 		int debt = (Integer) msg.obj;
 		TextView debtView = (TextView) activity.findViewById(R.id.debt_view);
 		debtView.setText(String.format(getString(R.string.debt_view_text), debt));
+		debtPending = false;
+		updateSpinnerState();
 	}
 	
 	/**
@@ -163,6 +177,8 @@ public class ProfileFragment extends SherlockFragment {
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
 		}
+		loansPending = false;
+		updateSpinnerState();
 	}
 	
 	/**
@@ -180,6 +196,13 @@ public class ProfileFragment extends SherlockFragment {
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
 		}
-		
+		reservationsPending = false;
+		updateSpinnerState();
+	}
+
+	/** Hide loading spinner if all fetching is done. */
+	private void updateSpinnerState() {
+		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(
+				namePending||debtPending||loansPending||reservationsPending);
 	}
 }
