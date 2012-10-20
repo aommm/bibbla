@@ -80,8 +80,6 @@ ActionBar.TabListener {
         //Add the tabs to the action bar
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
-        
-        Log.d("Jonis", "main finished");
     }
 	
 	@Override
