@@ -133,35 +133,5 @@ public class Session implements Serializable {
 			return name;
 		}
 	}
-	public void setName(String name) {
-		synchronized(this.name) {
-			this.name = name;
-			updateHasCredentials();
-		}
-	}
-
-	public String getCode() {
-		synchronized(code) {
-			return code;
-		}
-	}
-	public void setCode(String code) {
-		synchronized(this.code) {
-			this.code = code;
-			updateHasCredentials();
-		}
-	}
-
-	public String getPin() {
-		synchronized(pin) {
-			return pin;
-		}
-	}
-	public void setPin(String pin) {
-		synchronized(this.pin) {
-			this.pin = pin;
-			updateHasCredentials();
-		}
-	}
 
 }
