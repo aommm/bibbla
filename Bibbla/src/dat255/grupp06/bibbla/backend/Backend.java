@@ -21,6 +21,7 @@ import java.util.List;
 
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
+import dat255.grupp06.bibbla.backend.tasks.LibInfoJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
 import dat255.grupp06.bibbla.backend.tasks.MyDebtJob;
 import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
@@ -362,5 +363,25 @@ public final class Backend {
 			settings.setCode(cred.card);
 			settings.setPin(cred.pin);
 		}
+	}
+	
+	/**
+	 *  Searches backend for the library information.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void libInfo( final Callback frontendCallback) {
+		// Create a new Task and define its body.
+		Task task = new Task(frontendCallback) {
+			@Override
+			// The code that's run in the Task (on new thread).
+			protected Void doInBackground(String... params) {
+				LibInfoJob job = new LibInfoJob();
+				message = job.run();
+				return null;
+			}
+		};
+		// Start the task.
+		task.execute();
 	}
 }

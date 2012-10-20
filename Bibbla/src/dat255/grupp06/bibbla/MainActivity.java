@@ -31,6 +31,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.fragments.LibraryFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
@@ -49,8 +50,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 	
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
+	LibraryFragment libraryFragment;
 	private Callback loginDoneCallback;
-	
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
@@ -73,6 +75,7 @@ ActionBar.TabListener, LoginCallbackHandler {
         //Create the tabs
         ActionBar.Tab searchTab = getSupportActionBar().newTab();
         ActionBar.Tab profileTab = getSupportActionBar().newTab();
+        ActionBar.Tab libraryTab = getSupportActionBar().newTab();
         
         //Set tab properties
         searchTab.setContentDescription("Sök");
@@ -83,9 +86,14 @@ ActionBar.TabListener, LoginCallbackHandler {
         profileTab.setIcon(android.R.drawable.ic_menu_share);
         profileTab.setTabListener(this);
    
+        libraryTab.setContentDescription("Bibliotek");
+        libraryTab.setIcon(android.R.drawable.ic_menu_directions);
+        libraryTab.setTabListener(this);
+        
         //Add the tabs to the action bar
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
+        getSupportActionBar().addTab(libraryTab);
     }
 	
 	@Override
@@ -132,8 +140,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			case 0:
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
-			        // TODO Why don't we pass Backend as a constructor param?
-			        searchFragment.setBackend(backend);
 			        ft.add(R.id.fragment_container, searchFragment);
 				} else {
 					ft.attach(searchFragment);
@@ -142,11 +148,21 @@ ActionBar.TabListener, LoginCallbackHandler {
 			case 1:
 				if (profileFragment == null) {
 					profileFragment = new ProfileFragment();
-					profileFragment.setBackend(backend);
 					ft.add(R.id.fragment_container, profileFragment);
 				} else {
 					ft.attach(profileFragment);
 				}
+
+				break;
+			case 2:
+				if(libraryFragment == null) {
+					libraryFragment = new LibraryFragment();
+					libraryFragment.setBackend(backend);
+			        ft.add(R.id.fragment_container, libraryFragment);
+				} else {
+					ft.attach(libraryFragment);
+				}
+				break;
 		}
 	}
 
@@ -166,6 +182,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 			ft.detach(profileFragment);
 			profileFragment.cancelUpdate();
 			break;
+		case 2:
+			ft.detach(libraryFragment);
+			break;	
 		}
 	}
 
@@ -182,11 +201,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		if (searchFragment == null) {
 			searchFragment = new SearchFragment();
-			searchFragment.setBackend(backend);
 			ft.add(R.id.fragment_container, searchFragment);
 		} else {
 			ft.attach(searchFragment);
-			// detach...?
+			// TODO detach...?
 		}
 		ft.commit();
 	}

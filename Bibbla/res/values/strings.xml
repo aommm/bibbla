@@ -74,5 +74,13 @@
     
     <!-- Book overlay -->
     <string name="button_reserve">Reservera</string>
-
+    
+     <!-- Library -->    
+    <string-array name="libNames">
+        <item>lib1</item>
+        <item>lib2</item>
+        <item>lib3</item>
+        <item/>
+    </string-array>
+    <string name="textSomething">Bibbla!!!</string>
 </resources>

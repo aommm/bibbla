@@ -37,6 +37,17 @@ public class Library {
 	public Library() {
 
 	}
+	public Library(String name, String address, String postcode, 
+			String area, String phoneNr, String visAdr, String email, String openH) {
+		setName(name);
+		setAddress(address);
+		setPostCode(postcode);
+		setArea(area);
+		setPhoneNr(phoneNr);
+		setVisAdr(visAdr);
+		setEmail(email);
+		setOpenH(openH);
+	}
 	
 
 

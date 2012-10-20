@@ -168,10 +168,7 @@ public class RenewJob extends AuthorizedJob {
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
 	    	message.error = Error.LOGIN_NEEDED;
-	    	message.loggedIn = false;
 	    	throw new Exception("Not logged in");
-	    } else {
-	    	message.loggedIn = true;
 	    }
 	    
 	    // Just checking - font tags implies trouble.

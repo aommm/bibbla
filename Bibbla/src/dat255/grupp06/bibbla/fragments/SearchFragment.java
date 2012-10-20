@@ -53,7 +53,6 @@ import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchFragment extends SherlockFragment {
 
-	Backend backend;
 	SearchListFragment listFragment;
 	EditText searchEdit;
 	Button searchButton;
@@ -142,7 +141,7 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Call backend search.
 		Log.d("Jonis", "searching..... on page    1");
-		backend.search(searchString, 0, c);
+		Backend.getBackend().search(searchString, 0, c);
 		listFragment.setLastSearchString(searchString);
 	}
 	
@@ -159,7 +158,7 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Call backend search.
 		Log.d("Jonis", "searching..... on page    "+page);
-		backend.search(searchString, page, c);
+		Backend.getBackend().search(searchString, page, c);
 	}
 	
 	/** Is called when backend searching is done.**/
@@ -209,9 +208,5 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Update list with titles (empty or not).
 		listFragment.appendList(books);
-	}
-
-	public void setBackend(Backend b) {
-		backend = b;
 	}
 }
