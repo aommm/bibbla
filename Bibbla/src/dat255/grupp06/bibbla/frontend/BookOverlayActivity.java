@@ -117,6 +117,8 @@ public class BookOverlayActivity extends SherlockActivity {
      * 				any eventual error messages.
      */
     public void setDetails(Message msg) {
+    	// Hide progress bar.
+    	setSupportProgressBarIndeterminateVisibility(false);
     	// Did the job fail?
 		if (msg.error != null) {
 			// Log,
