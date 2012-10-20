@@ -52,8 +52,8 @@ ActionBar.TabListener, LoginCallbackHandler {
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+        setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-        setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
         
         // We want a fancy spinner for marking progress.
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
