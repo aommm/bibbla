@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
@@ -46,24 +48,6 @@ ActionBar.TabListener {
 	// TODO These should probably go into a list or something.
 	SearchFragment searchFragment;
 	ProfileFragment profileFragment;
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		/*
-		menu.add("button")
-		.setActionView(R.layout.actionbar_search_button)
-		.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		
-		menu.add("Search")
-			.setActionView(R.layout.actionbar_search_field)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		
-		*/
-		
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true;	
-	}
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
