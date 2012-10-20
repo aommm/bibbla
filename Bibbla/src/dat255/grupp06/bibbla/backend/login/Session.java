@@ -27,40 +27,19 @@ public class Session implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
 	private static final String COOKIE_LOGGED_IN = "PAT_LOGGED_IN";
-	private String name, code, pin;
+	private String name;
 	private String userUrl; // The URL to the user's profile page.
 	private Map<String, String> cookies;
 	private boolean loggedIn;
-	private boolean hasCredentials;
-	
-	/**
-	 * Creates a new session, and saves the supplied credentials.
-	 */
-	public Session(String name, String code, String pin) {
-		// Set user details. If null, initalise to empty string. (for synch)
-		this.name = (name == null)?"":name;
-		this.code = (code == null)?"":code;
-		this.pin = (pin == null)?"":pin;
-		this.userUrl = "";
-		
-		loggedIn = false;
-		updateHasCredentials();
-		
-		cookies = new HashMap<String, String>();
-	}
 	
 	/**
 	 * Creates a new session, using the data from the supplied Credentials.
 	 */
 	public Session(Credentials credentials) {
 		loggedIn = false;
-		hasCredentials = false;
 		this.name = credentials.name;
-		this.code = credentials.card;
-		this.pin = credentials.pin;
 		this.userUrl = "";
 		
-		updateHasCredentials();
 		cookies = new HashMap<String, String>();
 	}
 	
@@ -69,10 +48,7 @@ public class Session implements Serializable {
 	 */
 	public Session() {
 		loggedIn = false;
-		hasCredentials = false;
 		this.name = "";
-		this.code = "";
-		this.pin = "";
 		this.userUrl = "";
 		
 		cookies = new HashMap<String, String>();
@@ -112,19 +88,6 @@ public class Session implements Serializable {
 	// TODO This should actually check whether cookie has expired.
 	public boolean isActive() {
 		return loggedIn;
-	}
-
-	/**
-	 * Checks whether all user credentials are set, and updates hasCredentials.
-	 */
-	private void updateHasCredentials() {
-		hasCredentials = ((!"".equals(name)) && (!"".equals(code)) && (!"".equals(pin)));
-	}
-	/**
-	 * Returns whether all user details are correctly set.
-	 */
-	public boolean getHasCredentials() {
-		return hasCredentials;
 	}
 	
 	/**
