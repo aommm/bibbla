@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.Window;
 import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.model.CredentialsMissingException;
 
 /**
  * A form for login credentials. Start this with startActivityForResult();
@@ -46,10 +45,10 @@ public class LoginOverlayActivity extends SherlockActivity {
 		EditText cardET = (EditText) findViewById(R.id.login_card_field);
 		EditText pinET = (EditText) findViewById(R.id.login_pin_field);
 		Credentials cred;
-		try {
-			cred = new Credentials(nameET.getText().toString(),
-					cardET.getText().toString(), pinET.getText().toString());
-		} catch (CredentialsMissingException e) {
+		cred = new Credentials(nameET.getText().toString(),
+				cardET.getText().toString(), pinET.getText().toString());
+		if (!Credentials.areLegalCredentials(cred.name, cred.card, cred.pin) ||
+				cred.name.length()*cred.card.length()*cred.pin.length() == 0) {
 			Toast.makeText(this, R.string.login_fail_msg, Toast.LENGTH_SHORT)
 					.show();
 			return;
