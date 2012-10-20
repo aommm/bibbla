@@ -19,7 +19,6 @@ package dat255.grupp06.bibbla.backend;
 
 import java.util.List;
 
-import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.LibInfoJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
@@ -35,6 +34,7 @@ import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Performs tasks like searching, reserving and logging in.

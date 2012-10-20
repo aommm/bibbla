@@ -15,7 +15,7 @@
     along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
  **/
 
-package dat255.grupp06.bibbla.backend.login;
+package dat255.grupp06.bibbla.utils;
 
 import java.io.Serializable;
 import java.util.HashMap;

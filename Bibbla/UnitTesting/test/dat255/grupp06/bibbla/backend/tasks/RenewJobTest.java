@@ -22,10 +22,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import dat255.grupp06.bibbla.CredentialsFactory;
-import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Tests RenewJob by running four tests:

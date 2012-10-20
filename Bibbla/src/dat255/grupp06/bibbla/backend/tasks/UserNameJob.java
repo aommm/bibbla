@@ -2,9 +2,9 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import org.jsoup.Connection.Response;
 
-import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Job to get user's last name.

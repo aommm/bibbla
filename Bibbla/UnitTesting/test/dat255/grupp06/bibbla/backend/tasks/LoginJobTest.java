@@ -19,9 +19,9 @@ package dat255.grupp06.bibbla.backend.tasks;
 
 import junit.framework.TestCase;
 import dat255.grupp06.bibbla.CredentialsFactory;
-import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Tests LoginJob, by trying to log in with both bad and good credentials. 
