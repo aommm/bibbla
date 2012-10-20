@@ -55,11 +55,7 @@ public class CredentialsFactory {
 		}
 
 		// Create a new normal Session, which keeps track of our session cookies.
-		try {
-			return new Credentials(name, code, pin);
-		} catch (CredentialsMissingException e) {
-			return null;
-		}
+		return new Credentials(name, code, pin);
 	}
 
 }
