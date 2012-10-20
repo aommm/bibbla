@@ -25,15 +25,24 @@
     
     <TextView android:id="@+id/overlay_book_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content" />
     <TextView android:id="@+id/overlay_book_author"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content" />
+    <TextView android:id="@+id/overlay_book_isbn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView android:id="@+id/overlay_book_publisher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView android:id="@+id/overlay_book_physical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
     <Button android:id="@+id/button_reserve_book"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="@string/button_reserve"
         android:onClick="reserveBook" />
     <TextView android:id="@+id/text_reserve_book"
         android:layout_width="wrap_content"

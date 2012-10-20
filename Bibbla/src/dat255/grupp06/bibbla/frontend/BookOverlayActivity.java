@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -45,8 +46,9 @@ public class BookOverlayActivity extends SherlockActivity {
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
+    	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_overlay);
@@ -55,18 +57,24 @@ public class BookOverlayActivity extends SherlockActivity {
         
         Intent intent = getIntent();
         book =(Book)intent.getSerializableExtra(SearchListFragment.BOOK);
-        
         ((TextView)findViewById(R.id.overlay_book_title)).setText(book.getName());
         ((TextView)findViewById(R.id.overlay_book_author)).setText(book.getAuthor());
+        
+        Callback c = new Callback() {
+			public void handleMessage(Message msg) {
+				//BookOverlayActivity.this.setDetails(msg);
+			}
+		};
     }
     
     public void reserveDone(Message msg) {
     	((TextView)findViewById(R.id.text_reserve_book)).setText("Klar!");
+    	setSupportProgressBarIndeterminateVisibility(false);
     }
     
     
     public void reserveBook(View view) {
-    	
+    	setSupportProgressBarIndeterminateVisibility(true);
     	Callback c = new Callback() {
 			public void handleMessage(Message msg) {
 				BookOverlayActivity.this.reserveDone(msg);
@@ -77,14 +85,9 @@ public class BookOverlayActivity extends SherlockActivity {
 			Backend.getBackend().reserve(book, "An", c);
 			((TextView)findViewById(R.id.text_reserve_book)).setText("Reserverar bok...");
 		} catch (CredentialsMissingException e) {
+			setSupportProgressBarIndeterminateVisibility(false);
 		}
     }
+
     
-    /*
-    @Override
-    public void onBackPressed() {
-    	this.onPause();
->>>>>>> the-singleton-project
-    }
-    */
 }

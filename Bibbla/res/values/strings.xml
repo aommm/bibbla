@@ -73,6 +73,6 @@
     <string name="reservations_list_error">Kunde inte hämta listan med reservationer</string>
     
     <!-- Book overlay -->
-    <string name="button_book_reserve">Reservera</string>
+    <string name="button_reserve">Reservera</string>
 
 </resources>
