@@ -86,6 +86,7 @@ public class LoginJob {
 				// We made it through.
 				message.obj = sessionCookies;
 				message.loggedIn = true;
+				session.setCookies(sessionCookies);
 				break; // Break if we succeed.
 			} catch (Exception e) {
 				failureCounter++;

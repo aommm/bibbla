@@ -55,6 +55,7 @@ public class Session implements Serializable {
 		this.name = "";
 		this.code = "";
 		this.pin = "";
+		this.userUrl = "";
 		
 		cookies = new HashMap<String, String>();
 	}
