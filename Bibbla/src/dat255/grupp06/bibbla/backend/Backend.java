@@ -30,6 +30,7 @@ import dat255.grupp06.bibbla.backend.tasks.ReserveJob;
 import dat255.grupp06.bibbla.backend.tasks.SearchJob;
 import dat255.grupp06.bibbla.backend.tasks.Task;
 import dat255.grupp06.bibbla.backend.tasks.UnreserveJob;
+import dat255.grupp06.bibbla.backend.tasks.UserNameJob;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
@@ -47,22 +48,40 @@ public final class Backend {
 	public final static int CONNECTION_TIMEOUT = 2000;
 	private Settings settings;
 	private Session session;
+	private static Backend backendObject;
 	
 	/**
 	 * Creates a new instance of our Backend.
 	 * Initialises a new session and fetches settings.
 	 */
-	public Backend() {
+	private Backend() {
 		settings = new Settings();
 		session = new Session();
+	}
+	
+	public static Backend getBackend() {
+		if(backendObject == null) {
+			backendObject = new Backend();
+		}
+		return backendObject;
 	}
 	
 	/**
 	 *  @returns the user's username.
 	 *  If no name is saved, returns empty string.
 	 */
-	public String getUserName() {
-		return session.getName();
+	public void getUserName(Callback frontendCallback)
+	throws CredentialsMissingException {
+		final UserNameJob job = new UserNameJob(settings.getCredentials(),
+				session);
+		Task task = new Task(frontendCallback) {
+			@Override
+			protected Void doInBackground(String... params) {
+				message = job.run();
+				return null;
+			}
+		};
+		task.execute();
 	}
 	
 	/**

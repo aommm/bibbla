@@ -64,7 +64,19 @@ public class Settings implements Serializable {
 		// save to file system.		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * @throws CredentialsMissingException if the credentials are empty or
+	 * don't follow the expected pattern.
+	 */
 	public Credentials getCredentials() throws CredentialsMissingException {
+		if (!Credentials.areLegalCredentials(name, code, pin))
+			throw new CredentialsMissingException("Credentials don't follow " +
+					"the required format");
+		if (name.length() * code.length() * pin.length() == 0)
+			throw new CredentialsMissingException("Some credentials are" +
+					"empty: ('"+name+"','"+code+"','"+pin+"')");
 		return new Credentials(name, code, pin);
 	}
 	

@@ -44,6 +44,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, LoginCallbackHandler {	
 
 	private Backend backend;
+	
 	public static final int RESULT_LOGIN_FORM = 0;
 	public static final String EXTRA_CREDENTIALS = "credentials";
 	
@@ -62,10 +63,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 
         setContentView(R.layout.activity_main);
        
+        backend = Backend.getBackend();
+        
         // Hide progress bar by default.
         setSupportProgressBarIndeterminateVisibility(false);
-
-        backend = new Backend();
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -118,7 +119,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 		case RESULT_LOGIN_FORM:
 			// Get credentials
 			Credentials cred = (Credentials) data.getSerializableExtra(EXTRA_CREDENTIALS);
-			// TODO Check format of input
 			if (cred == null) {
 				// Retry login form (recursive)
 				showCredentialsDialog(loginDoneCallback);
@@ -142,8 +142,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			case 0:
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
-			        // TODO Why don't we pass Backend as a constructor param?
-			        searchFragment.setBackend(backend);
 			        ft.add(R.id.fragment_container, searchFragment);
 				} else {
 					ft.attach(searchFragment);
@@ -152,7 +150,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			case 1:
 				if (profileFragment == null) {
 					profileFragment = new ProfileFragment();
-					profileFragment.setBackend(backend);
 					ft.add(R.id.fragment_container, profileFragment);
 				} else {
 					ft.attach(profileFragment);
@@ -174,8 +171,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		
-		// If we're switching tabs, hide keyboard.
+		// Hide keyboard and spinner
 		hideKeyboard();
+		setSupportProgressBarIndeterminateVisibility(false);
 		
 		// Detach the correct fragment.
 		switch(tab.getPosition()) {
@@ -184,6 +182,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 			break;
 		case 1:
 			ft.detach(profileFragment);
+			profileFragment.cancelUpdate();
 			break;
 		case 2:
 			ft.detach(libraryFragment);
@@ -204,11 +203,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		if (searchFragment == null) {
 			searchFragment = new SearchFragment();
-			searchFragment.setBackend(backend);
 			ft.add(R.id.fragment_container, searchFragment);
 		} else {
 			ft.attach(searchFragment);
-			// detach...?
+			// TODO detach...?
 		}
 		ft.commit();
 	}
