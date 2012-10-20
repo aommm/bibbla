@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import dat255.grupp06.bibbla.CredentialsFactory;
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Message;
 
 /**
@@ -42,32 +41,14 @@ public class LoginJobTest extends TestCase {
 	 * Tries to login with wrong login details.
 	 */
 	public void testBogusCredentials() {
-
-		// Creating this Credential should cause an exception.
-		boolean gotCredentialsError = false;
-		try {
-			Credentials bogusCredentials = new Credentials("a","b","c");
-		} catch (CredentialsMissingException ex) {
-			gotCredentialsError = true;
-		}
+		Credentials bogusCredentials = new Credentials("a","b","c");
+		LoginJob loginJob = new LoginJob(bogusCredentials, new Session());
+		Message result = loginJob.run();
 		
-		// Creating these credentials should work okay,
-		// but the LoginJob should fail.
-		Message loginResult = null;
-		boolean gotCredentialsError2 = false;
-		try {
-			Credentials bogusCredentials = new Credentials("namebame","0123456789","0000");
-			LoginJob job = new LoginJob(bogusCredentials, new Session());
-			loginResult = job.run();
-		} catch (CredentialsMissingException ex) {
-			gotCredentialsError2 = true;
-		}
-		assertFalse(gotCredentialsError2);
-		assertNotNull(loginResult);
-		assertNotNull(loginResult.error);
-		assertFalse(loginResult.loggedIn);
+		assertNotNull(result.error);
+		assertFalse(result.loggedIn);
 	}
-
+	
 	/**
 	 * Tries to login with correct login details.
 	 */

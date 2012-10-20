@@ -27,29 +27,22 @@ public final class Credentials implements Serializable {
 	 * @param name Name of card holder
 	 * @param card Card number
 	 * @param pin PIN code
-	 * @throws CredentialsMissingException if the credentials are empty or
-	 * don't follow the expected pattern.
 	 */
-	public Credentials(String name, String card, String pin)
-	throws CredentialsMissingException {
-		if (stringEmpty(name) || stringEmpty(card) || stringEmpty(pin)) {
-			throw new CredentialsMissingException("Credentials are empty: "+
-					"('"+name+"','"+card+"','"+pin+"')");
-		}
-		if (!isLegalName(name) || !isLegalCard(card) || !isLegalPin(pin)) {
-			throw new CredentialsMissingException("Credentials don't follow "+
-					"the required format.");
-		}
-
+	public Credentials(String name, String card, String pin) {
 		this.name = name;
 		this.card = card;
 		this.pin = pin;
+	}
+
+	public static boolean areLegalCredentials(String name, String card,
+			String pin) {
+		return isLegalName(name) && isLegalCard(card) && isLegalPin(pin);
 	}
 	
 	private static boolean stringEmpty(String string) {
 		return (string == null || string.length() == 0);
 	}
-
+	
 	/**
 	 * Check if a name is not empty. 
 	 * @param name Name of user.
