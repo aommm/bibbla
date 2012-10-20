@@ -41,7 +41,6 @@ public class MyBooksJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	
-	private Response httpResponse;
 	private String userUrl;
 	
 	public MyBooksJob(Credentials credentials, Session session) {
@@ -69,13 +68,11 @@ public class MyBooksJob extends AuthorizedJob {
 			// Append "items" to user URL.
 			userUrl += "items";
 			System.out.println("Step 1 done! ***");
-			
-			System.out.println("*** Step 2: fetch loaned books");
-			fetchLoanedBooks();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse loaned books");
-			parseLoanedBooks();
+			parseLoanedBooks(response);
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -86,18 +83,19 @@ public class MyBooksJob extends AuthorizedJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Connects to gotlib, and downloads the HTML of 'loaned books'.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchLoanedBooks() throws Exception {
-
+	protected Response connect() throws Exception {
 	    // Send GET request and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();   
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -105,9 +103,9 @@ public class MyBooksJob extends AuthorizedJob {
 	 * 
 	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseLoanedBooks() throws Exception {
+	private void parseLoanedBooks(Response response) throws Exception {
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {

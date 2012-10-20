@@ -18,6 +18,7 @@
 package dat255.grupp06.bibbla;
 
 import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
 
 /**
  * Creates session objects.

@@ -42,7 +42,6 @@ public class ReserveJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	private String libraryCode;
-	Response httpResponse;
 	
 	/**
 	 * Creates a new ReserveJob which will try to reserve a book at the given library.
@@ -74,11 +73,11 @@ public class ReserveJob extends AuthorizedJob {
 		System.out.println("****** ReserveJob: ");
 		try {
 			System.out.println("*** Step 1: Post our reservation");
-			postReservation();
+			Response response = connect();
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: Parse the results");
-			parseResults();
+			parseResults(response);
 			System.out.println("Step 2 done! ***");
 			
 		} catch (Exception e) {
@@ -90,12 +89,13 @@ public class ReserveJob extends AuthorizedJob {
 		
 	}
 	
+	@Override
 	/**
 	 * POSTs the reservation, and saves the response.
 	 * 
 	 * @throws Exception if connection failed.
 	 */
-	private void postReservation() throws Exception {
+	protected Response connect() throws Exception {
 		
 		// Define hashMap containing post data.
 		@SuppressWarnings("serial")
@@ -107,11 +107,12 @@ public class ReserveJob extends AuthorizedJob {
 	    }};
 	    
 	    // Send request and save response.
-	    httpResponse = Jsoup.connect(book.getReserveUrl())
+	    Response r = Jsoup.connect(book.getReserveUrl())
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -119,10 +120,10 @@ public class ReserveJob extends AuthorizedJob {
 	 * 
 	 * @throws Exception if reservation failed, or if parsing otherwise failed.
 	 */
-	private void parseResults() throws Exception {
+	private void parseResults(Response response) throws Exception {
 		
 		// Prepare for parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // All information we need lies in this div.
 	    Element div = html.getElementById("singlecolumn");

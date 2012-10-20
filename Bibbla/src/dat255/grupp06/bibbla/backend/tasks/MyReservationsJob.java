@@ -41,7 +41,6 @@ public class MyReservationsJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	
-	private Response httpResponse;
 	private String userUrl;
 	
 	/**
@@ -76,11 +75,11 @@ public class MyReservationsJob extends AuthorizedJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: fetch reservations");
-			fetchReservations();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse reservations");
-			parseReservedBooks();
+			parseReservedBooks(response);
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -91,18 +90,19 @@ public class MyReservationsJob extends AuthorizedJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Connects to gotlib, and downloads the HTML of the reservations page.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchReservations() throws Exception {
-
+	protected Response connect() throws Exception {
 	    // Send GET request and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();   
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -110,9 +110,9 @@ public class MyReservationsJob extends AuthorizedJob {
 	 * 
 	 * @throws Exception - If we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseReservedBooks() throws Exception {
+	private void parseReservedBooks(Response response) throws Exception {
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {

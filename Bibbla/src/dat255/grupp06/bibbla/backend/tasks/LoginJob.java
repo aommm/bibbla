@@ -20,13 +20,13 @@ package dat255.grupp06.bibbla.backend.tasks;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
@@ -67,44 +67,60 @@ public class LoginJob {
 	 */
 	public Message run() {
 
-		try {
-			System.out.print("\n****** LoginJob \n");
-			System.out.print("* getLoginForm(): ");
-			getLoginForm();
-			System.out.print("succeeded! *\n");
-			System.out.print("* postLoginForm(): ");
-			Response response = postLoginForm();
-			System.out.print("succeeded! *\n");
-			System.out.print("* loginTest(): ");
-			String url = parseUserUrl(response);
-			session.setUserUrl(url);
-			System.out.print("succeeded! *\n");
-			System.out.print("****** LoginJob done \n");
-			// We made it through.
-			message.obj = sessionCookies;
-			message.loggedIn = true;
-			session.setCookies(sessionCookies);
+		// Retry login job a specified number of times. 
+		int failureCounter = 0;
+		while(failureCounter < Backend.MAX_CONNECTION_ATTEMPTS) {
+			try {					
+				System.out.print("\n****** LoginJob \n");
+				System.out.print("* getLoginForm(): ");
+				getLoginForm();
+				System.out.print("succeeded! *\n");
+				System.out.print("* postLoginForm(): ");
+				Response response = postLoginForm();
+				System.out.print("succeeded! *\n");
+				System.out.print("* loginTest(): ");
+				String url = parseUserUrl(response);
+				session.setUserUrl(url);
+				String name = parseUserName(response);
+				session.setUserName(name);
+				System.out.print("succeeded! *\n");
+				System.out.print("****** LoginJob done \n");
+				// We made it through.
+				session.setCookies(sessionCookies);
+				message.loggedIn = true;
+				message.obj = session;
+				break; // Break if we succeed.
+			} catch (Exception e) {
+				failureCounter++;
+				System.out.print("failed. retrying... ");
+			}
 		}
-		catch (Exception e) {
-			message.loggedIn = false;
+		// Did we fail?
+		if (failureCounter >= Backend.MAX_CONNECTION_ATTEMPTS) {
 			message.error = (message.error!=null) ? message.error : Error.LOGIN_FAILED;
-			System.out.print("failed: "+e.getMessage()+" ***\n");
+			System.out.print("\n****** LoginJob failed.\n");
+		}
+		else { // Nope!
+			System.out.print("\n****** LoginJob done.\n");
 		}
 
 		return message;
 	}
-	
+
 	/**
 	 * Step 1: Gets login form.
 	 * Saves the initial session cookies, and retrieves three values.  
 	 */
 	private void getLoginForm() throws Exception {
 
-		String url = "https://www.gotlib.goteborg.se/iii/cas/login?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang=swe";
+		String url = "https://www.gotlib.goteborg.se/iii/cas/login?service=" +
+				"http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore" +
+				"%2Fj_acegi_cas_security_check&lang=swe";
 
 		// Create a request, and retrieve the response.
 		Response response = Jsoup.connect(url)
 			    .method(Method.GET)
+			    .timeout(Backend.CONNECTION_TIMEOUT)
 			    .execute();
 
 		// Get the cookies from the response.
@@ -120,17 +136,11 @@ public class LoginJob {
 		// Tests.
 		if ((sessionVariables.get("lt") == null) ||
 		   (sessionCookies.get("JSESSIONID") == null) ||
-		   (sessionCookies.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE") == null)) {
+		   (sessionCookies.get("org.springframework.web.servlet." +
+		   		"i18n.CookieLocaleResolver.LOCALE") == null)) {
 			throw new Exception("missing cookies/variables.");
 		}
-		
-		// Debugging
-		for (Entry<String, String> c : sessionCookies.entrySet()) {
-			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
-		} System.out.print("\n");
-		
 	}
-	
 	
 	/**
 	 * Step 2: POSTs login credentials.
@@ -139,8 +149,11 @@ public class LoginJob {
 	private Response postLoginForm() throws Exception {
 		
 		// Prepare POST url (spoiler: contains variables!)
-		// TODO Um... confusing sessionVariables with sessionCookies? But it works?
-	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.gotlib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_check&lang="+sessionVariables.get("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE");
+	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="
+		+sessionVariables.get("JSESSIONID")+"?service=http%3A%2F%2Fencore.got" +
+				"lib.goteborg.se%3A80%2Fiii%2Fencore%2Fj_acegi_cas_security_c" +
+				"heck&lang="+sessionVariables.get("org.springframework.web.se" +
+						"rvlet.i18n.CookieLocaleResolver.LOCALE");
 		
 	    // Prepare POST data.
 	    @SuppressWarnings("serial")
@@ -155,6 +168,7 @@ public class LoginJob {
 	    // Send POST request and save response.
 	    Response response = Jsoup.connect(url)
 			    .method(Method.POST)
+			    .timeout(Backend.CONNECTION_TIMEOUT)
 			    .data(postData)
 			    .cookies(sessionCookies)
 			    .execute();
@@ -162,11 +176,12 @@ public class LoginJob {
 	    // These new cookies are all we'll need. 
 	    sessionCookies = response.cookies();
 	    
-	    // Debugging
-		for (Entry<String, String> c : sessionCookies.entrySet()) {
-			System.out.print("\n* "+c.getKey() + ": "+c.getValue());
-		} System.out.print("\n");
-		
+		// Tests.
+		if ((sessionVariables.get("lt") == null) ||
+		   (sessionCookies.get("JSESSIONID") == null) ||
+		   (sessionCookies.get("III_SESSION_ID") == null)) {
+			throw new Exception("missing cookies/variables.");
+		}
 		return response;
 	}
 	
@@ -183,6 +198,25 @@ public class LoginJob {
 		if (url.equals("")) throw new IOException("no link found");
 		if (!url.matches("/$")) url += "/";
 		return url;
+	}
+	
+	/**
+	 * 
+	 * @param response
+	 * @return
+	 * @throws IOException if parsing went wrong
+	 */
+	private String parseUserName(Response response) throws IOException {
+		Document html = response.parse();
+		// Find name on form "Family-name, First-name"
+		try {
+			String accountInfo = html.select(".myAccountInfo").first().text();
+			String[] splitGreeting = accountInfo.split(" \\|")[0].split(", ");
+			String wholeName = splitGreeting[2]+" "+splitGreeting[1]; 
+			return wholeName;
+		} catch (NullPointerException e) {
+			return "";
+		}
 	}
 	
 }

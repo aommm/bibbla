@@ -11,7 +11,7 @@ import java.io.Serializable;
 public final class Credentials implements Serializable {
 	private static final long serialVersionUID = -5535338463939136870L;
 	/** Card number regexp: 9 numbers and possibly a letter; spaces ignored. */
-	public static final String CARD_REGEXP = "^\\s*([0-9]\\s*){9}[A-Za-z]?\\s*$";
+	public static final String CARD_REGEXP = "^\\s*([0-9]\\s*){9,10}[A-Za-z]?\\s*$";
 	/** Pin regexp: 4 numbers, trailing spaces ignored */
 	public static final String PIN_REGEXP = "^[0-9]{4}\\s*$";
 
@@ -27,29 +27,22 @@ public final class Credentials implements Serializable {
 	 * @param name Name of card holder
 	 * @param card Card number
 	 * @param pin PIN code
-	 * @throws CredentialsMissingException if the credentials are empty or
-	 * don't follow the expected pattern.
 	 */
-	public Credentials(String name, String card, String pin)
-	throws CredentialsMissingException {
-		if (stringEmpty(name) || stringEmpty(card) || stringEmpty(pin)) {
-			throw new CredentialsMissingException("Credentials are empty: "+
-					"('"+name+"','"+card+"','"+pin+"')");
-		}
-		if (!isLegalName(name) || !isLegalCard(card) || !isLegalPin(pin)) {
-			throw new CredentialsMissingException("Credentials don't follow "+
-					"the required format.");
-		}
-
+	public Credentials(String name, String card, String pin) {
 		this.name = name;
 		this.card = card;
 		this.pin = pin;
+	}
+
+	public static boolean areLegalCredentials(String name, String card,
+			String pin) {
+		return isLegalName(name) && isLegalCard(card) && isLegalPin(pin);
 	}
 	
 	private static boolean stringEmpty(String string) {
 		return (string == null || string.length() == 0);
 	}
-
+	
 	/**
 	 * Check if a name is not empty. 
 	 * @param name Name of user.

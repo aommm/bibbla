@@ -43,17 +43,20 @@ import dat255.grupp06.bibbla.utils.Message;
  */
 public class RenewJobTest extends TestCase {
 	Credentials credentials;
+	Session session;
 	List<Book> loanedBooks;
 	
 	@Override
 	public void setUp() {
-		// Get a new Session object.
+		// Get a new Credentials object.
 		credentials = CredentialsFactory.getCredentials();
+		// Create a session using these credentials.
+		session = new Session(credentials);
 		
 		// If we have login details,
 		if (credentials != null) {
 			// Get our currently loaned books.
-			MyBooksJob myBooksJob = new MyBooksJob(credentials, new Session());
+			MyBooksJob myBooksJob = new MyBooksJob(credentials, session);
 			loanedBooks = (List<Book>)myBooksJob.run().obj;
 			// Assert that MyBooksJob succeeded.
 			assertTrue(loanedBooks instanceof List<?>);
@@ -77,7 +80,7 @@ public class RenewJobTest extends TestCase {
 				Book firstBook = loanedBooks.get(0);
 				// Run RenewJob.
 				RenewJob renewJob = new RenewJob(firstBook, credentials,
-						new Session());
+						session);
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);
@@ -131,14 +134,14 @@ public class RenewJobTest extends TestCase {
 				
 				// Run RenewJob.
 				RenewJob firstRenewJob = new RenewJob(firstBook, credentials,
-						new Session());
+						session);
 				Message firstResult = firstRenewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(firstResult);
 				
 				// Run RenewJob again, on the same book.
 				RenewJob secondRenewJob = new RenewJob(firstBook, credentials,
-						new Session());
+						session);
 				Message secondResult = secondRenewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(secondResult);
@@ -205,7 +208,7 @@ public class RenewJobTest extends TestCase {
 				
 				// Run RenewJob on the list.
 				RenewJob renewJob = new RenewJob(booksToRenew, credentials,
-						new Session());
+						session);
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);
@@ -252,7 +255,7 @@ public class RenewJobTest extends TestCase {
 			if (loanedBooksCount>0) {
 				
 				// Run RenewJob for all books.
-				RenewJob renewJob = new RenewJob(credentials, new Session());
+				RenewJob renewJob = new RenewJob(credentials, session);
 				Message result = renewJob.run();
 				// Assert that the job at least returned a result.
 				assertNotNull(result);

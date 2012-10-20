@@ -11,7 +11,7 @@ import dat255.grupp06.bibbla.utils.Message;
  * should be carried out with user logged-in.
  * @author arla
  */
-public abstract class AuthorizedJob {
+public abstract class AuthorizedJob extends Job {
 	
 	protected final Credentials credentials;
 	protected final Session session;
@@ -28,20 +28,20 @@ public abstract class AuthorizedJob {
 	}
 	
 	/**
-	 * Log in if needed (which is determined by the loggedIn constructor
-	 * param). Should be called in ancestor's run() before login-dependent
-	 * connections are made.
+	 * Log in if needed (which is determined by the session object supplied in
+	 * constructor). Should be called in ancestor's run() before
+	 * login-dependent connections are made.
 	 * @throws CredentialsMissingException if login fails
 	 * TODO Replace with something semantically correct
 	 */
-	public void login() throws CredentialsMissingException {
+	public void login() {
 		if (session.isActive())
 			return;
 		LoginJob loginJob = new LoginJob(credentials, session);
 		Message message = loginJob.run();
 		if (!message.loggedIn) {
 			// If the login failed we can at least require updated credentials 
-			throw new CredentialsMissingException("Login failed.");
+			throw new RuntimeException("Login failed.");
 		}
 	}
 }

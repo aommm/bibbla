@@ -21,40 +21,35 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import dat255.grupp06.bibbla.model.Credentials;
+
 public class Session implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
 	private static final String COOKIE_LOGGED_IN = "PAT_LOGGED_IN";
-	private String name, code, pin;
+	private String name;
 	private String userUrl; // The URL to the user's profile page.
 	private Map<String, String> cookies;
 	private boolean loggedIn;
-	private boolean hasCredentials;
 	
 	/**
-	 * Creates a new session, and saves the supplied credentials.
+	 * Creates a new session, using the data from the supplied Credentials.
 	 */
-	public Session(String name, String code, String pin) {
-		// Set user details. If null, initalise to empty string. (for synch)
-		this.name = (name == null)?"":name;
-		this.code = (code == null)?"":code;
-		this.pin = (pin == null)?"":pin;
-		this.userUrl = "";
-		
+	public Session(Credentials credentials) {
 		loggedIn = false;
-		updateHasCredentials();
+		this.name = credentials.name;
+		this.userUrl = "";
 		
 		cookies = new HashMap<String, String>();
 	}
+	
 	/**
 	 * Creates a new anonymous session.
 	 */
 	public Session() {
 		loggedIn = false;
-		hasCredentials = false;
 		this.name = "";
-		this.code = "";
-		this.pin = "";
+		this.userUrl = "";
 		
 		cookies = new HashMap<String, String>();
 	}
@@ -94,19 +89,6 @@ public class Session implements Serializable {
 	public boolean isActive() {
 		return loggedIn;
 	}
-
-	/**
-	 * Checks whether all user credentials are set, and updates hasCredentials.
-	 */
-	private void updateHasCredentials() {
-		hasCredentials = ((!"".equals(name)) && (!"".equals(code)) && (!"".equals(pin)));
-	}
-	/**
-	 * Returns whether all user details are correctly set.
-	 */
-	public boolean getHasCredentials() {
-		return hasCredentials;
-	}
 	
 	/**
 	 * Returns the URL to the user's profile page.
@@ -126,40 +108,16 @@ public class Session implements Serializable {
 			this.userUrl = userUrl;
 		}
 	}
+
+	public void setUserName(String name) {
+		synchronized(this.name) {
+			this.name = name;
+		}
+	}
 	
 	public String getName() {
 		synchronized(name) {
 			return name;
-		}
-	}
-	public void setName(String name) {
-		synchronized(this.name) {
-			this.name = name;
-			updateHasCredentials();
-		}
-	}
-
-	public String getCode() {
-		synchronized(code) {
-			return code;
-		}
-	}
-	public void setCode(String code) {
-		synchronized(this.code) {
-			this.code = code;
-			updateHasCredentials();
-		}
-	}
-
-	public String getPin() {
-		synchronized(pin) {
-			return pin;
-		}
-	}
-	public void setPin(String pin) {
-		synchronized(this.pin) {
-			this.pin = pin;
-			updateHasCredentials();
 		}
 	}
 
