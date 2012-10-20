@@ -22,7 +22,8 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
 
@@ -31,12 +32,10 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyDebtJob extends Job {
-	private Session session;
+public class MyDebtJob extends AuthorizedJob {
 	private Message message;
 	
 	private String userUrl;
-	
 	private Integer debt;
 	
 	/**
@@ -44,8 +43,8 @@ public class MyDebtJob extends Job {
 	 * 
 	 * @param session - the session to use. Is required since this is for logged-in users only.
 	 */
-	public MyDebtJob(Session session) {
-		this.session = session;
+	public MyDebtJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.message = new Message();
 	}
 	
@@ -54,6 +53,7 @@ public class MyDebtJob extends Job {
 	 * @returns a float, which is the user's current total debt. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyDebtJob: ");
 		try {
 			// Get user URL.

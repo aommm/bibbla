@@ -28,8 +28,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -39,7 +40,7 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class RenewJob extends Job {
+public class RenewJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	
@@ -50,7 +51,8 @@ public class RenewJob extends Job {
 	 * Creates a new RenewJob,
 	 * which will try to renew all of the user's currently loaned books. 
 	 */
-	public RenewJob(Session session) {
+	public RenewJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -61,8 +63,9 @@ public class RenewJob extends Job {
 	 * 
 	 * Note: Assumes that all books has their renewId set!
 	 */
-	public RenewJob(List<Book> books, Session session) {
-		this(session);
+	public RenewJob(List<Book> books, Credentials credentials,
+			Session session) {
+		this(credentials, session);
 		this.books = books;
 	}
 	
@@ -72,8 +75,8 @@ public class RenewJob extends Job {
 	 * 
 	 * Note: Assumes that the book has its renewId set!
 	 */
-	public RenewJob(Book book, Session session) {
-		this(session);
+	public RenewJob(Book book, Credentials credentials, Session session) {
+		this(credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}
@@ -85,6 +88,7 @@ public class RenewJob extends Job {
 	 * 	their message attribute set. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** RenewJob: ");
 		try {
 			// Get user URL.
@@ -124,6 +128,7 @@ public class RenewJob extends Job {
 	protected Response connect() throws Exception {
 		
 	    // Prepare POST data.
+	    @SuppressWarnings("serial")
 	    Map<String,String> postData = new HashMap<String,String>() {{
 	    	
 	    	// No specified books? Renew everything.

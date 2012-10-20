@@ -25,8 +25,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.backend.login.Session;
 import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
@@ -36,13 +37,14 @@ import dat255.grupp06.bibbla.utils.Message;
  *
  * @author Niklas Logren
  */
-public class MyBooksJob extends Job {
+public class MyBooksJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
 	
 	private String userUrl;
 	
-	public MyBooksJob(Session session) {
+	public MyBooksJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -52,6 +54,7 @@ public class MyBooksJob extends Job {
 	 * @returns a Message, containing a List of the user's current loans. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyBooksJob: ");
 		try {
 			// Get user URL.

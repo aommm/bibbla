@@ -18,10 +18,8 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
@@ -29,10 +27,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import dat255.grupp06.bibbla.backend.Backend;
-import dat255.grupp06.bibbla.backend.Session;
-import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.backend.login.Session;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
-//import java.net.CookieManager;
+import dat255.grupp06.bibbla.utils.Message;
 
 /**
  * Logs the user into gotlib.
@@ -48,17 +46,15 @@ public class LoginJob {
 	Map<String, String> sessionCookies;
 	// Needed only in LoginJob.
 	Map<String, String> sessionVariables;
-	Session session;
 	Message message;
 	
-	String name, code, pin;
+	private final Credentials credentials;
+	private Session session;
 	
-	public LoginJob(Session session) {
-		this.session = session;
-		name = session.getName();
-		code = session.getCode();
-		pin = session.getPin();
+	public LoginJob(Credentials credentials, Session session) {
+		this.credentials = credentials;
 		message = new Message();
+		this.session = session;
 		
 		// Initialise maps.
 		sessionVariables = new HashMap<String, String>();
@@ -80,10 +76,11 @@ public class LoginJob {
 				getLoginForm();
 				System.out.print("succeeded! *\n");
 				System.out.print("* postLoginForm(): ");
-				postLoginForm();
+				Response response = postLoginForm();
 				System.out.print("succeeded! *\n");
 				System.out.print("* loginTest(): ");
-				loginTest("hej");
+				String url = parseUserUrl(response);
+				session.setUserUrl(url);
 				System.out.print("succeeded! *\n");
 				System.out.print("****** LoginJob done \n");
 				// We made it through.
@@ -99,7 +96,7 @@ public class LoginJob {
 		if (failureCounter >= Backend.MAX_CONNECTION_ATTEMPTS) {
 			message.error = (message.error!=null) ? message.error : Error.LOGIN_FAILED;
 			System.out.print("\n****** LoginJob failed.\n");
-		} 
+		}
 		else { // Nope!
 			System.out.print("\n****** LoginJob done.\n");
 		}
@@ -146,7 +143,7 @@ public class LoginJob {
 	 * Step 2: POSTs login credentials.
 	 * Saves new session cookies, which will be used in all requests hereafter.
 	 */
-	private void postLoginForm() throws Exception {
+	private Response postLoginForm() throws Exception {
 		
 		// Prepare POST url (spoiler: contains variables!)
 	    String url = "https://www.gotlib.goteborg.se/iii/cas/login;jsessionid="
@@ -156,10 +153,11 @@ public class LoginJob {
 						"rvlet.i18n.CookieLocaleResolver.LOCALE");
 		
 	    // Prepare POST data.
+	    @SuppressWarnings("serial")
 	    Map<String,String> postData = new HashMap<String,String>() {{
-	    	put("name", name);
-	    	put("code", code);
-	    	put("pin", pin);
+	    	put("name", credentials.name);
+	    	put("code", credentials.card);
+	    	put("pin", credentials.pin);
 	    	put("lt", sessionVariables.get("lt"));
 	    	put("_eventId", "submit");
 	    }};
@@ -181,34 +179,22 @@ public class LoginJob {
 		   (sessionCookies.get("III_SESSION_ID") == null)) {
 			throw new Exception("missing cookies/variables.");
 		}
+		return response;
 	}
 	
 	/**
-	 * Performs a test search, to see if login was successful.
+	 * Parse the user's "profile" URL in Session for later use.
+	 * @param response Response from postLoginForm()
+	 * @return URL for the user's personal page
+	 * @throws IOException if parsing failed or the URL could't be found (for
+	 * any reason)
 	 */
-	private void loginTest(String searchString) throws Exception {
-		
-	    String url = "http://encore.gotlib.goteborg.se/iii/encore/search/C__S"
-	    +searchString+"__Orightresult__U1?lang=swe&suite=pearl";
-	    
-	    // Send a GET request and save response.
-	    Response response = Jsoup.connect(url)
-	    		.method(Method.GET)
-	    		.timeout(Backend.CONNECTION_TIMEOUT)
-	    		.cookies(sessionCookies)
-	    		.execute();
-	    
-	    // Prepare for parsing.
-	    Document html = response.parse();
-	    
-	    // Is login link present?
-	    if (html.select("a[id=loginLinkComponent]").size() > 0) {
-	    	// Yep. Login failed.
-	    	System.out.println("login link present.");
-	    	throw new Exception("Login test failed.");
-	    }
-
-	    // We made it here without exceptions? Yay!
+	private static String parseUserUrl(Response response) throws IOException {
+		Document html = response.parse();
+		String url = html.select(".myAccountLink").attr("href");
+		if (url.equals("")) throw new IOException("no link found");
+		if (!url.matches("/$")) url += "/";
+		return url;
 	}
 	
 }
