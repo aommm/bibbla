@@ -28,15 +28,14 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
-import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
 import dat255.grupp06.bibbla.frontend.LibraryOverlayActivity;
 import dat255.grupp06.bibbla.model.Library;
 
 /**
- * ListFragment that is used to display the search-results after a search.
+ * ListFragment that is used to display the available Libraries.
  * 
  * 
- *
+ *@author Malla
  */
 public class LibListFragment extends SherlockListFragment {
 	public final static String LIB_NAME = 		"dat255.grupp06.bibbla.LIB_NAME";
@@ -63,16 +62,19 @@ public class LibListFragment extends SherlockListFragment {
      * When an item is clicked in the list this method is called
      */
     public void onListItemClick(ListView l, View v, int position, long id) {
-    	if(position < allLibInfo.size()) {
+
 	    	Intent intent = new Intent(getSherlockActivity(), LibraryOverlayActivity.class);
-//	    	intent.putExtra(BOOK_AUTHOR, allLibInfo.get(position).getAuthor());
-//	    	intent.putExtra(BOOK_TITLE, allLibInfo.get(position).getName());
+
 	    	intent.putExtra(LIB_NAME, allLibInfo.get(position).getName());
+	    	intent.putExtra(LIB_ADDRESS, allLibInfo.get(position).getAddress());
+	    	intent.putExtra(LIB_POSTCODE, allLibInfo.get(position).getPostCode());
+	    	intent.putExtra(LIB_AREA, allLibInfo.get(position).getArea());
+	    	intent.putExtra(LIB_PHONE, allLibInfo.get(position).getPhoneNr());
+	    	intent.putExtra(LIB_VISIT, allLibInfo.get(position).getVisAdr());
+	    	intent.putExtra(LIB_EMAIL, allLibInfo.get(position).getEmail());
+	    	intent.putExtra(LIB_OPENH, allLibInfo.get(position).getOpenH());
 	    	startActivity(intent);
-    	} else {
-//    		currentPage++;
-//    		((MainActivity) getActivity()).moreSearchResultsClicked(currentPage+1, lastSearch);
-    	}
+
     }
     
     /**
