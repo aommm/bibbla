@@ -26,10 +26,12 @@ import java.util.Map.Entry;
 
 import android.annotation.SuppressLint;
 import dat255.grupp06.bibbla.backend.tasks.*;
-import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.model.CredentialsMissingException;
+import dat255.grupp06.bibbla.model.*;
 import dat255.grupp06.bibbla.utils.*;
+import dat255.grupp06.bibbla.model.Library;
+import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Performs tasks like searching, reserving and logging in.
@@ -52,6 +54,7 @@ public final class Backend {
 	= new HashMap<Entry<String, Integer>,List<Book>>();
 	private List<Book> reservations;
 	private List<Book> loanedBooks;
+	private List<Library> libraries;
 	private Integer debt;
 	
 	/**
@@ -342,7 +345,7 @@ public final class Backend {
 	 *  Uses cached values if available; otherwise, simply runs the job.
 	 *  
 	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching loans is done.  
+	 *   when fetching loans is done.
 	 */
 	public void fetchLoans(final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -585,16 +588,41 @@ public final class Backend {
 			settings.setPin(cred.pin);
 		}
 	}
+
+	/**
+	 *  Searches backend for the library information.
+	 *  Uses cached values if available; otherwise, simply runs the job.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when fetching library info is done.
+	 */
+	public void libInfo(final Callback frontendCallback) {
+		libInfo(frontendCallback, false);
+	}
 	
 	/**
 	 *  Searches backend for the library information.
 	 *  
 	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching library info is done.
+	 *   when fetching library information is done.
+	 *   @param refresh - should we run the job directly, and bypass caching?
 	 */
-	public void libInfo( final Callback frontendCallback) {
+	public void libInfo(final Callback frontendCallback, boolean refresh) {
+		if(libraries != null && !refresh){
+			Message message = new Message();
+			message.obj = libraries;
+			frontendCallback.handleMessage(message);
+		}
+		else{
+			Callback backendCallback = new Callback(){
+
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchLibInfoDone(message ,frontendCallback);	
+				}
+			};
 		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
+		Task task = new Task(backendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
@@ -605,5 +633,19 @@ public final class Backend {
 		};
 		// Start the task.
 		task.execute();
+		}
+	}
+
+	/**
+	 * Is called when libInfo is done.
+	 * Saves the result in a member variable, and then passes it on to frontend.
+	 * 
+	 * @param message - the message returned from libInfo.
+	 * @param frontendCallback - the callback object which will be called
+	 *  when fetching library information is done.
+	 */
+	private void fetchLibInfoDone(Message message, Callback callback) {
+		libraries = (List<Library>) message.obj;
+		callback.handleMessage(message);
 	}
 }
