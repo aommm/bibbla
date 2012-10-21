@@ -17,7 +17,7 @@
 
 package dat255.grupp06.bibbla.backend;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +58,7 @@ public final class Backend {
 	private Map<String,Book> detailedViews = new HashMap<String, Book>();
 	private List<Book> reservations;
 	private List<Book> loanedBooks;
+	private Integer debt;
 	
 	/**
 	 * Creates a new instance of our Backend.
@@ -98,12 +99,25 @@ public final class Backend {
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when logging in is done. 
 	 */
-	public void fetchUserDebt(Callback frontendCallback)
+	public void fetchUserDebt(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
+		if (!refresh && (reservations!=null)) {
+			Message message = new Message();
+			message.obj = debt;
+			frontendCallback.handleMessage(message);
+		}
+		else{ 
+		Callback backendCallback = new Callback() {
+			@Override
+			public void handleMessage(Message message) {
+				Backend.this.fetchDebtDone(message, frontendCallback);
+			}	
+		};
+		
 		final MyDebtJob job = new MyDebtJob(settings.getCredentials(),
 				session);
 		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
+		Task task = new Task(backendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
@@ -113,6 +127,12 @@ public final class Backend {
 		};
 		// Start the task.
 		task.execute();
+		}
+	}
+		
+	public void fetchDebtDone(Message message, Callback callback) {
+		debt = (Integer) message.obj;
+		callback.handleMessage(message);
 	}
 
 	/**
