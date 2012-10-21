@@ -124,7 +124,8 @@ public class CommonParsing {
 	    	}
 	    	book.setName(nameAndAuthor[0]);
 	    	book.setAuthor(nameAndAuthor[1]);
-	    	book.setUrl(row.select("td.patFuncTitle").first().attr("abs:href"));
+	    	System.out.println("AAAAA:" + row.select("td.patFuncTitle").first());
+	    	book.setUrl(row.select("td.patFuncTitle").first().select("a").first().attr("abs:href"));
 	    	if (parseReservations) {
 	    		book.setUnreserveId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("name"));
 	    		if (row.select("td.patFuncFreeze").first().getElementsByTag("input").first() != null)
