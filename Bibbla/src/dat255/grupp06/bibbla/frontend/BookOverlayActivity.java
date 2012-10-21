@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,9 +31,7 @@ import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
-import dat255.grupp06.bibbla.fragments.SearchFragment;
 import dat255.grupp06.bibbla.fragments.SearchListFragment;
-
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Callback;
@@ -55,14 +52,10 @@ public class BookOverlayActivity extends SherlockActivity {
     	//Sets up some graphical stuff
     	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_overlay);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().hide();
         
         //Get all of the data the intent sends
@@ -70,6 +63,7 @@ public class BookOverlayActivity extends SherlockActivity {
         book =(Book)intent.getSerializableExtra(SearchListFragment.BOOK);
         ((TextView)findViewById(R.id.overlay_book_title)).setText(book.getName());
         ((TextView)findViewById(R.id.overlay_book_author)).setText(book.getAuthor());
+        ((TextView)findViewById(R.id.overlay_media_type)).setText(book.getType());
         
         //Then get the rest from Gotlib's servers
         Callback c = new Callback() {
