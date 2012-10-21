@@ -96,6 +96,12 @@ public class DetailedViewJob extends Job {
 
 		// Prepare HTML for parsing.
 		Document html = response.parse();
+
+		// Save publisher.
+		Elements infoRows = html.select("div#recordinfo").select("td.bibInfoData");
+		if (infoRows.size() >=3 ) {
+			newBook.setPublisher(infoRows.get(2).text());
+		}
 		
 	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
 	    Elements tableRows = html.select("table.bibItems").select("tr.bibItemsEntry");
