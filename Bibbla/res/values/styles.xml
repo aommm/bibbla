@@ -12,17 +12,54 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
- -->
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="android:Theme.Light" />
-    
+
     <style name="Heading" parent="@android:style/TextAppearance.Large">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="OverlayText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">#1e1e1e</item>
+    </style>
+
+    <style name="OverlayHeader">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#f0641e</item>
+        <item name="android:textSize">27dp</item>
+    </style>
+
+    <style name="HeaderArea">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:background">#1e1e1e</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="OverlayTitle" parent="style/OverlayText">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Separator">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:background">#00bfff</item>
+    </style>
+
+    <style name="BigSpace">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">10dp</item>
     </style>
 
 </resources>
