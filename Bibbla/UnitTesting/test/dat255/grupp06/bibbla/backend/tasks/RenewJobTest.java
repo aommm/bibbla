@@ -51,8 +51,9 @@ public class RenewJobTest extends TestCase {
 		// Get a new Credentials object.
 		credentials = CredentialsFactory.getCredentials();
 		// Create a session using these credentials.
+		if(credentials != null){
 		session = new Session(credentials);
-		
+		}
 		// If we have login details,
 		if (credentials != null) {
 			// Get our currently loaned books.

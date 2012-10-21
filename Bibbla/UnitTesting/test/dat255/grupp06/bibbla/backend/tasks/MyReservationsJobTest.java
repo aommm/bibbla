@@ -43,7 +43,9 @@ public class MyReservationsJobTest extends TestCase {
 		// Get a new Credentials object.
 		credentials = CredentialsFactory.getCredentials();
 		// Create a session using these credentials.
+		if(credentials != null){
 		session = new Session(credentials);
+		}
 	}
 	
 	/**
@@ -51,7 +53,8 @@ public class MyReservationsJobTest extends TestCase {
 	 * and verifies that the return values are okay.
 	 */
 	public void testReservations() {
-
+		
+		if(credentials != null){
 		// Create and run first job.
 		MyReservationsJob firstMyReservationsJob = new MyReservationsJob(credentials, session);
 		Message firstResult = firstMyReservationsJob.run();
@@ -78,6 +81,7 @@ public class MyReservationsJobTest extends TestCase {
 		
 		// Both returned messages should be equal.
 		assertEquals(firstBookList, secondBookList);
+		}
 	}
 	
 }
