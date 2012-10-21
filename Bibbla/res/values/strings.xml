@@ -109,11 +109,10 @@
     </string-array>
     
      <!-- Library -->    
-    <string-array name="libNames">
-        <item>lib1</item>
-        <item>lib2</item>
-        <item>lib3</item>
-        <item/>
-    </string-array>
-    <string name="textSomething">Bibbla!!!</string>
+    <string name="title_open">Öppettider</string>
+    <string name="title_adr">Besöksadress</string>
+    <string name="title_tel">Telefonnummer</string>
+    <string name="title_email">Epost</string>
+    <string name="title_postadr">Postaddress</string>
+    
 </resources>

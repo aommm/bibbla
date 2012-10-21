@@ -21,44 +21,48 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
-
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.fragments.LibListFragment;
-import dat255.grupp06.bibbla.fragments.SearchListFragment;
-import dat255.grupp06.bibbla.model.Library;
 
 
 
 public class LibraryOverlayActivity extends SherlockActivity {
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 		Log.d("","onCreate done");
-    	setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_library_overlay);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        
-        Intent intent = getIntent();
-		Log.d("","get the intent");
-//        String title = intent.getStringExtra(SearchListFragment.BOOK_TITLE);
-//        String author = intent.getStringExtra(SearchListFragment.BOOK_AUTHOR);
-    	String name = intent.getStringExtra(LibListFragment.LIB_NAME);
-    	String address;
-    	String postCode;
-    	String area;
-    	String phoneNr;
-    	String visAdr;
-    	String email;
-    	String openH;
-        
-        ((TextView)findViewById(R.id.overlay_lib_name)).setText(name);
-		Log.d("","set the name");
-//        ((TextView)findViewById(R.id.overlay_book_author)).setText(author);
-    }
+		//Sets up some graphical stuff
+		setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
+		requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_library_overlay);
+		getSupportActionBar().hide();
+
+		Intent intent = getIntent();
+
+		String name = 		intent.getStringExtra(LibListFragment.LIB_NAME);
+		String openH = 		intent.getStringExtra(LibListFragment.LIB_OPENH);
+		String address;
+		if (intent.getStringExtra(LibListFragment.LIB_VISIT)==null){
+			 address =intent.getStringExtra(LibListFragment.LIB_ADDRESS);
+		}  else {
+			address =intent.getStringExtra(LibListFragment.LIB_VISIT);
+		}
+		String phoneNr =	intent.getStringExtra(LibListFragment.LIB_PHONE);
+		String email =		intent.getStringExtra(LibListFragment.LIB_EMAIL);
+		String postAdr = 	intent.getStringExtra(LibListFragment.LIB_ADDRESS);
+		String postInfo = 	intent.getStringExtra(LibListFragment.LIB_POSTCODE)+ " " +
+		intent.getStringExtra(LibListFragment.LIB_AREA);
+
+		((TextView)findViewById(R.id.overlay_lib_name)).setText(name);
+		((TextView)findViewById(R.id.overlay_open_hours)).setText(openH);
+		((TextView)findViewById(R.id.overlay_visit)).setText(address);
+		((TextView)findViewById(R.id.overlay_telephone)).setText(phoneNr);
+		((TextView)findViewById(R.id.overlay_email)).setText(email);
+		((TextView)findViewById(R.id.overlay_address)).setText(postAdr);
+		((TextView)findViewById(R.id.overlay_post_info)).setText(postInfo);
+	}
 }

@@ -30,26 +30,25 @@ import dat255.grupp06.bibbla.model.Library;
 
 /**
  * Custom ListAdapter for book search results.
- * @author Madeleine Appert
+ * @author Malla
  */
 public class LibListAdapter extends BaseAdapter {
 
 	private final List<Library> list;
 	private final Activity activity;
-	private final boolean showAvailable;
 
 	/**
 	 * 
 	 * @param activity The activity where this adapter is applied. This is used
 	 * for getting an appropriate inflater.
-	 * @param list A list of books to present. 
+	 * @param list A list of librarries to present. 
 	 */
 	// TODO Bad style to pass activity?
+	@SuppressWarnings("unchecked")
 	public LibListAdapter(Activity activity, List<Library> list, boolean showAvailable) {
 		// TODO Clone needed?
 		this.list = (List<Library>) ((ArrayList<Library>) list).clone();
 		this.activity = activity;
-		this.showAvailable = showAvailable;
 	}
 
 	@Override

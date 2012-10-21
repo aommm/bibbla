@@ -63,6 +63,7 @@ public class BookOverlayActivity extends SherlockActivity {
         setContentView(R.layout.activity_book_overlay);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().hide();
         
         //Get all of the data the intent sends
         Intent intent = getIntent();
