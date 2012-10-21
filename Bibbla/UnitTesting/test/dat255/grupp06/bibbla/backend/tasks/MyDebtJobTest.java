@@ -20,44 +20,70 @@ package dat255.grupp06.bibbla.backend.tasks;
 import junit.framework.TestCase;
 import dat255.grupp06.bibbla.CredentialsFactory;
 import dat255.grupp06.bibbla.model.Credentials;
-import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Session;
+
+/**
+ * Test the object we get from the MyDebtValue class
+ * @author Fahad
+ *
+ */
 
 public class MyDebtJobTest extends TestCase {
 
 	Credentials credentials;
-	Message message;
-	Integer debt;
 	
 	public void setUp(){
 		
 		credentials = CredentialsFactory.getCredentials();
-		if (credentials != null){
-			MyDebtJob myDebtJob = new MyDebtJob(credentials, new Session());
-			message = myDebtJob.run();
 			
+		}
+	
+	/**
+	 * Test that message object is not null.
+	 */
+	
+	public void testMessageNotNull(){
+		
+		if(credentials != null){
+			MyDebtJob myDebtJob = new MyDebtJob(credentials, new Session());
+			assertNotNull(myDebtJob.run());	
 		}
 	}
 	
 	/**
-	 * Test that we dont get null object.
+	 * Test that we don't get null object.
 	 */
 	public void testObjectNotNull(){
 		if(credentials != null){
-			assertNotNull(message.obj);			
+			MyDebtJob myDebtJob = new MyDebtJob(credentials, new Session());
+			assertNotNull(myDebtJob.run().obj);			
 		}
 	}
-	
 
 	/**
 	 * Test that we get an integer object
 	 */
-	public void testDebtObject(){
+	public void testObjectIsInteger(){
 		
 		if(credentials != null){
-			assertTrue(message.obj instanceof Integer);
-			debt = (Integer) message.obj;	
+			MyDebtJob myDebtJob = new MyDebtJob(credentials, new Session());
+			assertTrue(myDebtJob.run().obj instanceof Integer);	
 		}
 	}
+	
+	/**
+	 * Test that debt value is not negative
+	 */
+	
+	public void testIntegerValue(){
+		
+		if(credentials != null){
+			MyDebtJob myDebtJob = new MyDebtJob(credentials, new Session());
+			assertFalse((Integer) myDebtJob.run().obj < 0);
+				
+			}
+		}
+	
+	
 	
 }
