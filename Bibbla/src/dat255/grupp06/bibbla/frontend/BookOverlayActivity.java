@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,8 +102,11 @@ public class BookOverlayActivity extends SherlockActivity {
 			}
 		};
 		
+		Spinner spinner = (Spinner)findViewById(R.id.library_spinner);
+		String lib = libraryToCode(String.valueOf(spinner.getSelectedItem()));
+		
 		try {
-			Backend.getBackend().reserve(book, "An", c);
+			Backend.getBackend().reserve(book, lib, c);
 			((TextView)findViewById(R.id.text_reserve_book)).setText("Reserverar bok...");
 		} catch (CredentialsMissingException e) {
 			setSupportProgressBarIndeterminateVisibility(false);
@@ -132,6 +136,74 @@ public class BookOverlayActivity extends SherlockActivity {
 		
 		((TextView)findViewById(R.id.overlay_book_isbn)).setText(book.getIsbn());
         ((TextView)findViewById(R.id.overlay_book_physical)).setText(book.getPhysicalDescription());
+    }
+    
+    /**
+     * 
+     * @param library
+     * @return
+     */
+    public String libraryToCode(String library) {
+    	if(library.equals("Askim"))
+    		return "as";
+    	else if(library.equals("Backa"))
+    		return "ba";
+    	else if(library.equals("Bergsjön"))
+    		return "bs";
+    	else if(library.equals("Biskopsgården"))
+    		return "bi";
+    	else if(library.equals("Bokbuss Tur A"))
+    		return "bussa";
+    	else if(library.equals("Bokbuss Tur B"))
+    		return "bussb";
+    	else if(library.equals("Donsö"))
+    		return "do";
+    	else if(library.equals("Dynamo på Stadsmuseet"))
+    		return "dy";
+    	else if(library.equals("Gamlestaden"))
+    		return "ga";
+    	else if(library.equals("Global på Stadsmuseet"))
+    		return "in";
+    	else if(library.equals("Guldheden"))
+    		return "gu";
+    	else if(library.equals("Hammarkullen"))
+    		return "ha";
+    	else if(library.equals("Hisingen"))
+    		return "hi";
+    	else if(library.equals("Hjällbo"))
+    		return "hj";
+    	else if(library.equals("Härlanda/Örgryte"))
+    		return "hl";
+    	else if(library.equals("Högsbo"))
+    		return "ho";
+    	else if(library.equals("Kortedala"))
+    		return "ko";
+    	else if(library.equals("Kyrkbyn"))
+    		return "ky";
+    	else if(library.equals("Kärra"))
+    		return "ka";
+    	else if(library.equals("Linnéstaden"))
+    		return "li";
+    	else if(library.equals("Majorna"))
+    		return "ma";
+    	else if(library.equals("Miini på Röhsska"))
+    		return "mi";
+    	else if(library.equals("Styrsö"))
+    		return "st";
+    	else if(library.equals("Torslanda"))
+    		return "to";
+    	else if(library.equals("Trulsegården"))
+    		return "tr";
+    	else if(library.equals("Tuve"))
+    		return "tu";
+    	else if(library.equals("Västra Frölunda"))
+    		return "vf";
+    	else if(library.equals("Älvstranden"))
+    		return "al";
+    	else if(library.equals("300m2 på Södra Hamng"))
+    		return "ci";
+    	else
+    		return "error";
     }
 
     

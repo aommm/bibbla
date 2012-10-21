@@ -35,12 +35,22 @@
     <TextView android:id="@+id/overlay_book_physical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    
-    <Button android:id="@+id/button_reserve_book"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/button_reserve"
-        android:onClick="reserveBook" />
+        android:orientation="horizontal" >
+	    <Button android:id="@+id/button_reserve_book"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/button_reserve"
+	        android:onClick="reserveBook" />
+	    <Spinner
+	        android:id="@+id/library_spinner"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:entries="@array/library_arrays"
+	        android:prompt="@string/library_prompt" />
+    </LinearLayout>
     <TextView android:id="@+id/text_reserve_book"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
