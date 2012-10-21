@@ -25,23 +25,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import android.annotation.SuppressLint;
-import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
-import dat255.grupp06.bibbla.backend.tasks.LibInfoJob;
-import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
-import dat255.grupp06.bibbla.backend.tasks.MyDebtJob;
-import dat255.grupp06.bibbla.backend.tasks.MyReservationsJob;
-import dat255.grupp06.bibbla.backend.tasks.RenewJob;
-import dat255.grupp06.bibbla.backend.tasks.ReserveJob;
-import dat255.grupp06.bibbla.backend.tasks.SearchJob;
-import dat255.grupp06.bibbla.backend.tasks.Task;
-import dat255.grupp06.bibbla.backend.tasks.UnreserveJob;
-import dat255.grupp06.bibbla.backend.tasks.UserNameJob;
+import dat255.grupp06.bibbla.backend.tasks.*;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
-import dat255.grupp06.bibbla.utils.Callback;
-import dat255.grupp06.bibbla.utils.Message;
-import dat255.grupp06.bibbla.utils.Session;
+import dat255.grupp06.bibbla.utils.*;
 
 /**
  * Performs tasks like searching, reserving and logging in.
@@ -102,37 +90,53 @@ public final class Backend {
 	
 	/**
 	 *  Starts fetching the user's current debt. Reports results using callback.
+	 *  Uses cached values if available; otherwise, simply runs the job.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when logging in is done. 
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when logging in is done.
+	 */
+	public void fetchUserDebt(final Callback frontendCallback)
+	throws CredentialsMissingException {
+		fetchUserDebt(frontendCallback, false);
+	}
+
+	/**
+	 *  Starts fetching the user's current debt. Reports results using callback.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when logging in is done.
+	 *  @param refresh - should we run the job directly, and bypass caching? 
 	 */
 	public void fetchUserDebt(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
-		if (!refresh && (reservations!=null)) {
+		// Return cached result if it's available.
+		if (!refresh && (debt!=null)) {
 			Message message = new Message();
 			message.obj = debt;
 			frontendCallback.handleMessage(message);
 		}
-		else{ 
-		Callback backendCallback = new Callback() {
-			@Override
-			public void handleMessage(Message message) {
-				Backend.this.fetchDebtDone(message, frontendCallback);
-			}	
-		};
-		
-		final MyDebtJob job = new MyDebtJob(settings.getCredentials(),
-				session);
-		// Create a new Task and define its body.
-		Task task = new Task(backendCallback) {
-			@Override
-			// The code that's run in the Task (on new thread).
-			protected Void doInBackground(String... params) {
-				message = job.run();
-				return null;
-			}
-		};
-		// Start the task.
-		task.execute();
+		// Run the job.
+		else {
+			Callback backendCallback = new Callback() {
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchDebtDone(message, frontendCallback);
+				}
+			};
+			
+			final MyDebtJob job = new MyDebtJob(settings.getCredentials(),
+					session);
+			// Create a new Task and define its body.
+			Task task = new Task(backendCallback) {
+				@Override
+				// The code that's run in the Task (on new thread).
+				protected Void doInBackground(String... params) {
+					message = job.run();
+					return null;
+				}
+			};
+			// Start the task.
+			task.execute();
 		}
 	}
 		
@@ -145,24 +149,28 @@ public final class Backend {
 	 *  Searches backend for the supplied string, and reports results using callback.
 	 *  
 	 *  @param s - The string to search for.
-	 *  @param page - which page of search results to fetch. If too high, returns empty list.
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param page - which page of search results to fetch.
+	 *   If too high, returns empty list.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when searching is done.
 	 */
 	public void search(final String s, final int page, final Callback frontendCallback) {
-		final Map.Entry<String,Integer> entry =  new AbstractMap.SimpleEntry<String, Integer>(s, page);
-		if(searchResults.containsKey(entry)){
+		// Create the key identifying this list of search results.
+		// Consists of the search string and page number.
+		final Map.Entry<String,Integer> key =
+				new AbstractMap.SimpleEntry<String, Integer>(s, page);
+		// Return cached result if it's available.
+		if(searchResults.containsKey(key)) {
 			Message message = new Message();
-			message.obj = searchResults.get(entry);
+			message.obj = searchResults.get(key);
 			frontendCallback.handleMessage(message);
 		}
-			
+		// Run the job.
 		else{
-			Callback backendCallback = new Callback(){
-
+			Callback backendCallback = new Callback() {
 				@Override
 				public void handleMessage(Message message) {
-					Backend.this.fetchSearchResultsDone(message, frontendCallback, entry);
-					
+					Backend.this.fetchSearchResultsDone(message, frontendCallback, key);
 				}
 				
 			};
@@ -194,7 +202,10 @@ public final class Backend {
 	 *  Sends a new book with all the additional information to the callback.
 	 *  Uses cached values if available; otherwise, simply runs the job.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param book - the book whose detailed view we're going to fetch.
+	 *   Needs to have its url set.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when fetching detailed view is done.
 	 */
 	public void fetchDetailedView(final Book book, final Callback frontendCallback) {
 		fetchDetailedView(book, frontendCallback, false);
@@ -204,7 +215,10 @@ public final class Backend {
 	 *  Fetches the DetailedView of the supplied book.
 	 *  Sends a new book with all the additional information to the callback.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param book - the book whose detailed view we're going to fetch.
+	 *   Needs to have its url set.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when fetching detailed view is done.
 	 *  @param refresh - should we run the job directly, and bypass caching?
 	 */
 	public void fetchDetailedView(final Book book, final Callback frontendCallback, boolean refresh) {
@@ -245,10 +259,12 @@ public final class Backend {
 	 * Saves the result in a member variable, and then passes it on to frontend.
 	 * 
 	 * @param message - the message returned from fetchDetailedView.
+	 * @param frontendCallback - the callback object which will be called
+	 *  when fetching detailed view is done.
 	 */
 	private void fetchDetailedViewDone(Message message, Callback frontendCallback) {
-
-		detailedViews.put(((Book) message.obj).getUrl() ,(Book) message.obj);
+		// Save results for caching.
+		detailedViews.put(((Book) message.obj).getUrl() ,(Book) message.obj); 
 		frontendCallback.handleMessage(message);
 	}
 
@@ -258,7 +274,8 @@ public final class Backend {
 	 *  Returns it using callback.
 	 *  Uses cached values if available; otherwise, simply runs the job.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be
+	 *   called when fetching reservations is done.
 	 */
 	public void fetchReservations(final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -269,7 +286,8 @@ public final class Backend {
 	 *  Fetches a list of the user's current reservations.
 	 *  Returns it using callback.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *  when fetching reservations is done.
 	 *  @param refresh - should we run the job directly, and bypass caching?
 	 */
 	public void fetchReservations(final Callback frontendCallback, boolean refresh)
@@ -305,27 +323,36 @@ public final class Backend {
 		}
 	}
 	
+	/**
+	 * Is called when fetchReservations is done.
+	 * Saves the result in a member variable, and then passes it on to frontend.
+	 * 
+	 * @param message - the message returned from fetchReservations.
+	 * @param frontendCallback - the callback object which will be called
+	 *  when fetching reservations is done.
+	 */	
 	private void fetchReservationsDone(Message message, Callback callback){
 		reservations = (List<Book>) message.obj;
 		callback.handleMessage(message);
 		
 	}
 
-	
 	/**
 	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
 	 *  Uses cached values if available; otherwise, simply runs the job.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.  
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when fetching loans is done.  
 	 */
 	public void fetchLoans(final Callback frontendCallback)
 	throws CredentialsMissingException {
 		fetchLoans(frontendCallback, false);
-	}	
+	}
 	/**
 	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when fetching loans is done.
 	 *  @param refresh - should we run the job directly, and bypass caching?
 	 */
 	public void fetchLoans(final Callback frontendCallback, boolean refresh)
@@ -362,6 +389,14 @@ public final class Backend {
 		}
 	}
 	
+	/**
+	 * Is called when fetchDetailedView is done.
+	 * Saves the result in a member variable, and then passes it on to frontend.
+	 * 
+	 * @param message - the message returned from fetchDetailedView.
+	 * @param frontendCallback - the callback object which will be called
+	 *  when fetching loaned books is done.
+	 */
 	public void fetchLoanedBooksDone(Message message, Callback callback){
 		loanedBooks = (List<Book>) message.obj;
 		callback.handleMessage(message);
@@ -372,8 +407,8 @@ public final class Backend {
 	 *  
 	 *  @param book - the book to reserve. Needs to have its reserveUrl property set.
 	 *  @param libraryCode - the code of the library the book should be sent to.
-	 *   TODO: change to Library!
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when reserving is done.
 	 */
 	public void reserve(final Book book, final String libraryCode,
 			final Callback frontendCallback)
@@ -397,7 +432,8 @@ public final class Backend {
 	 *  Unreserves the supplied book. Result is reported via callback.
 	 *  
 	 *  @param book - The book to unreserve. Needs to have its unreserveId property set.
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when unreserving is done.
 	 */
 	public void unreserve(final Book book, final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -419,8 +455,10 @@ public final class Backend {
 	/**
 	 *  Unreserves all supplied books. Result is reported via callback.
 	 *  
-	 *  @param books - A list of books to unreserve. Needs to have their unreserveIds property set.
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param books - A list of books to unreserve.
+	 *   Needs to have their unreserveIds property set.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when unreserving is done.
 	 */
 	public void unreserve(final List<Book> books, final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -442,7 +480,8 @@ public final class Backend {
 	/**
 	 *  Unreserves all reserved books. Result is reported via callback.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when unreserving is done.
 	 */
 	public void unreserve(final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -465,7 +504,8 @@ public final class Backend {
 	 *  Renews the supplied book. Result is reported via callback.
 	 *  
 	 *  @param book - The book to renew. Needs to have its renewId property set.
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when renewal is done.
 	 */
 	public void renew(final Book book, final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -488,7 +528,8 @@ public final class Backend {
 	 *  Renews all supplied books. Result is reported via callback.
 	 *  
 	 *  @param books - A list of books to renew. Needs to have their renewId properties set.
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when renewal is done.
 	 */
 	public void renew(final List<Book> books, final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -510,7 +551,8 @@ public final class Backend {
 	/**
 	 *  Renews all loaned books. Result is reported via callback.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when renewal is done.
 	 */
 	public void renew(final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -547,7 +589,8 @@ public final class Backend {
 	/**
 	 *  Searches backend for the library information.
 	 *  
-	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param frontendCallback - the callback object which will be called
+	 *   when fetching library info is done.
 	 */
 	public void libInfo( final Callback frontendCallback) {
 		// Create a new Task and define its body.
