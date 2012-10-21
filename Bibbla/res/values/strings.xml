@@ -74,6 +74,39 @@
     
     <!-- Book overlay -->
     <string name="button_reserve">Reservera</string>
+    <string name="library_prompt">Choose a country</string>
+ 
+    <string-array name="library_arrays">
+        <item>Askim</item>
+		<item>Backa</item>
+		<item>Bergsjön</item>
+		<item>Biskopsgården</item>
+		<item>Bokbuss Tur A</item>
+		<item>Bokbuss Tur B</item>
+		<item>Donsö</item>
+		<item>Dynamo på Stadsmuseet</item>
+		<item>Gamlestaden</item>
+		<item>Global på Stadsmuseet</item>
+		<item>Guldheden</item>
+		<item>Hammarkullen</item>
+		<item>Hisingen</item>
+		<item>Hjällbo</item>
+		<item>Härlanda/Örgryte</item>
+		<item>Högsbo</item>
+		<item>Kortedala</item>
+		<item>Kyrkbyn</item>
+		<item>Kärra</item>
+		<item>Linnéstaden</item>
+		<item>Majorna</item>
+		<item>Miini på Röhsska</item>
+		<item>Styrsö</item>
+		<item>Torslanda</item>
+		<item>Trulsegården</item>
+		<item>Tuve</item>
+		<item>Västra Frölunda</item>
+		<item>Älvstranden</item>
+		<item>300m2 på Södra Hamng</item>
+    </string-array>
     
      <!-- Library -->    
     <string name="title_open">Öppettider</string>
