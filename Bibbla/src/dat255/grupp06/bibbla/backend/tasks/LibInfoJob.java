@@ -52,7 +52,7 @@ public class LibInfoJob extends Job {
 		System.out.print("\n****** LibInfoJobcreated\n");
 	}
 
-	public Message run(){
+	public Message run() {
 
 		try {
 			connectAndRetry();
