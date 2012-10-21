@@ -17,9 +17,19 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
+import java.io.IOException;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.jsoup.Connection.Response;
+
+import dat255.grupp06.bibbla.CredentialsFactory;
+import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Tests methods in ReserveJob, which are typically called hierarchically
@@ -28,8 +38,63 @@ import junit.framework.TestCase;
  */
 public class ReserveJobTest extends TestCase {
 
-	public void testRun() {
-		fail("Not yet implemented");
+	/** Test book representing Hej mössan by Boel Werner */
+	public static final Book TEST_BOOK = new Book("", "", "", "", "https://" +
+			"www.gotlib.goteborg.se/search*swe~S6?/Xhej&searchscope=6&SORT=D" +
+			"/Xhej&searchscope=6&SORT=D&SUBKEY=hej/1%2C412%2C412%2CC/request" +
+			"browse~b1741463&FF=Xhej&searchscope=6&SORT=D&1%2C1%2C");
+	private static final Book EMPTYURL_BOOK = new Book("", "", "", "", "");
+	private static final Book BADURL_BOOK = new Book("", "", "", "",
+			"http://google.com/");
+	/** The code for one of the available libraries */  
+	public static final String LIBRARY_CODE = "tu";
+	public static final String LIBRARY_NAME = "Tuve";
+	public static final Credentials CREDENTIALS =
+			CredentialsFactory.getCredentials();
+	
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+		UnreserveJob unreserveJob = new UnreserveJob(TEST_BOOK, CREDENTIALS,
+				new Session());
+		unreserveJob.run();
+	}
+	
+	public void testRunValid() {
+		ReserveJob job = new ReserveJob(TEST_BOOK, LIBRARY_CODE, CREDENTIALS,
+				new Session());
+		Message message = job.run();
+		assertNull(message.error);
+		String library = (String) message.obj;
+		assertEquals(LIBRARY_NAME, library);
+	}
+	
+	public void testRunEmptyUrl() {
+		ReserveJob job = new ReserveJob(EMPTYURL_BOOK, LIBRARY_CODE,
+				CREDENTIALS, new Session());
+		try {
+			@SuppressWarnings("unused")
+			Message message = job.run();
+			fail("Expected IllegalArgumentException from Jsoup.connect()");
+		} catch (IllegalArgumentException e) {
+			// Got the expected exception.
+		}
+	}
+	
+	public void testRunBadUrl() {
+		ReserveJob job = new ReserveJob(BADURL_BOOK, LIBRARY_CODE, CREDENTIALS,
+				new Session());
+		Message message = job.run();
+		assertNotNull(message.error);
+		assertEquals(message.error, Error.RESERVE_FAILED);
+	}
+	
+	public void testRunBadLibrary() {
+		ReserveJob job = new ReserveJob(TEST_BOOK, "", CREDENTIALS,
+				new Session());
+		Message message = job.run();
+		assertNotNull(message.error);
+		assertEquals(message.error, Error.RESERVE_FAILED);
 	}
 
 	public void testCreatePostData() {
@@ -42,7 +107,12 @@ public class ReserveJobTest extends TestCase {
 		assertEquals(data.get(ReserveJob.KEY_DAY), ReserveJob.VAL_DAY);
 	}
 
-	public void testPostReservation() {
+	public void testConnect() throws IOException {
+		ReserveJob job = new ReserveJob(TEST_BOOK, LIBRARY_CODE, CREDENTIALS,
+				new Session()) {
+			public final Response response = connect();
+		};
+//		Response response = job.response;
 		fail("Not yet implemented");
 	}
 
