@@ -17,13 +17,20 @@
 
 package dat255.grupp06.bibbla.fragments;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +39,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
@@ -44,7 +52,11 @@ import dat255.grupp06.bibbla.utils.Message;
  * @author arla
  */
 public class ProfileFragment extends SherlockFragment {
-
+	public final static String BOOK = "dat255.grupp06.bibbla.BOOK";
+	private BookListFragment reservationsList;
+	private BookListFragment loansList;
+	
+	
 	/**
 	 * Reference to the class that can produce a login form. Is set on attach.
 	 */
@@ -58,7 +70,37 @@ public class ProfileFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		
+		if(reservationsList == null) {
+			reservationsList = new BookListFragment();
+	        fragmentTransaction.add(R.id.reservations_list, reservationsList);
+		} else {
+			fragmentTransaction.attach(reservationsList);
+		}
+		
+		if(loansList == null) {
+			loansList = new BookListFragment();
+	        fragmentTransaction.add(R.id.loans_list, loansList);
+		} else {
+			fragmentTransaction.attach(loansList);
+		}
+		
+        fragmentTransaction.commit();
+		
 		return inflater.inflate(R.layout.profile_fragment, container, false);
+	}
+	
+	@Override
+	public void onDestroyView() {
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.detach(reservationsList);
+        fragmentTransaction.detach(loansList);
+        fragmentTransaction.commit();
+        super.onDestroyView();
 	}
 	
 	@Override
@@ -160,10 +202,8 @@ public class ProfileFragment extends SherlockFragment {
 		Activity activity = getSherlockActivity();
 		try {
 			@SuppressWarnings("unchecked")
-			List<Book> loans = (List<Book>) msg.obj;
-			ListView loansList = (ListView) activity.findViewById(R.id.loans_list);
-			if (loansList != null) loansList.setAdapter(
-					new BookListAdapter(activity, loans, false));
+			ArrayList<Book> loans = (ArrayList<Book>) msg.obj;
+			loansList.updateList(loans);
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
 		}
@@ -179,10 +219,8 @@ public class ProfileFragment extends SherlockFragment {
 		Activity activity = getSherlockActivity();
 		try {
 			@SuppressWarnings("unchecked")
-			List<Book> reservations = (List<Book>) msg.obj;
-			ListView reservationsList = (ListView) activity.findViewById(R.id.reservations_list);
-			if (reservationsList != null) reservationsList.setAdapter(
-					new BookListAdapter(activity, reservations, false));
+			ArrayList<Book> reservations = (ArrayList<Book>) msg.obj;
+			reservationsList.updateList(reservations);			
 		} catch (ClassCastException e) {
 			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
 		}
@@ -200,4 +238,5 @@ public class ProfileFragment extends SherlockFragment {
 		namePending = debtPending = loansPending = reservationsPending = false;
 		updateSpinnerState();
 	}
+	
 }

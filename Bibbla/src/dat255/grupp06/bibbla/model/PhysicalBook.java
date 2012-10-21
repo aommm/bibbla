@@ -17,12 +17,14 @@
 
 package dat255.grupp06.bibbla.model;
 
+import java.io.Serializable;
+
 /**
  * A class modeling a physical copy of a book.
  * (Each Book has several PhysicalBooks)
  * @author Niklas Logren
  */
-public class PhysicalBook {
+public class PhysicalBook implements Serializable {
 	// TODO: Represent library with a separate class? Has name and specific code.
 	private String library;
 	// TODO: Represent shelf with an enum? Necessary?

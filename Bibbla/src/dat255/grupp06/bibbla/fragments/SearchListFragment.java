@@ -40,7 +40,7 @@ import dat255.grupp06.bibbla.model.Book;
  *
  */
 public class SearchListFragment extends SherlockListFragment {
-	public final static String BOOK = "dat255.grupp06.bibbla.AUTHOR";
+	public final static String BOOK = "dat255.grupp06.bibbla.BOOK";
 	private ArrayList<Book> currentBooks;
 	private int currentPage;
 	private String lastSearch;

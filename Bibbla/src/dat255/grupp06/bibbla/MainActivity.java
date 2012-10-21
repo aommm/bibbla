@@ -221,6 +221,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 	public void moreSearchResultsClicked(int page, String searchString) {
 		searchFragment.getMoreSearchResults(page, searchString);
 	}
+	
 	/**
 	 * Hides the virtual keyboard.
 	 */
