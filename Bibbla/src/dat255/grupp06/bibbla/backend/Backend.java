@@ -54,9 +54,10 @@ public final class Backend {
 	private Session session;
 	private static Backend backendObject;
 	
+	// Cached results.
 	private Map<String,Book> detailedViews = new HashMap<String, Book>();
-	private List<Book> reservations = new ArrayList<Book>();
-	private List<Book> loanedBooks = new ArrayList<Book>();
+	private List<Book> reservations;
+	private List<Book> loanedBooks;
 	
 	/**
 	 * Creates a new instance of our Backend.
@@ -136,18 +137,36 @@ public final class Backend {
 		task.execute();
 	}
 	
+	
 	/**
 	 *  Fetches the DetailedView of the supplied book.
 	 *  Sends a new book with all the additional information to the callback.
+	 *  Uses cached values if available; otherwise, simply runs the job.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void fetchDetailedView(final Book book, final Callback frontendCallback) {
+		fetchDetailedView(book, frontendCallback, false);
+	}
+	
+	/**
+	 *  Fetches the DetailedView of the supplied book.
+	 *  Sends a new book with all the additional information to the callback.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param refresh - should we run the job directly, and bypass caching?
 	 */
 	public void fetchDetailedView(final Book book, final Callback frontendCallback, boolean refresh) {
+		// Return cached result if it's available.
 		if (detailedViews.containsKey(book.getUrl()) && !refresh) {
 			Message message = new Message();
 			message.obj = detailedViews.get(book.getUrl());
 			frontendCallback.handleMessage(message);
 		}
+		// Run the job.
 		else {
-			
+			detailedViews.clear();
+			// Create a new callback, which saves the result before passing it on to frontend.
 			Callback backendCallback = new Callback() {
 				@Override
 				public void handleMessage(Message message) {
@@ -170,10 +189,29 @@ public final class Backend {
 		}
 	}
 	
-	public void fetchDetailedViewDone(Message message, Callback callback) {
+	/**
+	 * Is called when fetchDetailedView is done.
+	 * Saves the result in a member variable, and then passes it on to frontend.
+	 * 
+	 * @param message - the message returned from fetchDetailedView.
+	 */
+	public void fetchDetailedViewDone(Message message, Callback frontendCallback) {
 
 		detailedViews.put(((Book) message.obj).getUrl() ,(Book) message.obj);
-		callback.handleMessage(message);
+		frontendCallback.handleMessage(message);
+	}
+
+	
+	/**
+	 *  Fetches a list of the user's current reservations.
+	 *  Returns it using callback.
+	 *  Uses cached values if available; otherwise, simply runs the job.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 */
+	public void fetchReservations(final Callback frontendCallback)
+	throws CredentialsMissingException {
+		fetchReservations(frontendCallback, false);
 	}
 	
 	/**
@@ -181,20 +219,24 @@ public final class Backend {
 	 *  Returns it using callback.
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param refresh - should we run the job directly, and bypass caching?
 	 */
 	public void fetchReservations(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
-		
-		if (!refresh) {
+		// Return cached result if it's available.
+		if (!refresh && (reservations!=null)) {
 			Message message = new Message();
 			message.obj = reservations;
 			frontendCallback.handleMessage(message);
 		}
-		else{
+		// Run the job.
+		else {
+			reservations = null;
+			// Create a new callback, which saves the result before passing it on to frontend.
 			Callback backendCallback = new Callback(){
 				@Override
 				public void handleMessage(Message message) {
-					Backend.this.fetchReseravationsDone(message, frontendCallback);
+					Backend.this.fetchReservationsDone(message, frontendCallback);
 				}
 				
 			};
@@ -212,44 +254,60 @@ public final class Backend {
 		}
 	}
 	
-	public void fetchReseravationsDone(Message message, Callback callback){
+	public void fetchReservationsDone(Message message, Callback callback){
 		reservations = (List<Book>) message.obj;
 		callback.handleMessage(message);
 		
 	}
 
+	
+	/**
+	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
+	 *  Uses cached values if available; otherwise, simply runs the job.
+	 *  
+	 *  @param frontendCallback - the callback object which will be called when searching is done.  
+	 */
+	public void fetchLoans(final Callback frontendCallback)
+	throws CredentialsMissingException {
+		fetchLoans(frontendCallback, false);
+	}	
 	/**
 	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
+	 *  @param refresh - should we run the job directly, and bypass caching?
 	 */
 	public void fetchLoans(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
-		if (!refresh) {
+		// Return cached result if it's available.
+		if (!refresh && (loanedBooks!=null)) {
 			Message message = new Message();
 			message.obj = loanedBooks;
 			frontendCallback.handleMessage(message);
 		}
-		else{
-			Callback backendCallback = new Callback(){
+		// Run the job.
+		else {
+			loanedBooks = null;
+			// Create a new callback, which saves the result before passing it on to frontend. 
+			Callback backendCallback = new Callback() {
 				@Override
 				public void handleMessage(Message message) {
 					Backend.this.fetchLoanedBooksDone(message, frontendCallback);
 				}
-				
 			};
-		final MyBooksJob job = new MyBooksJob(settings.getCredentials(), session);
-		// Create a new Task and define its body.
-		Task task = new Task(backendCallback) {
-			@Override
-			// The code that's run in the Task (on new thread).
-			protected Void doInBackground(String... params) {
-				message = job.run();
-				return null;
-			}
-		};
-		// Start the task.
-		task.execute();
+			
+			final MyBooksJob job = new MyBooksJob(settings.getCredentials(), session);
+			// Create a new Task and define its body.
+			Task task = new Task(backendCallback) {
+				@Override
+				// The code that's run in the Task (on new thread).
+				protected Void doInBackground(String... params) {
+					message = job.run();
+					return null;
+				}
+			};
+			// Start the task.
+			task.execute();
 		}
 	}
 	
