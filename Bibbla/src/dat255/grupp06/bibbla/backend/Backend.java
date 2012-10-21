@@ -18,10 +18,13 @@
 package dat255.grupp06.bibbla.backend;
 
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import android.annotation.SuppressLint;
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.LibInfoJob;
 import dat255.grupp06.bibbla.backend.tasks.MyBooksJob;
@@ -46,6 +49,7 @@ import dat255.grupp06.bibbla.utils.Session;
  * 
  * @author Niklas Logren
  */
+@SuppressLint({ "NewApi", "NewApi" })
 public final class Backend {
 	
 	public final static int MAX_CONNECTION_ATTEMPTS = 5;
@@ -56,6 +60,8 @@ public final class Backend {
 	
 	// Cached results.
 	private Map<String,Book> detailedViews = new HashMap<String, Book>();
+	private Map<Entry<String, Integer>,List<Book>> searchResults
+	= new HashMap<Entry<String, Integer>,List<Book>>();
 	private List<Book> reservations;
 	private List<Book> loanedBooks;
 	private Integer debt;
@@ -130,7 +136,7 @@ public final class Backend {
 		}
 	}
 		
-	public void fetchDebtDone(Message message, Callback callback) {
+	private void fetchDebtDone(Message message, Callback callback) {
 		debt = (Integer) message.obj;
 		callback.handleMessage(message);
 	}
@@ -143,8 +149,26 @@ public final class Backend {
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
 	public void search(final String s, final int page, final Callback frontendCallback) {
+		final Map.Entry<String,Integer> entry =  new AbstractMap.SimpleEntry<String, Integer>(s, page);
+		if(searchResults.containsKey(entry)){
+			Message message = new Message();
+			message.obj = searchResults.get(entry);
+			frontendCallback.handleMessage(message);
+		}
+			
+		else{
+			Callback backendCallback = new Callback(){
+
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchSearchResultsDone(message, frontendCallback, entry);
+					
+				}
+				
+			};
+			
 		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
+		Task task = new Task(backendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
@@ -155,9 +179,16 @@ public final class Backend {
 		};
 		// Start the task.
 		task.execute();
+		}
 	}
 	
-	
+	private void fetchSearchResultsDone(Message message,
+			Callback callback, Entry<String, Integer> entry) {
+		searchResults.put(entry, (List<Book>) message.obj);
+		callback.handleMessage(message);
+		
+	}
+
 	/**
 	 *  Fetches the DetailedView of the supplied book.
 	 *  Sends a new book with all the additional information to the callback.
@@ -215,7 +246,7 @@ public final class Backend {
 	 * 
 	 * @param message - the message returned from fetchDetailedView.
 	 */
-	public void fetchDetailedViewDone(Message message, Callback frontendCallback) {
+	private void fetchDetailedViewDone(Message message, Callback frontendCallback) {
 
 		detailedViews.put(((Book) message.obj).getUrl() ,(Book) message.obj);
 		frontendCallback.handleMessage(message);
@@ -274,7 +305,7 @@ public final class Backend {
 		}
 	}
 	
-	public void fetchReservationsDone(Message message, Callback callback){
+	private void fetchReservationsDone(Message message, Callback callback){
 		reservations = (List<Book>) message.obj;
 		callback.handleMessage(message);
 		
