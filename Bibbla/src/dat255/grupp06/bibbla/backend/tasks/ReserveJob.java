@@ -47,7 +47,6 @@ public class ReserveJob extends AuthorizedJob {
 
 	private Book book;
 	private Session session;
-	private Message message;
 	private String libraryCode;
 	private Map<String, String> postData;
 	
@@ -64,7 +63,6 @@ public class ReserveJob extends AuthorizedJob {
 		this.book = book;
 		this.libraryCode = libraryCode;
 		this.session = session;
-		this.message = new Message();
 	}
 
 	/**
@@ -75,28 +73,46 @@ public class ReserveJob extends AuthorizedJob {
 	 * detailing which library the book will be sent to.
 	 * If reservation failed, obj will be a string containing the error message.
 	 */
-	public Message run(){
+	public Message run() {
 		login();
 
+		// Prepare field for paramless connect()
 		postData = createPostData(libraryCode);
 
 		// Attempt reservation
 		Response reserveResponse = null;
 		try {
-			System.out.println("*** Step 1: Post our reservation");
 			reserveResponse = connect();
-			System.out.println("Step 1 done! ***");
-			System.out.println("*** Step 2: Parse the results");
-			parseResults(reserveResponse);
-			System.out.println("Step 2 done! ***");
 		} catch (IOException e) {
-			message.error = (message.error!=null) ? message.error : Error.RESERVE_FAILED;
-			System.out.println("Failed: "+e.getMessage()+" ***");
+			Message errorMessage = new Message();
+			errorMessage.error = Error.RESERVE_FAILED;
+			return errorMessage;
 		}
-		// Assert success
-		Message parseReport = parseResults(reserveResponse);
-		message.obj = parseReport;
-		return message;
+		
+		// Parse html from response
+		Document html;
+		try {
+			html = reserveResponse.parse();
+		} catch (IOException e) {
+			Message errorMessage = new Message();
+			errorMessage.error = Error.RESERVE_FAILED;
+			return errorMessage;
+		}
+		
+		// Identify 
+		String library;
+		try {
+			library = identifyReceivingLibrary(html);
+		} catch (JobFailedException e) {
+			Message errorMessage = new Message();
+			errorMessage.error = Error.RESERVE_FAILED;
+			return errorMessage;
+		}
+		
+		// Prepare a result message
+		Message successMessage = new Message();
+		successMessage.obj = library;
+		return successMessage;
 	}
 
 	/**
@@ -117,13 +133,13 @@ public class ReserveJob extends AuthorizedJob {
 		};
 		return postData;
 	}
-	
+
 	@Override
 	/**
 	 * POSTs the reservation, and saves the response.
 	 * @throws IOException if connection failed.
 	 */
-	protected Response connect() throws IOException {
+	protected final Response connect() throws IOException {
 	    
 	    // Send request and return response.
 	    Response httpResponse = Jsoup.connect(book.getReserveUrl())
@@ -133,43 +149,21 @@ public class ReserveJob extends AuthorizedJob {
 			    .execute();
 	    return httpResponse;
 	}
-	
-	/**
-	 * Parses the response HTML to see if everything went fine.
-	 * @return the library where the book will arrive if successful, or error
-	 * message otherwise
-	 */
-	static Message parseResults(Response reserveResponse) {
-		// Identfy the div element with our data.
-		Element div = findDiv(reserveResponse);
-		if (div == null) {
-			Message parseFailedMessage = new Message();
-			parseFailedMessage.error = Error.RESERVE_FAILED;
-			return parseFailedMessage;
-		}
-		else {
-			// We're all set! Return which library the book will arrive in.
-			Message successMessage = new Message();
-			successMessage.obj = div.getElementsByTag("b").first().text();
-			return successMessage;
-		}
-	}
 
 	/**
-	 * Finds the relevant data in the response generated from a book
-	 * reservation.
-	 * @param reserveResponse 
-	 * @return a div element containing information about the result, or null
-	 * if it was not found.
+	 * Find the name of the library where the book will arrive.
+	 * @param html produced from the reservation connection
+	 * @return the name of a library
+	 * @throws JobFailedException if the element of the library name could not
+	 * be found. Assume the reservation failed.
 	 */
-	static Element findDiv(Response reserveResponse) {
+	static String identifyReceivingLibrary(Document html)
+	throws JobFailedException {
+		Element div = html.getElementById("singlecolumn");
 		try {
-			Document html = reserveResponse.parse();
-			Element div = html.getElementById("singlecolumn");
-			return div;
-		} catch (Exception e) { // IO or NullPointer
-			return null;
+			return div.getElementsByTag("b").first().text();
+		} catch (NullPointerException e) {
+			throw new JobFailedException(e);
 		}
 	}
-
 }
