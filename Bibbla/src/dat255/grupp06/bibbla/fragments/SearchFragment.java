@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ import dat255.grupp06.bibbla.utils.Message;
  * A fragment that holds the search bar, button 
  * and a ListFragment that displays search results
  * 
- * @author Jonathan Orr�
+ * @author Jonathan Orrö
  */
 
 public class SearchFragment extends SherlockFragment {
@@ -56,6 +57,7 @@ public class SearchFragment extends SherlockFragment {
 	SearchListFragment listFragment;
 	EditText searchEdit;
 	Button searchButton;
+	ProgressBar searchProgress;
 	
 	@Override
 	/**
@@ -96,7 +98,8 @@ public class SearchFragment extends SherlockFragment {
 		// Get our GUI elements.
 		searchButton = (Button)getSherlockActivity().findViewById(R.id.button_search);
 		searchEdit = (EditText)getSherlockActivity().findViewById(R.id.edit_search);
-
+		searchProgress = (ProgressBar)getSherlockActivity().findViewById(R.id.progress_search);
+		
 		// Create a listener for keyboard "enter" button.
 		OnEditorActionListener listener = new OnEditorActionListener() {
 		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -124,7 +127,7 @@ public class SearchFragment extends SherlockFragment {
 		} catch (UnsupportedEncodingException e) {}
 
 		// Display progress bar.
-		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(true);
+		setProgressBarVisibility(true);
 		
 		// No input? No need to search.
 		if("".equals(searchString)) {
@@ -146,7 +149,7 @@ public class SearchFragment extends SherlockFragment {
 	
 	public void getMoreSearchResults(int page, String searchString) {
 		
-		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(true);
+		setProgressBarVisibility(true);
 		
 		// Create a new callback object, which refers to our searchDone(). 
 		Callback c = new Callback() {
@@ -163,7 +166,7 @@ public class SearchFragment extends SherlockFragment {
 	/** Is called when backend searching is done.**/
 	public void searchDone(Message msg) {
 		// Hide progress bar.
-		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
+		setProgressBarVisibility(false);
 		
 		// Did the job fail?
 		if (msg.error != null) {
@@ -187,7 +190,7 @@ public class SearchFragment extends SherlockFragment {
 	
 	public void moreSearchDone(Message msg) {
 		// Hide progress bar.
-		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
+		setProgressBarVisibility(false);
 		
 		// Did the job fail?
 		if (msg.error != null) {
@@ -207,5 +210,18 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Update list with titles (empty or not).
 		listFragment.appendList(books);
+	}
+	
+	/**
+	 * Changes the visibility of the progress bar.
+	 * @param visible - should we show or hide the progress bar? 
+	 */
+	private void setProgressBarVisibility(boolean visible) {
+		// Do only this if searchProgress exists.
+		if (searchProgress != null) {
+			// setVisibility takes an int.
+			int visibilityCode = (visible) ? View.VISIBLE : View.GONE;
+			searchProgress.setVisibility(visibilityCode);
+		}
 	}
 }

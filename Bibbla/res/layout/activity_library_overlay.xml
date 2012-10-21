@@ -13,20 +13,96 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
- -->
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   	xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-<!--     <TextView android:id="@+id/overlay_book_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" /> -->
-    <TextView android:id="@+id/overlay_lib_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    
-</LinearLayout>
+    android:background="#ffffff"
+    android:orientation="vertical" >
 
+    <LinearLayout style="@style/HeaderArea" >
+
+        <TextView
+            android:id="@+id/overlay_lib_name"
+            style="@style/OverlayHeaderText" />
+    </LinearLayout>
+
+    <View style="@style/Separator" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp" >
+
+        <TextView
+            style="@style/OverlayTitle"
+            android:text="@string/title_open" />
+
+        <TextView
+            android:id="@+id/overlay_open_hours"
+            style="@style/OverlayText" />
+
+        <View style="@style/BigSpace" />
+
+        <TextView
+            style="@style/OverlayTitle"
+            android:text="@string/title_adr" />
+
+        <TextView
+            android:id="@+id/overlay_visit"
+            style="@style/OverlayText" />
+
+        <View style="@style/BigSpace" />
+
+        <TextView
+            style="@style/OverlayTitle"
+            android:text="@string/title_tel" />
+
+        <TextView
+            android:id="@+id/overlay_telephone"
+            style="@style/OverlayText" />
+
+        <View style="@style/BigSpace" />
+
+        <TextView
+            style="@style/OverlayTitle"
+            android:text="@string/title_email" />
+
+        <TextView
+            android:id="@+id/overlay_email"
+            style="@style/OverlayText" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="8dp"
+        android:background="#00bfff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp" >
+
+        <TextView
+            style="@style/OverlayTitle"
+            android:text="@string/title_postadr" />
+
+        <TextView
+            android:id="@+id/overlay_address"
+            style="@style/OverlayText" />
+
+        <TextView
+            android:id="@+id/overlay_post_info"
+            style="@style/OverlayText" />
+    </LinearLayout>
+
+</LinearLayout>

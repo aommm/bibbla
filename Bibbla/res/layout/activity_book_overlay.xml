@@ -20,8 +20,7 @@
    	xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:layout_marginTop="?android:attr/actionBarSize">
+    android:orientation="vertical" >
     
     <TextView android:id="@+id/overlay_book_title"
         android:layout_width="wrap_content"

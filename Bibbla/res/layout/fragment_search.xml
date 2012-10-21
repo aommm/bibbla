@@ -24,21 +24,38 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:orientation="horizontal" >
-	    <EditText android:id="@+id/edit_search"
-	        android:layout_weight="4"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:inputType="text"
-	        android:imeOptions="actionSearch"
-	        android:singleLine="true"
-	        android:hint="@string/edit_search" />
+
+        <FrameLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    	android:layout_weight="5"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content" >
+
+		    <EditText android:id="@+id/edit_search"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:inputType="text"
+		        android:imeOptions="actionSearch"
+		        android:singleLine="true"
+		        android:hint="@string/edit_search" />
+		    <ProgressBar
+		        android:id="@+id/progress_search"
+		        android:layout_gravity="center|right"
+		        style="@android:style/Widget.ProgressBar.Small"
+		        android:layout_marginRight="3dp"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:visibility="gone" />
+	    
+	    </FrameLayout>
+	    
 	    <Button
 	        android:id="@+id/button_search"
 	        android:layout_weight="1"
-	        android:layout_width="wrap_content"
+	        android:layout_width="0dip"
 	        android:layout_height="wrap_content"
 	        android:text="@string/button_search" 
-	        android:onClick="searchClicked"/>
+	        android:onClick="searchClicked" />
 	</LinearLayout>
 
     <FrameLayout android:id="@+id/list_container"

@@ -80,8 +80,8 @@ public class BookOverlayActivity extends SherlockActivity {
 
 		((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
 		
-		//Then get the rest from Gotlib's servers
-		Callback c = new Callback() {
+        //Then get the rest from Gotlib's servers
+        Callback c = new Callback() {
 			public void handleMessage(Message msg) {
 				BookOverlayActivity.this.setDetails(msg);
 			}

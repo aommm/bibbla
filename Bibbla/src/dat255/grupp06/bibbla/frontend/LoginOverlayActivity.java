@@ -31,6 +31,7 @@ public class LoginOverlayActivity extends SherlockActivity {
         setContentView(R.layout.activity_login_overlay);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
+		getSupportActionBar().hide();
 	}
 	
 	/**

@@ -97,12 +97,6 @@ public class DetailedViewJob extends Job {
 		// Prepare HTML for parsing.
 		Document html = response.parse();
 
-		// Save publisher.
-		Elements infoRows = html.select("div#recordinfo").select("td.bibInfoData");
-		if (infoRows.size() >=3 ) {
-			newBook.setPublisher(infoRows.get(2).text());
-		}
-		
 	    List<PhysicalBook> physicalBooks = new ArrayList<PhysicalBook>();
 	    Elements tableRows = html.select("table.bibItems").select("tr.bibItemsEntry");
 	    
@@ -155,6 +149,23 @@ public class DetailedViewJob extends Job {
 	    	}
 	    }
 	    
+		Elements table = html.select("table.bibDetail").first().select("tr");
+		for(int i=0;i<table.size();i++){
+			if( table.get(i).select("td.bibInfoLabel").text().equals((String) "Upphov")){
+				newBook.setAuthor(table.get(i).select("td.bibInfoData").text());
+				
+			}
+			if( table.get(i).select("td.bibInfoLabel").text().equals((String) "Titel")){
+				String[] temp =(table.get(i).select("td.bibInfoData").text().split("/"));
+				newBook.setName(temp[0]);
+			}
+			
+			if( table.get(i).select("td.bibInfoLabel").text().equals((String) "Utgivning")){
+				
+				newBook.setPublisher(table.get(i).select("td.bibInfoData").text());
+			}
+		}
+	    
 	    // Update newBook with this information.
 	    newBook.setPhysicalBooks(physicalBooks);
 	    newBook.setIsbn(isbn);
@@ -165,3 +176,4 @@ public class DetailedViewJob extends Job {
 	}
 
 }
+
