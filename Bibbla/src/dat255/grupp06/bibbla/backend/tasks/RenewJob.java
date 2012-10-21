@@ -17,36 +17,42 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.jsoup.Connection.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
+import org.jsoup.Connection.Method;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import dat255.grupp06.bibbla.backend.Session;
 import dat255.grupp06.bibbla.model.Book;
-import dat255.grupp06.bibbla.utils.*;
+import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.utils.CommonParsing;
 import dat255.grupp06.bibbla.utils.Error;
+import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Fetches a list of the user's currently loaned books.
  *
  * @author Niklas Logren
  */
-public class RenewJob {
+public class RenewJob extends AuthorizedJob {
 	private Session session;
 	private Message message;
+	
 	private List<Book> books;
-	private Response httpResponse;
 	private String userUrl;
 	
 	/**
 	 * Creates a new RenewJob,
 	 * which will try to renew all of the user's currently loaned books. 
 	 */
-	public RenewJob(Session session) {
+	public RenewJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.session = session;
 		this.message = new Message();
 	}
@@ -57,8 +63,9 @@ public class RenewJob {
 	 * 
 	 * Note: Assumes that all books has their renewId set!
 	 */
-	public RenewJob(Session session, List<Book> books) {
-		this(session);
+	public RenewJob(List<Book> books, Credentials credentials,
+			Session session) {
+		this(credentials, session);
 		this.books = books;
 	}
 	
@@ -68,8 +75,8 @@ public class RenewJob {
 	 * 
 	 * Note: Assumes that the book has its renewId set!
 	 */
-	public RenewJob(Session session, Book book) {
-		this(session);
+	public RenewJob(Book book, Credentials credentials, Session session) {
+		this(credentials, session);
 		books = new ArrayList<Book>();
 		books.add(book);
 	}
@@ -81,6 +88,7 @@ public class RenewJob {
 	 * 	their message attribute set. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** RenewJob: ");
 		try {
 			// Get user URL.
@@ -96,11 +104,11 @@ public class RenewJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: post our renewal");
-			postRenewal();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse the results");
-			parseResults();
+			parseResults(response);
 			System.out.println("Step 3 done! ***");		
 			
 		} catch (Exception e) {
@@ -110,15 +118,17 @@ public class RenewJob {
 		
 		return message;
 	}
-	
+
+	@Override
 	/**
 	 * POSTs the form which renews our books.
 	 * @throws Exception if connection failed,
 	 * 		the user isn't logged in, or if the server complained.  
 	 */
-	private void postRenewal() throws Exception {
+	protected Response connect() throws Exception {
 		
 	    // Prepare POST data.
+	    @SuppressWarnings("serial")
 	    Map<String,String> postData = new HashMap<String,String>() {{
 	    	
 	    	// No specified books? Renew everything.
@@ -137,12 +147,12 @@ public class RenewJob {
 	    }};
 	    
 	    // Send POST request to user url and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
-
+	    return r;
 	}
 	
 	/**
@@ -150,18 +160,15 @@ public class RenewJob {
 	 * 
 	 * @throws Exception if we're not logged in, or if parsing otherwise failed.
 	 */
-	private void parseResults() throws Exception {
+	private void parseResults(Response response) throws Exception {
 		
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
 	    	message.error = Error.LOGIN_NEEDED;
-	    	message.loggedIn = false;
 	    	throw new Exception("Not logged in");
-	    } else {
-	    	message.loggedIn = true;
 	    }
 	    
 	    // Just checking - font tags implies trouble.

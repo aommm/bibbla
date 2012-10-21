@@ -71,5 +71,16 @@
     <string name="my_reservations_heading">Mina reservationer</string>
     <string name="loans_list_error">Kunde inte hämta lånlistan</string>
     <string name="reservations_list_error">Kunde inte hämta listan med reservationer</string>
-
+    
+    <!-- Book overlay -->
+    <string name="button_reserve">Reservera</string>
+    
+     <!-- Library -->    
+    <string-array name="libNames">
+        <item>lib1</item>
+        <item>lib2</item>
+        <item>lib3</item>
+        <item/>
+    </string-array>
+    <string name="textSomething">Bibbla!!!</string>
 </resources>

@@ -24,18 +24,17 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import dat255.grupp06.bibbla.R;
-import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Library;
 
 /**
  * Custom ListAdapter for book search results.
- * @author arla
+ * @author Madeleine Appert
  */
-public class BookListAdapter extends BaseAdapter {
-	
-	private final List<Book> list;
+public class LibListAdapter extends BaseAdapter {
+
+	private final List<Library> list;
 	private final Activity activity;
 	private final boolean showAvailable;
 
@@ -46,11 +45,9 @@ public class BookListAdapter extends BaseAdapter {
 	 * @param list A list of books to present. 
 	 */
 	// TODO Bad style to pass activity?
-	@SuppressWarnings("unchecked")
-	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable) {
-		this.list = (list != null) ?
-				(List<Book>) ((ArrayList<Book>) list).clone() :
-					new ArrayList<Book>();
+	public LibListAdapter(Activity activity, List<Library> list, boolean showAvailable) {
+		// TODO Clone needed?
+		this.list = (List<Library>) ((ArrayList<Library>) list).clone();
 		this.activity = activity;
 		this.showAvailable = showAvailable;
 	}
@@ -90,28 +87,24 @@ public class BookListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Book book = list.get(position);
-		
+		Library lib = list.get(position);
+
 		View view;
-		
+
 		if(position < list.size()-1 || list.size() < 50) {
-	
+
 			view = activity.getLayoutInflater().inflate(
-					R.layout.list_item_book, parent, false);
-			((TextView) view.findViewById(R.id.search_result_title))
-				.setText(book.getName());
-			((TextView) view.findViewById(R.id.search_result_author))
-				.setText(book.getAuthor());
-			if (showAvailable) {
-				((ImageView) view.findViewById(R.id.search_result_available))
-					.setImageResource(book.getAvailable() > 0 ?
-						android.R.drawable.presence_online :
-						android.R.drawable.presence_busy);
-			}
-		} else {
+					R.layout.list_item_library, parent, false);
+			((TextView) view.findViewById(R.id.lib_name))
+								.setText(lib.getName());
+			((TextView) view.findViewById(R.id.lib_area))
+								.setText(lib.getArea());
+
+		} 
+		else {
 			view = activity.getLayoutInflater().inflate(R.layout.more_search_results, parent, false);
 		}
-		
+
 		return view;
 	}
 

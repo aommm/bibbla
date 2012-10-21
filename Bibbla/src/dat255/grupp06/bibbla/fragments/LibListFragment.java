@@ -1,4 +1,4 @@
-﻿/**
+/**
     This file is part of Bibbla.
 
     Bibbla is free software: you can redistribute it and/or modify
@@ -28,28 +28,34 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
-import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
-import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.frontend.LibraryOverlayActivity;
+import dat255.grupp06.bibbla.model.Library;
 
 /**
  * ListFragment that is used to display the search-results after a search.
  * 
- * @author Jonathan Orr�
+ * 
  *
  */
-public class SearchListFragment extends SherlockListFragment {
-	public final static String BOOK = "dat255.grupp06.bibbla.AUTHOR";
-	private ArrayList<Book> currentBooks;
-	private int currentPage;
-	private String lastSearch;
+public class LibListFragment extends SherlockListFragment {
+	public final static String LIB_NAME = 		"dat255.grupp06.bibbla.LIB_NAME";
+	public final static String LIB_ADDRESS = 	"dat255.grupp06.bibbla.LIB_ADDRESS";
+	public final static String LIB_POSTCODE = 	"dat255.grupp06.bibbla.LIB_POSTCODE";
+	public final static String LIB_AREA = 		"dat255.grupp06.bibbla.LIB_AREA";
+	public final static String LIB_PHONE = 		"dat255.grupp06.bibbla.LIB_PHONE";
+	public final static String LIB_VISIT =		"dat255.grupp06.bibbla.LIB_VISIT";
+	public final static String LIB_EMAIL =		"dat255.grupp06.bibbla.LIB_EMAIL";
+	public final static String LIB_OPENH = 		"dat255.grupp06.bibbla.LIB_OPENH";
+
+	private ArrayList<Library> allLibInfo;
+
 	
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
-        currentBooks = new ArrayList<Book>();
-        currentPage = 0;
+        allLibInfo = new ArrayList<Library>();
     }
 
     @Override
@@ -57,43 +63,29 @@ public class SearchListFragment extends SherlockListFragment {
      * When an item is clicked in the list this method is called
      */
     public void onListItemClick(ListView l, View v, int position, long id) {
-    	if(position < currentBooks.size()) {
-	    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
-	    	intent.putExtra(BOOK, currentBooks.get(position));
+    	if(position < allLibInfo.size()) {
+	    	Intent intent = new Intent(getSherlockActivity(), LibraryOverlayActivity.class);
+//	    	intent.putExtra(BOOK_AUTHOR, allLibInfo.get(position).getAuthor());
+//	    	intent.putExtra(BOOK_TITLE, allLibInfo.get(position).getName());
+	    	intent.putExtra(LIB_NAME, allLibInfo.get(position).getName());
 	    	startActivity(intent);
     	} else {
-    		currentPage++;
-    		((MainActivity) getActivity()).moreSearchResultsClicked(currentPage+1, lastSearch);
+//    		currentPage++;
+//    		((MainActivity) getActivity()).moreSearchResultsClicked(currentPage+1, lastSearch);
     	}
     }
     
     /**
      * Receives the search-results and swaps the contents in the list with them.
      */
-    public void updateList(List<Book> books) {
-    	//Adds a book to act as a placeholder for the 
-    	//"fetch more search results"-message
-    	currentBooks.clear();
-    	currentBooks.addAll(books);
-    	books.add(new Book());
+    public void updateList(List<Library> libs) {
+    	allLibInfo.clear();
+    	allLibInfo.addAll(libs);
+    	libs.add(new Library());
 
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
+    	ListAdapter adapter = new LibListAdapter(getSherlockActivity(), libs, true);
 
     	this.setListAdapter(adapter);
-    }
-    
-    public void appendList(List<Book> books) {
-    	int selection = currentBooks.size();
-    	currentBooks.addAll(books);
-    	currentBooks.add(new Book());
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), currentBooks, true);
-    	currentBooks.remove(currentBooks.size()-1);
-    	this.setListAdapter(adapter);
-    	this.setSelection(selection);
-    }
-    
-    public void setLastSearchString(String s) {
-    	lastSearch = s;
-    }
+    }    
 }
 

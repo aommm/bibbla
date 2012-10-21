@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,15 +30,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
@@ -56,7 +53,6 @@ import dat255.grupp06.bibbla.utils.Message;
 
 public class SearchFragment extends SherlockFragment {
 
-	Backend backend;
 	SearchListFragment listFragment;
 	EditText searchEdit;
 	Button searchButton;
@@ -145,7 +141,7 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Call backend search.
 		Log.d("Jonis", "searching..... on page    1");
-		backend.search(searchString, 0, c);
+		Backend.getBackend().search(searchString, 0, c);
 		listFragment.setLastSearchString(searchString);
 	}
 	
@@ -162,7 +158,7 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Call backend search.
 		Log.d("Jonis", "searching..... on page    "+page);
-		backend.search(searchString, page, c);
+		Backend.getBackend().search(searchString, page, c);
 	}
 	
 	/** Is called when backend searching is done.**/
@@ -212,9 +208,5 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Update list with titles (empty or not).
 		listFragment.appendList(books);
-	}
-
-	public void setBackend(Backend b) {
-		backend = b;
 	}
 }

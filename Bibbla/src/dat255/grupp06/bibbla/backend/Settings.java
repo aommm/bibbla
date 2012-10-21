@@ -17,19 +17,21 @@
 
 package dat255.grupp06.bibbla.backend;
 
+import java.io.Serializable;
+
+import dat255.grupp06.bibbla.model.Credentials;
+import dat255.grupp06.bibbla.model.CredentialsMissingException;
+
 /** A class for storing the user's settings.
  *
  *  TODO: Save to file system.
  */
-public class Settings {
+public class Settings implements Serializable {
 
+	private static final long serialVersionUID = 6558963742577293894L;
 	private String name, code, pin;
 
-	public Settings(String name, String code, String pin) {
-		this.name = name;
-		this.code = code;
-		this.pin = pin;
-	}
+	public Settings() {}
 	
 	/********************************
 	 * Getters/setters
@@ -60,6 +62,22 @@ public class Settings {
 	public void setPin(String pin) {
 		this.pin = pin;
 		// save to file system.		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws CredentialsMissingException if the credentials are empty or
+	 * don't follow the expected pattern.
+	 */
+	public Credentials getCredentials() throws CredentialsMissingException {
+		if (!Credentials.areLegalCredentials(name, code, pin))
+			throw new CredentialsMissingException("Credentials don't follow " +
+					"the required format");
+		if (name.length() * code.length() * pin.length() == 0)
+			throw new CredentialsMissingException("Some credentials are" +
+					"empty: ('"+name+"','"+code+"','"+pin+"')");
+		return new Credentials(name, code, pin);
 	}
 	
 }

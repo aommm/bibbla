@@ -27,20 +27,45 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import dat255.grupp06.bibbla.model.Book;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Reserves a book at the supplied library. 
  * 
  * @author Niklas Logren
  */
-public class ReserveJob {
+public class ReserveJob extends AuthorizedJob {
 
 	static final String KEY_LIBCODE = "locx00";
 	static final String KEY_YEAR = "needby_Year", VAL_YEAR = "Year";
 	static final String KEY_MONTH = "needby_Month", VAL_MONTH = "Month";
 	static final String KEY_DAY = "needby_Day", VAL_DAY = "Day";
+
+	private Book book;
+	private Session session;
+	private Message message;
+	private String libraryCode;
+	private Map<String, String> postData;
+	
+	/**
+	 * Creates a new ReserveJob which will try to reserve a book at the given library.
+	 * 
+	 * @param book - The book to reserve. Needs reserveUrl set.
+	 * @param libraryCode - The code of the library to send the book to. See library-codes.txt.
+	 * @param session - The session the book should be reserved using. User account is specified here.
+	 */
+	public ReserveJob(Book book, String libraryCode, Credentials credentials,
+			Session session) {
+		super(credentials, session);
+		this.book = book;
+		this.libraryCode = libraryCode;
+		this.session = session;
+		this.message = new Message();
+	}
 
 	/**
 	 * Performs the reservation.
@@ -50,20 +75,23 @@ public class ReserveJob {
 	 * detailing which library the book will be sent to.
 	 * If reservation failed, obj will be a string containing the error message.
 	 */
-	public static Message run(String reserveUrl, final String libraryCode, Map<String,String> cookies){
-		Message message = new Message();
-		
-		// Define hashMap containing post data.
-		Map<String, String> postData = createPostData(libraryCode);
+	public Message run(){
+		login();
+
+		postData = createPostData(libraryCode);
 
 		// Attempt reservation
-		Response reserveResponse;
+		Response reserveResponse = null;
 		try {
-			reserveResponse = postReservation(reserveUrl, libraryCode, cookies,
-					postData);
+			System.out.println("*** Step 1: Post our reservation");
+			reserveResponse = connect();
+			System.out.println("Step 1 done! ***");
+			System.out.println("*** Step 2: Parse the results");
+			parseResults(reserveResponse);
+			System.out.println("Step 2 done! ***");
 		} catch (IOException e) {
-			message.error = Error.RESERVE_FAILED;
-			return message;
+			message.error = (message.error!=null) ? message.error : Error.RESERVE_FAILED;
+			System.out.println("Failed: "+e.getMessage()+" ***");
 		}
 		// Assert success
 		Message parseReport = parseResults(reserveResponse);
@@ -90,18 +118,17 @@ public class ReserveJob {
 		return postData;
 	}
 	
+	@Override
 	/**
 	 * POSTs the reservation, and saves the response.
 	 * @throws IOException if connection failed.
 	 */
-	static Response postReservation(String reserveUrl, final String
-			libraryCode, Map<String,String> cookies, Map<String,String>
-			postData) throws IOException {
+	protected Response connect() throws IOException {
 	    
 	    // Send request and return response.
-	    Response httpResponse = Jsoup.connect(reserveUrl)
+	    Response httpResponse = Jsoup.connect(book.getReserveUrl())
 			    .method(Method.POST)
-			    .cookies(cookies)
+			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
 	    return httpResponse;
@@ -120,14 +147,7 @@ public class ReserveJob {
 			parseFailedMessage.error = Error.RESERVE_FAILED;
 			return parseFailedMessage;
 		}
-
-		// Font tag implies error.
-		if (div.getElementsByTag("font").size() > 0) {
-			Message failedMessage = new Message();
-			failedMessage.error = Error.RESERVE_FAILED;
-			failedMessage.obj = div.getElementsByTag("font").first().text();
-			return failedMessage;
-		} else {
+		else {
 			// We're all set! Return which library the book will arrive in.
 			Message successMessage = new Message();
 			successMessage.obj = div.getElementsByTag("b").first().text();

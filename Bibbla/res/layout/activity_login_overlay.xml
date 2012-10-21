@@ -19,7 +19,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:layout_marginTop="?android:attr/actionBarSize" >
 
     <!-- Log in header -->
     <TextView android:id="@+id/login_heading"
@@ -52,13 +53,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/login_pin_hint"
-        android:inputType="number" />
+        android:inputType="number|phone" />
     
     <!-- Submit -->
     <Button android:id="@+id/login_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="login"
+        android:onClick="submit"
         android:text="@string/login_send_text"/>
     
 </LinearLayout>

@@ -18,31 +18,52 @@
 package dat255.grupp06.bibbla.backend.tasks;
 
 import junit.framework.TestCase;
-import dat255.grupp06.bibbla.SessionFactory;
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.CredentialsFactory;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
-
+/**
+ * Tests LoginJob, by trying to log in with both bad and good credentials. 
+ * 
+ * @author Niklas Logren
+ */
 public class LoginJobTest extends TestCase {
-	Session session;
+	Credentials credentials;
 	
 	@Override
 	public void setUp() {
-		// Get a new Session object.
-		session = SessionFactory.getSession();
+		// Get a new Credentials object.
+		credentials = CredentialsFactory.getCredentials();
 	}
 	
-	public void testRun() {
+	/**
+	 * Tries to login with wrong login details.
+	 */
+	public void testBogusCredentials() {
+		Credentials bogusCredentials = new Credentials("a","b","c");
+		Session session = new Session();
+		LoginJob loginJob = new LoginJob(bogusCredentials, session);
+		Message result = loginJob.run();
 		
-		// Run tests only if we have login credentials. Otherwise, auto-succeed.
-		if (session.getHasCredentials()) {
-			LoginJob loginJob = new LoginJob(session);
+		assertNotNull(result.error);
+		assertFalse(session.isActive());
+	}
+	
+	/**
+	 * Tries to login with correct login details.
+	 */
+	public void testNormalCredentials() {
+		
+		// Run test only if we have login credentials. Otherwise, auto-succeed.
+		if (credentials != null) {
+			Session session = new Session();
+			LoginJob loginJob = new LoginJob(credentials, session);
 			Message result = loginJob.run();
-			assertTrue(result.loggedIn);			
+			
+			assertTrue(session.isActive());
+			assertNull(result.error);
 		}
-		
- 
 	}
-	
 
 }

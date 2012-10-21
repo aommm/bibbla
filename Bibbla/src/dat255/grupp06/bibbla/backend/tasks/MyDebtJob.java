@@ -22,22 +22,20 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import dat255.grupp06.bibbla.backend.Session;
+import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.utils.Error;
 import dat255.grupp06.bibbla.utils.Message;
+import dat255.grupp06.bibbla.utils.Session;
 
 /**
  * Fetches the user's current debt.
  *
  * @author Niklas Logren
  */
-public class MyDebtJob {
-	private Session session;
+public class MyDebtJob extends AuthorizedJob {
 	private Message message;
 	
-	private Response httpResponse;
 	private String userUrl;
-	
 	private Integer debt;
 	
 	/**
@@ -45,8 +43,8 @@ public class MyDebtJob {
 	 * 
 	 * @param session - the session to use. Is required since this is for logged-in users only.
 	 */
-	public MyDebtJob(Session session) {
-		this.session = session;
+	public MyDebtJob(Credentials credentials, Session session) {
+		super(credentials, session);
 		this.message = new Message();
 	}
 	
@@ -55,6 +53,7 @@ public class MyDebtJob {
 	 * @returns a float, which is the user's current total debt. 
 	 */
 	public Message run()  {
+		login();
 		System.out.println("****** MyDebtJob: ");
 		try {
 			// Get user URL.
@@ -68,11 +67,11 @@ public class MyDebtJob {
 			System.out.println("Step 1 done! ***");
 			
 			System.out.println("*** Step 2: fetch user page");
-			fetchUserPage();
+			Response response = connectAndRetry();
 			System.out.println("Step 2 done! ***");
 			
 			System.out.println("*** Step 3: parse debt");
-			parseDebt();
+			parseDebt(response);
 			System.out.println("Step 3 done! ***");
 			
 		} catch (Exception e) {
@@ -83,18 +82,20 @@ public class MyDebtJob {
 		return message;
 	}
 	
+	@Override
 	/**
 	 * Connects to gotlib, and downloads the HTML of the user's profile page.
 	 * 
 	 * @throws Exception - If http connection fails.
 	 */
-	private void fetchUserPage() throws Exception {
+	protected Response connect() throws Exception {
 
 	    // Send GET request and save response.
-	    httpResponse = Jsoup.connect(userUrl)
+	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.GET)
 			    .cookies(session.getCookies())
-			    .execute();   
+			    .execute();
+	    return r;
 	}
 	
 	/**
@@ -102,14 +103,13 @@ public class MyDebtJob {
 	 * 
 	 * @throws Exception if we're not logged in, or if parsing otherwise failed. 
 	 */
-	private void parseDebt() throws Exception {
+	private void parseDebt(Response response) throws Exception {
 	    // Prepare parsing.
-	    Document html = httpResponse.parse();
+	    Document html = response.parse();
 
 	    // Are we still logged in?
 	    if (html.select("div.loginPage").size()>0) {
 	    	message.error = Error.LOGIN_NEEDED;
-	    	message.loggedIn = false;
 	    	throw new Exception("Not logged in");
 	    }
 	    
