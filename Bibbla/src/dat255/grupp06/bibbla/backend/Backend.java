@@ -39,6 +39,7 @@ import dat255.grupp06.bibbla.backend.tasks.UserNameJob;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
+import dat255.grupp06.bibbla.model.Library;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Session;
@@ -64,6 +65,7 @@ public final class Backend {
 	= new HashMap<Entry<String, Integer>,List<Book>>();
 	private List<Book> reservations;
 	private List<Book> loanedBooks;
+	private List<Library> libraries;
 	private Integer debt;
 	
 	/**
@@ -549,9 +551,22 @@ public final class Backend {
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void libInfo( final Callback frontendCallback) {
+	public void libInfo(final Callback frontendCallback, boolean refresh) {
+		if(libraries != null && !refresh){
+			Message message = new Message();
+			message.obj = libraries;
+			frontendCallback.handleMessage(message);
+		}
+		else{
+			Callback backendCallback = new Callback(){
+
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchLibInfoDone(message ,frontendCallback);	
+				}
+			};
 		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
+		Task task = new Task(backendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
@@ -562,5 +577,11 @@ public final class Backend {
 		};
 		// Start the task.
 		task.execute();
+		}
+	}
+
+	private void fetchLibInfoDone(Message message, Callback callback) {
+		libraries = (List<Library>) message.obj;
+		callback.handleMessage(message);
 	}
 }
