@@ -20,8 +20,10 @@ package dat255.grupp06.bibbla.frontend;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
 
@@ -37,12 +39,21 @@ public class LibraryOverlayActivity extends SherlockActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 		Log.d("","onCreate done");
-    	setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
+    	//Sets up some graphical stuff
+    	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library_overlay);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().hide();
+
+
+//    	setTheme(com.actionbarsherlock.R.style.Sherlock___Theme_Light); //Used for theme switching in samples
+//        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_library_overlay);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        getSupportActionBar().setDisplayShowHomeEnabled(false);
         
         Intent intent = getIntent();
 		Log.d("","get the intent");

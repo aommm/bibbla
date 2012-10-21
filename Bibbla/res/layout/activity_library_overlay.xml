@@ -20,13 +20,141 @@
    	xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-<!--     <TextView android:id="@+id/overlay_book_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" /> -->
-    <TextView android:id="@+id/overlay_lib_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    android:orientation="vertical"
+        android:background="#a7a9ac"
+        >
+ 
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+       
+        android:background="#1e1e1e"
+        android:orientation="vertical" >
+        <TextView
+        android:id="@+id/overlay_lib_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#f0641e"
+        android:textSize="27dp" />
+    </LinearLayout>
+<View
+    android:layout_width="fill_parent"
+    android:layout_height="3dp"
+    android:background="#ffffff"/>
+
     
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+                android:layout_weight="1"
+        android:orientation="vertical" 
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Öppettider"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+        android:id="@+id/overlay_open_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="openhours"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Besöksadress"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/overlay_visit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Telefonnummer"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/overlay_telephone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="E-post"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/overlay_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+<View
+    android:layout_width="fill_parent"
+    android:layout_height="3dp"
+    android:background="#ffffff"
+    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+                       android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="16dp" >
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Postadress"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/overlay_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/overlay_post_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1e1e1e"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
 </LinearLayout>
 
