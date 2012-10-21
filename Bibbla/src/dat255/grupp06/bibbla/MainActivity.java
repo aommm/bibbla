@@ -79,15 +79,15 @@ ActionBar.TabListener, LoginCallbackHandler {
         
         //Set tab properties
         searchTab.setContentDescription("Sök");
-        searchTab.setIcon(android.R.drawable.ic_menu_search);
+        searchTab.setIcon(R.drawable.search_icon);
         searchTab.setTabListener(this);
         
         profileTab.setContentDescription("Lån");
-        profileTab.setIcon(android.R.drawable.ic_menu_share);
+        profileTab.setIcon(R.drawable.profile_icon);
         profileTab.setTabListener(this);
    
         libraryTab.setContentDescription("Bibliotek");
-        libraryTab.setIcon(android.R.drawable.ic_menu_directions);
+        libraryTab.setIcon(R.drawable.lib_icon);
         libraryTab.setTabListener(this);
         
         //Add the tabs to the action bar
