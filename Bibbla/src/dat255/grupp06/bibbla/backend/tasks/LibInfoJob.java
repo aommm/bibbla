@@ -20,11 +20,12 @@ import dat255.grupp06.bibbla.utils.Message;
  * A class that collects all the necessary information about the available libraries.
  *
  */
-public class LibInfoJob {
+public class LibInfoJob extends Job {
 
 	private Message message = new Message();
 	private Document resultsDocument;
 	private List<Library> results = new ArrayList<Library>();
+	
 	private String url1 = "http://goteborg.se/wps/portal/invanare/bibliotek/hit" +
 	"ta-biblioteken/!ut/p/b1/jYxdcoIwFEbX0g2QS5NI8hgcgsgtKKAVXhirnQx_Yp22FFZfXI" +
 	"DTfm_fzDmHFCS3n0FKxkAyciDF5fhdmeNn1V-O7f0Xi3Jjr7fCtRXEvtQQZOFGRyGKbQQzkM_A" +
@@ -47,18 +48,14 @@ public class LibInfoJob {
 	 * Creates a new LibInfoJob, which returns the first page of the search results.
 	 */
 
-	public LibInfoJob(){
+	public LibInfoJob() {
 		System.out.print("\n****** LibInfoJobcreated\n");
-
 	}
 
-	public Message run(){
+	public Message run() {
 
 		try {
-			step1(url1);
-			step2();
-			step1(url2);
-			step2();
+			connectAndRetry();
 		}
 		catch (Exception e) {
 			System.out.print("failed: "+e.getMessage()+" *** \n");
@@ -67,6 +64,16 @@ public class LibInfoJob {
 		return message;
 	}
 
+	@Override
+	protected Response connect() throws Exception {
+		step1(url1);
+		step2();
+		step1(url2);
+		step2();
+		
+		return null;
+	}
+	
 	private void step1(String url) throws Exception {
 		Response response = Jsoup.connect(url)
 		.method(Method.GET)
@@ -76,11 +83,16 @@ public class LibInfoJob {
 
 	}
 
-	private void step2() {		
-		Element searchResult = resultsDocument.select("ul.unit-list").first();// resultsDocument.select("li.odd js-unit"); //odd js-unit??
+	/**
+	 * Returns the list of Libraries that the class has parsed from the internet.
+	 * @return	A list of Library objects.
+	 */
+	private void step2() {
+		Element searchResult = resultsDocument.select("ul.unit-list").first();
 
-			Elements children = searchResult.children();
-		for(Element e : children){
+		Elements children = searchResult.children();
+		
+		for(Element e : children) {
 
 			Library library = new Library();
 
@@ -143,10 +155,5 @@ public class LibInfoJob {
 
 		message.obj = results;
 	}
-		
-	/**
-	 * Returns the list of Libraries that the class has parsed from the internet.
-	 * @return	A list of Library objects.
-	 */
 
 }

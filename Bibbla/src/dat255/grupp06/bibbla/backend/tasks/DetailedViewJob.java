@@ -165,3 +165,4 @@ public class DetailedViewJob extends Job {
 	}
 
 }
+
