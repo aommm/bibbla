@@ -13,7 +13,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,25 +23,14 @@
     android:background="#ffffff"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#1e1e1e"
-        android:orientation="vertical" >
+    <LinearLayout style="@style/HeaderArea" >
 
         <TextView
             android:id="@+id/overlay_lib_name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="#f0641e"
-            android:textSize="27dp" />
+            style="@style/OverlayHeaderText" />
     </LinearLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="8dp"
-        android:background="#00bfff" />
+    <View style="@style/Separator" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,80 +39,42 @@
         android:padding="16dp" >
 
         <TextView
-            android:id="@+id/title_open"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_open"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e"
-            android:textStyle="bold" />
+            style="@style/OverlayTitle"
+            android:text="@string/title_open" />
 
         <TextView
             android:id="@+id/overlay_open_hours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e" />
+            style="@style/OverlayText" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="10dp" />
+        <View style="@style/BigSpace" />
 
         <TextView
-            android:id="@+id/title_adr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_adr"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e"
-            android:textStyle="bold" />
+            style="@style/OverlayTitle"
+            android:text="@string/title_adr" />
 
         <TextView
             android:id="@+id/overlay_visit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e" />
+            style="@style/OverlayText" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="10dp" />
+        <View style="@style/BigSpace" />
 
         <TextView
-            android:id="@+id/title_tel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_tel"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e"
-            android:textStyle="bold" />
+            style="@style/OverlayTitle"
+            android:text="@string/title_tel" />
 
         <TextView
             android:id="@+id/overlay_telephone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e" />
+            style="@style/OverlayText" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="10dp" />
+        <View style="@style/BigSpace" />
 
         <TextView
-            android:id="@+id/title_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_email"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e"
-            android:textStyle="bold" />
+            style="@style/OverlayTitle"
+            android:text="@string/title_email" />
 
         <TextView
             android:id="@+id/overlay_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e" />
+            style="@style/OverlayText" />
 
         <View
             android:layout_width="fill_parent"
@@ -142,27 +93,16 @@
         android:padding="16dp" >
 
         <TextView
-            android:id="@+id/title_postadr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_postadr"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e"
-            android:textStyle="bold" />
+            style="@style/OverlayTitle"
+            android:text="@string/title_postadr" />
 
         <TextView
             android:id="@+id/overlay_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e" />
+            style="@style/OverlayText" />
 
         <TextView
             android:id="@+id/overlay_post_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#1e1e1e" />
+            style="@style/OverlayText" />
     </LinearLayout>
 
 </LinearLayout>
