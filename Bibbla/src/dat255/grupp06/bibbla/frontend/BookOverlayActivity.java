@@ -78,6 +78,8 @@ public class BookOverlayActivity extends SherlockActivity {
 		isReserved = intent.getBooleanExtra(BookListFragment.RESERVED, false);
 		isLoaned = intent.getBooleanExtra(BookListFragment.LOANED, false);
 
+		((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
+		
 		//Then get the rest from Gotlib's servers
 		Callback c = new Callback() {
 			public void handleMessage(Message msg) {
@@ -170,6 +172,8 @@ public class BookOverlayActivity extends SherlockActivity {
 				setSupportProgressBarIndeterminateVisibility(false);
 			}
 		
+			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.VISIBLE);
+			
 		}
 	}
 
