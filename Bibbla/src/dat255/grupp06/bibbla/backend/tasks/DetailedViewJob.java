@@ -55,7 +55,12 @@ public class DetailedViewJob extends Job {
 	 * @returns a new Book, containing the additional information present in its detailed view.
 	 */
 	public Message run(){
-		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			System.out.print("\n****** DetailedViewJob\n");
 			System.out.print("* step 1: fetch book details... ");

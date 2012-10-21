@@ -17,7 +17,10 @@
 
 package dat255.grupp06.bibbla.backend;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dat255.grupp06.bibbla.backend.tasks.DetailedViewJob;
 import dat255.grupp06.bibbla.backend.tasks.LibInfoJob;
@@ -34,6 +37,7 @@ import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
 import dat255.grupp06.bibbla.utils.Callback;
+import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Session;
 
 /**
@@ -49,6 +53,10 @@ public final class Backend {
 	private Settings settings;
 	private Session session;
 	private static Backend backendObject;
+	
+	private Map<String,Book> detailedViews = new HashMap<String, Book>();
+	private List<Book> reservations = new ArrayList<Book>();
+	private List<Book> loanedBooks = new ArrayList<Book>();
 	
 	/**
 	 * Creates a new instance of our Backend.
@@ -132,19 +140,40 @@ public final class Backend {
 	 *  Fetches the DetailedView of the supplied book.
 	 *  Sends a new book with all the additional information to the callback.
 	 */
-	public void fetchDetailedView(final Book book, final Callback frontendCallback) {
-		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
-			@Override
-			// The code that's run in the Task (on new thread).
-			protected Void doInBackground(String... params) {
-				DetailedViewJob job = new DetailedViewJob(book);
-				message = job.run();
-				return null;
-			}
-		};
-		// Start the task.
-		task.execute();
+	public void fetchDetailedView(final Book book, final Callback frontendCallback, boolean refresh) {
+		if (detailedViews.containsKey(book.getUrl()) && !refresh) {
+			Message message = new Message();
+			message.obj = detailedViews.get(book.getUrl());
+			frontendCallback.handleMessage(message);
+		}
+		else {
+			
+			Callback backendCallback = new Callback() {
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchDetailedViewDone(message, frontendCallback);
+				}	
+			};
+			
+			// Create a new Task and define its body.
+			Task task = new Task(backendCallback) {
+				@Override
+				// The code that's run in the Task (on new thread).
+				protected Void doInBackground(String... params) {
+					DetailedViewJob job = new DetailedViewJob(book);
+					message = job.run();
+					return null;
+				}
+			};
+			// Start the task.
+			task.execute();
+		}
+	}
+	
+	public void fetchDetailedViewDone(Message message, Callback callback) {
+
+		detailedViews.put(((Book) message.obj).getUrl() ,(Book) message.obj);
+		callback.handleMessage(message);
 	}
 	
 	/**
@@ -153,11 +182,26 @@ public final class Backend {
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void fetchReservations(final Callback frontendCallback)
+	public void fetchReservations(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
+		
+		if (!refresh) {
+			Message message = new Message();
+			message.obj = reservations;
+			frontendCallback.handleMessage(message);
+		}
+		else{
+			Callback backendCallback = new Callback(){
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchReseravationsDone(message, frontendCallback);
+				}
+				
+			};
+		
 		final MyReservationsJob job = new MyReservationsJob(
 				settings.getCredentials(), session);
-		Task task = new Task(frontendCallback) {
+		Task task = new Task(backendCallback) {
 			@Override
 			protected Void doInBackground(String... arg0) {
 				message = job.run();
@@ -165,6 +209,13 @@ public final class Backend {
 			}
 		};
 		task.execute();
+		}
+	}
+	
+	public void fetchReseravationsDone(Message message, Callback callback){
+		reservations = (List<Book>) message.obj;
+		callback.handleMessage(message);
+		
 	}
 
 	/**
@@ -172,11 +223,24 @@ public final class Backend {
 	 *  
 	 *  @param frontendCallback - the callback object which will be called when searching is done.
 	 */
-	public void fetchLoans(final Callback frontendCallback)
+	public void fetchLoans(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
+		if (!refresh) {
+			Message message = new Message();
+			message.obj = loanedBooks;
+			frontendCallback.handleMessage(message);
+		}
+		else{
+			Callback backendCallback = new Callback(){
+				@Override
+				public void handleMessage(Message message) {
+					Backend.this.fetchLoanedBooksDone(message, frontendCallback);
+				}
+				
+			};
 		final MyBooksJob job = new MyBooksJob(settings.getCredentials(), session);
 		// Create a new Task and define its body.
-		Task task = new Task(frontendCallback) {
+		Task task = new Task(backendCallback) {
 			@Override
 			// The code that's run in the Task (on new thread).
 			protected Void doInBackground(String... params) {
@@ -186,6 +250,12 @@ public final class Backend {
 		};
 		// Start the task.
 		task.execute();
+		}
+	}
+	
+	public void fetchLoanedBooksDone(Message message, Callback callback){
+		loanedBooks = (List<Book>) message.obj;
+		callback.handleMessage(message);
 	}
 
 	/**
