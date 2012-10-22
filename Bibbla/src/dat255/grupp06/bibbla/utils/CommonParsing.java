@@ -33,7 +33,7 @@ import dat255.grupp06.bibbla.model.PhysicalBook;
  */
 public class CommonParsing {
 
-	/**
+	/**f
 	 * Parses the HTML from the "my loans"-view of gotlib.
 	 * 
 	 * @param rows - The table rows as parsed by Jsoup. Should be <tr class="trpatFuncEntry" ...> .
@@ -124,7 +124,7 @@ public class CommonParsing {
 	    	}
 	    	book.setName(nameAndAuthor[0]);
 	    	book.setAuthor(nameAndAuthor[1]);
-	    	book.setUrl(row.select("td.patFuncTitle").first().attr("abs:href"));
+	    	book.setUrl(row.select("td.patFuncTitle").first().select("a").first().attr("abs:href"));
 	    	if (parseReservations) {
 	    		book.setUnreserveId(row.select("td.patFuncMark").first().getElementsByTag("input").first().attr("name"));
 	    		if (row.select("td.patFuncFreeze").first().getElementsByTag("input").first() != null)

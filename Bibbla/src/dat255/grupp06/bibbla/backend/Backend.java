@@ -102,6 +102,13 @@ public final class Backend {
 	throws CredentialsMissingException {
 		fetchUserDebt(frontendCallback, false);
 	}
+	
+	/**
+	 * Returns the logged in state of the backend.
+	 */
+	public boolean isLoggedIn() {
+		return session.isActive();
+	}
 
 	/**
 	 *  Starts fetching the user's current debt. Reports results using callback.

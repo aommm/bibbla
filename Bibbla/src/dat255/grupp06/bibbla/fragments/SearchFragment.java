@@ -143,7 +143,6 @@ public class SearchFragment extends SherlockFragment {
 		};
 		
 		// Call backend search.
-		Log.d("Jonis", "searching..... on page    1");
 		Backend.getBackend().search(searchString, 0, c);
 		listFragment.setLastSearchString(searchString);
 	}
@@ -177,7 +176,7 @@ public class SearchFragment extends SherlockFragment {
 			Toast.makeText(getSherlockActivity().getApplicationContext(), "Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
 			return;
 		}
-		// Convert results to List<Book>.  
+		// Convert results to ArrayList<Book>.  
 		ArrayList<Book> books = (ArrayList<Book>) msg.obj;
 				
 		// Did we get no results? 

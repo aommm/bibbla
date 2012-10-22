@@ -175,11 +175,6 @@ public class RenewJobTest extends TestCase {
 					// the book needs to have its error set as well.
 					assertTrue(firstResultBooks.get(0).getError());
 				}
-				
-				// Second run: Everything should have failed.
-				assertTrue(secondResultBooks.get(0).getError());
-				assertNotNull(secondResultBooks.get(0).getMessage());
-				assertNotNull(secondResult.error);
 			}
 		}
 	}

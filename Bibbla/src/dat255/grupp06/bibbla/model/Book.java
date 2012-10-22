@@ -27,7 +27,7 @@ import java.util.List;
  *  TODO: Needs many more properties and methods. Atm just for testing.
  *  @author Niklas Logren
  */ 
-public class Book implements Serializable{
+public class Book implements Serializable {
 	
 	private String name;
 	private String author;
@@ -162,9 +162,12 @@ public class Book implements Serializable{
 		newBook.type = type;
 		newBook.reserveUrl = reserveUrl;
 		newBook.renewId = renewId;
+		newBook.unreserveId = unreserveId;
+		newBook.freezeId = freezeId;
 		newBook.publisher = publisher;
 		newBook.physicalDescription = physicalDescription;
 		newBook.notes = notes;
+		newBook.isbn = isbn;
 		
 		List<PhysicalBook> newPhysicalBooks = new ArrayList<PhysicalBook>();
 		for(PhysicalBook pb : physicalBooks ) {

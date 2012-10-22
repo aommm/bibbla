@@ -52,11 +52,11 @@
         style="@style/Heading"
         android:text="@string/my_loans_heading"/>
     
-    <ListView android:id="@+id/loans_list"
+    <LinearLayout android:id="@+id/loans_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-    </ListView>
+    </LinearLayout>
     
     <!-- My reservations -->
     <TextView
@@ -64,10 +64,10 @@
         style="@style/Heading"
         android:text="@string/my_reservations_heading"/>
     
-    <ListView android:id="@+id/reservations_list"
+    <LinearLayout android:id="@+id/reservations_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-    </ListView>
+    </LinearLayout>
 	
 </LinearLayout>
