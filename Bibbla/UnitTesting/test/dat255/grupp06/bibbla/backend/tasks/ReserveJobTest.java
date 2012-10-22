@@ -52,10 +52,6 @@ public class ReserveJobTest extends TestCase {
 	public static final Credentials CREDENTIALS =
 			CredentialsFactory.getCredentials();
 	
-	public ReserveJobTest() {
-		TEST_BOOK.setUnreserveId("canceli4058195x01");
-	}
-	
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
