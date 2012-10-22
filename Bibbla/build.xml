@@ -4,35 +4,26 @@
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
-			  
 <project basedir="." default="build" name="Bibbla">
     <property environment="env"/>
     <property name="UnitTesting.location" value="UnitTesting"/>
+    <property name="ECLIPSE_HOME" value="../../../../../../usr/lib/eclipse"/>
     <property name="ActionBarSherlock.location" value="../Libraries/ActionBarSherlock/library"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
-	
-	<!--               -->
-	<!-- Define paths  -->
-	<!--               -->
     <path id="Android Dependencies.libraryclasspath">
         <pathelement location="../Libraries/ActionBarSherlock/library/bin/actionbarsherlock.jar"/>
         <pathelement location="libs/jsoup-1.7.1.jar"/>
         <pathelement location="../Libraries/ActionBarSherlock/library/libs/android-support-v4.jar"/>
     </path>
     <path id="Android 4.1.libraryclasspath">
-        <pathelement location="D:/android-sdk/platforms/android-16/android.jar"/>
+        <pathelement location="../../../../dev/android-sdk-linux/platforms/android-16/android.jar"/>
     </path>
-	<path id="JUnit 3.libraryclasspath">
-		<pathelement location="${ECLIPSE_HOME}/plugins/org.junit_3.8.2.v3_8_2_v20100427-1100/junit.jar"/> 
-		<pathelement location="${ECLIPSE_HOME}/plugins/org.apache.ant_1.8.3.v20120321-1730/lib/ant-junit.jar"/>
-		<pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
-	</path>
     <path id="ActionBarSherlock.classpath">
-        <pathelement location="${ActionBarSherlock.location}/bin/classes"/>
         <path refid="Android 4.1.libraryclasspath"/>
         <path refid="Android Dependencies.libraryclasspath"/>
+        <pathelement location="${ActionBarSherlock.location}/bin/classes"/>
     </path>
     <path id="Bibbla.classpath">
         <path refid="Android Dependencies.libraryclasspath"/>
@@ -40,38 +31,28 @@
         <path refid="ActionBarSherlock.classpath"/>
         <pathelement location="bin/classes"/>
     </path>
-	
-	<!--                 -->
-	<!-- Define targets  -->
-	<!--                 -->
-	
-	<!-- Init: Create bin folder etc -->
     <target name="init">
         <mkdir dir="bin/classes"/>
         <copy includeemptydirs="false" todir="bin/classes">
             <fileset dir="src">
+                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin/classes">
             <fileset dir="gen">
+                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
     </target>
-	
-	<!-- What happens when you clean -->
     <target name="clean">
         <delete dir="bin/classes"/>
     </target>
-	
-	<!-- What happens when you cleanall -->
-    <target name="cleanall" depends="clean">
+    <target depends="clean" name="cleanall">
         <ant antfile="build.xml" dir="${ActionBarSherlock.location}" inheritAll="false" target="clean"/>
     </target>
-	
-    <target name="build" depends="build-subprojects,build-project"/>
-	
+    <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects">
         <ant antfile="build.xml" dir="${ActionBarSherlock.location}" inheritAll="false" target="build-project">
             <propertyset>
@@ -79,23 +60,18 @@
             </propertyset>
         </ant>
     </target>
-	
-    <target name="build-project" depends="init">
+    <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin/classes" includeantruntime="false" source="${source}" target="${target}">
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin/classes" source="${source}" target="${target}">
             <src path="src"/>
+            <classpath refid="Bibbla.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin/classes" source="${source}" target="${target}">
             <src path="gen"/>
             <classpath refid="Bibbla.classpath"/>
         </javac>
     </target>
-	
-    <target name="build-refprojects" description="Build all projects which reference this project. Useful to propagate changes." >
-        <ant antfile="build.xml" dir="${BackendDebugging.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${BackendDebugging.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
         <ant antfile="build.xml" dir="${UnitTesting.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${UnitTesting.location}" inheritAll="false" target="build">
             <propertyset>
@@ -103,8 +79,7 @@
             </propertyset>
         </ant>
     </target>
-	
-    <target name="init-eclipse-compiler" description="copy Eclipse compiler jars to ant lib directory">
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
         <copy todir="${ant.library.dir}">
             <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
         </copy>
@@ -113,10 +88,8 @@
             <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
         </unzip>
     </target>
-	
-    <target name="build-eclipse-compiler" description="compile project with Eclipse compiler">
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-	
 </project>
