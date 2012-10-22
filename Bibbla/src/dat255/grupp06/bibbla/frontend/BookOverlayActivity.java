@@ -84,16 +84,23 @@ public class BookOverlayActivity extends SherlockActivity {
 		} else if(isLoaned) {
 			((Button)findViewById(R.id.button_reserve_book)).setHint("Förläng lån");
 			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
+		} else if(!Backend.getBackend().isLoggedIn()) {
+			((Button)findViewById(R.id.button_reserve_book)).setVisibility(Button.INVISIBLE);
+			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
 		}
 		
 		//Then get the rest from Gotlib's servers
-	    Callback c = new Callback() {
-			public void handleMessage(Message msg) {
-				BookOverlayActivity.this.setDetails(msg);
-			}
-		};
+	    if(!isReserved && !isLoaned) {
+			Callback c = new Callback() {
+				public void handleMessage(Message msg) {
+					BookOverlayActivity.this.setDetails(msg);
+				}
+			};
+	    
+			Backend.getBackend().fetchDetailedView(book, c);
+	    }
 		
-		Backend.getBackend().fetchDetailedView(book, c);
+		
 	}
 
 	/**
@@ -116,7 +123,7 @@ public class BookOverlayActivity extends SherlockActivity {
 	
 	public void renewLoanDone(Message msg) {
 		if(msg.error == null) {
-		((TextView)findViewById(R.id.text_reserve_book)).setText("Lånet är längre än förut?!");
+		((TextView)findViewById(R.id.text_reserve_book)).setText("Lånet är förlängt!");
 		setSupportProgressBarIndeterminateVisibility(false);
 		} else {
 			Log.d("Jonis", msg.error.toString());
