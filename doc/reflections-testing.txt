@@ -1,3 +1,6 @@
+Reflections-testing.txt
+Logged-in testing
+----
 When it came to testing, we had a problem.
 
 Much of our code was functionality for logged-in users only, and if we were to have high test coverage (a percentage of how much of our code that had tests), we would have to test this logged-in code as well. The problem was: we used our own personal details while developing.
@@ -7,4 +10,25 @@ Obviously, we couldn't add these to our git repo. Tests should ideally pass for 
 * Write tests which if no login credentials were present, passed automatically.
 * Write our own bogus server, which simulated gotlib and returned the expected HTML.
 
-We chose option #1. We realised that writing a server component solely for testing would be a bad use of our time. We're going to signal clearly that login details are needed to run most of the tests fully, to avoid confusion. We can now focus on implementing features and write good tests, this last week of the course. We will still be able to run the tests to verify that our code is working properly, and that's what's most important.
+We chose option #1. We realised that writing a server component solely for testing would be a bad use of our time. We're signal clearly that login details are needed to run most of the tests fully, to avoid confusion. We have been focusing on implementing features and writing good tests, this last week of the course. We can stll run the tests to verify that our code is working properly, and that's what's most important.
+
+
+Frontend testing
+----
+We debated whether we should write frontend tests using Robotium or not, but we decided not to. Our reasoning goes something like this: The backend is the part of our program which is most likely to go wrong, so it's the one most in need of tests. The Gothenburg Library can change their website at any time without warning, so having tests which can verify that everything works as intended, back-end wise, is very appreciated.
+
+Also, finding frontend faults is relatively easy while just trying out the app, compared to finding backend faults that way. If we can confirm that the backend works as expected, we can be certain that possible faults we discover lies in the frontend.
+
+As we wanted to optimise the use of our time as much as possible, we decided to write only backend tests for now. We regret that this will result in a low test coverage percentage, but that's a necessary evil. We're probably going to write complete frontend tests in the future using Robotium, when we have more time.
+
+
+Emma and ant
+----
+We spent some time on trying to integrate our JUnit tests in our ant build, to no avail. We also tried to integrate Emma, so we could find our test coverage, but this also proved to be difficult. After wasting some time on these issues, we decided to abandon them and focus on implementing features.
+
+
+Testing is good for you
+----
+Initially, we didn't really like the idea of writing tests, wanting to focus on 'actual' programming. It felt unnecessary and forced, and frankly, like a time-waster.
+
+When the project was nearing its end, though, we really started to appreciate the tests we had. When a project grows larger, it becomes increasingly difficult to keep all of the code 'in your head', and changing a small thing in one part of the program can cause lots of other parts to fail. Having tests really made it easier for us later in the process.
