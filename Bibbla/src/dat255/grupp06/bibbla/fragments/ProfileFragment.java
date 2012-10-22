@@ -41,6 +41,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.backend.BackendFactory;
+import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
@@ -130,7 +132,7 @@ public class ProfileFragment extends SherlockFragment {
 	 * @see setBackend(Backend)
 	 */
 	public void updateFromBackend() throws IllegalStateException {
-		Backend backend = Backend.getBackend();
+		IBackend backend = BackendFactory.getBackend();
 		
 		// These backend calls need user credentials.
 		try {

@@ -35,6 +35,7 @@ import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.backend.BackendFactory;
 import dat255.grupp06.bibbla.fragments.BookListFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
@@ -91,7 +92,7 @@ public class BookOverlayActivity extends SherlockActivity {
 			}
 		};
     
-		Backend.getBackend().fetchDetailedView(book, c);
+		BackendFactory.getBackend().fetchDetailedView(book, c);
 	}
 
 	/**
@@ -150,7 +151,7 @@ public class BookOverlayActivity extends SherlockActivity {
 			
 			try {
 				// TODO: Unreserves everything temporarily. Change asap!
-				Backend.getBackend().unreserve(c);
+				BackendFactory.getBackend().unreserve(c);
 			} catch (CredentialsMissingException e) {
 				Toast toast = Toast.makeText(getApplicationContext(), "Du är inte inloggad", Toast.LENGTH_SHORT);
 				toast.show();
@@ -163,7 +164,7 @@ public class BookOverlayActivity extends SherlockActivity {
 			};
 			
 			try {
-				Backend.getBackend().renew(book, c);
+				BackendFactory.getBackend().renew(book, c);
 			} catch (CredentialsMissingException e) {
 				Toast toast = Toast.makeText(getApplicationContext(), "Du är inte inloggad", Toast.LENGTH_SHORT);
 				toast.show();
@@ -179,14 +180,13 @@ public class BookOverlayActivity extends SherlockActivity {
 			String lib = libraryToCode(String.valueOf(spinner.getSelectedItem()));
 
 			try {
-				Backend.getBackend().reserve(book, lib, c);
+				BackendFactory.getBackend().reserve(book, lib, c);
 				((TextView)findViewById(R.id.text_reserve_book)).setText("Reserverar bok...");
 			} catch (CredentialsMissingException e) {
 				setSupportProgressBarIndeterminateVisibility(false);
 			}		
 		}
 	}
-
 
 	/**
 	 * Method that is called from a callback object when the backend is done fetching
@@ -224,7 +224,7 @@ public class BookOverlayActivity extends SherlockActivity {
 		} else if(isLoaned) {
 			((Button)findViewById(R.id.button_reserve_book)).setHint("Förläng lån");
 			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
-		} else if(!Backend.getBackend().isLoggedIn()) {
+		} else if(!BackendFactory.getBackend().isLoggedIn()) {
 			((Button)findViewById(R.id.button_reserve_book)).setVisibility(Button.INVISIBLE);
 			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
 		}

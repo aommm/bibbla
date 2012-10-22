@@ -34,6 +34,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.backend.BackendFactory;
+import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.fragments.LibraryFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
@@ -46,7 +48,7 @@ import dat255.grupp06.bibbla.utils.Message;
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, LoginCallbackHandler {	
 
-	private Backend backend;
+	private IBackend backend;
 	
 	public static final int RESULT_LOGIN_FORM = 0;
 	public static final String EXTRA_CREDENTIALS = "credentials";
@@ -66,7 +68,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 
         setContentView(R.layout.activity_main);
        
-        backend = Backend.getBackend();
+        backend = BackendFactory.getBackend();
         
         // Hide progress bar by default.
         setSupportProgressBarIndeterminateVisibility(false);

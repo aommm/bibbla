@@ -34,6 +34,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.model.Library;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
@@ -47,7 +48,7 @@ import dat255.grupp06.bibbla.utils.Message;
 
 public class LibraryFragment extends SherlockFragment {
 
-	Backend backend;
+	IBackend backend;
 	LibListFragment liblistFragment;
 	private ArrayList<Library> tempList = new ArrayList<Library>();
 
@@ -119,7 +120,7 @@ public class LibraryFragment extends SherlockFragment {
 
 		// Call backend for update.
 
-		backend.libInfo(c);
+		backend.libInfo(c, true);
 		System.out.println("LibFrag:updateInfo() sent to backend");
 	}
 
@@ -143,8 +144,8 @@ public class LibraryFragment extends SherlockFragment {
 		listAppear(tempList);
 	}
 
-	public void setBackend(Backend b) {
-		backend = b;
+	public void setBackend(IBackend backend2) {
+		backend = backend2;
 	}
 
 	public ArrayList<Library> tempLibList(){
