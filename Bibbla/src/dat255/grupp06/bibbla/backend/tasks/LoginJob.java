@@ -197,8 +197,9 @@ public class LoginJob {
 		Document html = response.parse();
 		String url = html.select(".myAccountLink").attr("href");
 		if (url.equals("")) throw new IOException("no link found");
-		if (!url.matches("/$")) url += "/";
-		return url;
+		// Replace http://...:80/... by https://.../...
+		return "https://www.gotlib.goteborg.se" +
+				url.split(":80")[1] + "/";
 	}
 	
 	/**
