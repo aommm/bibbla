@@ -1,5 +1,5 @@
 /**
-    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrï¿½.
     
     This file is part of Bibbla.
 
@@ -33,7 +33,6 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
-import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.model.Library;
 import dat255.grupp06.bibbla.utils.Callback;
@@ -107,13 +106,8 @@ public class LibraryFragment extends SherlockFragment {
 			}
 		};
 		// Call backend for update.
-<<<<<<< HEAD
-
 		backend.libInfo(c, true);
 		System.out.println("LibFrag:updateInfo() sent to backend");
-=======
-		backend.libInfo(c);
->>>>>>> 8f938e8ec37399fe3caeba2413c657cac1cd386d
 	}
 
 	/** Is called when backend searching is done.**/

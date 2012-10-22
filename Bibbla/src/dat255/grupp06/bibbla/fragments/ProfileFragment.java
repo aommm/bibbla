@@ -1,5 +1,5 @@
 /**
-    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrï¿½.
     
     This file is part of Bibbla.
 
@@ -36,13 +36,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
-import dat255.grupp06.bibbla.backend.Backend;
-<<<<<<< HEAD
 import dat255.grupp06.bibbla.backend.BackendFactory;
 import dat255.grupp06.bibbla.backend.IBackend;
-import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
-=======
->>>>>>> 8f938e8ec37399fe3caeba2413c657cac1cd386d
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;

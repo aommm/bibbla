@@ -1,5 +1,5 @@
 /**
-	Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+	Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrï¿½.
 
     This file is part of Bibbla.
 
@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -33,7 +32,6 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
-import dat255.grupp06.bibbla.backend.Backend;
 import dat255.grupp06.bibbla.backend.BackendFactory;
 import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.fragments.LibraryFragment;
@@ -48,13 +46,7 @@ import dat255.grupp06.bibbla.utils.Message;
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, LoginCallbackHandler {	
 
-<<<<<<< HEAD
 	private IBackend backend;
-=======
-	private Bundle savedInstance;
-	
-	private Backend backend;
->>>>>>> 8f938e8ec37399fe3caeba2413c657cac1cd386d
 	
 	public static final int RESULT_LOGIN_FORM = 0;
 	public static final String EXTRA_CREDENTIALS = "credentials";
@@ -70,7 +62,6 @@ ActionBar.TabListener, LoginCallbackHandler {
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-        savedInstance = savedInstanceState;
         // We want a fancy spinner for marking progress.
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
