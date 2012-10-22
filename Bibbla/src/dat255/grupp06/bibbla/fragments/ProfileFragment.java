@@ -54,6 +54,7 @@ public class ProfileFragment extends SherlockFragment {
 	private BookListFragment reservationsList;
 	private BookListFragment loansList;
 	private boolean dontLogin;
+	private boolean dontGetCachedBooks;
 	
 	/**
 	 * Reference to the class that can produce a login form. Is set on attach.
@@ -182,6 +183,11 @@ public class ProfileFragment extends SherlockFragment {
 		}
 	}
 	
+	/**
+	 * The method is called from a callback object when the backend is done
+	 * fetching the username.
+	 * @param msg - Message object containing the username and error messages.
+	 */
 	private void getUserNameDone(Message msg) {
 		Activity activity = getSherlockActivity();
 		String name = (String) msg.obj;
@@ -257,6 +263,10 @@ public class ProfileFragment extends SherlockFragment {
 	
 	public void setDontLogin(boolean choice) {
 		dontLogin = choice;
+	}
+	
+	public void setDontGetCachedBooks(boolean choice) {
+		dontGetCachedBooks = choice;
 	}
 	
 }
