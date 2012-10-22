@@ -20,30 +20,29 @@
 package dat255.grupp06.bibbla.fragments;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+<<<<<<< HEAD
 import dat255.grupp06.bibbla.backend.BackendFactory;
 import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
+=======
+>>>>>>> 8f938e8ec37399fe3caeba2413c657cac1cd386d
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
@@ -59,6 +58,7 @@ public class ProfileFragment extends SherlockFragment {
 	public final static String BOOK = "dat255.grupp06.bibbla.BOOK";
 	private BookListFragment reservationsList;
 	private BookListFragment loansList;
+	private boolean dontLogin;
 	
 	/**
 	 * Reference to the class that can produce a login form. Is set on attach.
@@ -94,7 +94,7 @@ public class ProfileFragment extends SherlockFragment {
 		}
 		
         fragmentTransaction.commit();
-		
+        
 		return inflater.inflate(R.layout.profile_fragment, container, false);
 	}
 	
@@ -169,10 +169,21 @@ public class ProfileFragment extends SherlockFragment {
 			//updateSpinnerState();
 		}
 		catch (CredentialsMissingException e) {
-			loginCallbackHandler.showCredentialsDialog(new Callback() {
-				@Override public void handleMessage(Message msg) {
-					updateFromBackend();
-			}});
+			
+			if(!dontLogin) {
+				loginCallbackHandler.showCredentialsDialog(new Callback() {
+					@Override public void handleMessage(Message msg) {
+						updateFromBackend();
+				}});
+			} else {
+				Handler handler = new Handler();
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						((MainActivity)getSherlockActivity()).selectSearchTab();
+					}
+				});
+			}
 		}
 	}
 	
@@ -242,6 +253,15 @@ public class ProfileFragment extends SherlockFragment {
 	public void cancelUpdate() {
 		namePending = debtPending = loansPending = reservationsPending = false;
 		updateSpinnerState();
+	}
+	
+	public void toggleLoans() {
+		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		ft.detach(reservationsList);
+	}
+	
+	public void setDontLogin(boolean choice) {
+		dontLogin = choice;
 	}
 	
 }

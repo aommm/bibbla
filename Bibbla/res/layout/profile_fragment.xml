@@ -15,8 +15,8 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
- -->
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -24,52 +24,76 @@
     android:orientation="vertical" >
 
     <!-- User's full name -->
-    <TextView android:id="@+id/name_heading"
-        android:text=""
-        style="@style/Heading"/>
-    
+
+    <TextView
+        android:id="@+id/name_heading"
+        style="@style/Heading"
+        android:text="" />
+
     <!-- Debt and log-out button -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-        
-        <TextView android:id="@+id/debt_view"
+
+        <TextView
+            android:id="@+id/debt_view"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-        	android:gravity="center"
-            android:text="@string/debt_view_text"/>
-        
-        <Button android:id="@+id/logout_button"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/debt_view_text" />
+
+        <Button
+            android:id="@+id/logout_button"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:onClick="logout"
-            android:text="@string/logout_text"/>
+            android:text="@string/logout_text" />
     </LinearLayout>
-    
+
     <!-- My loans -->
-    <TextView android:id="@+id/loans_heading"
-        style="@style/Heading"
-        android:text="@string/my_loans_heading"/>
-    
-    <LinearLayout android:id="@+id/loans_list"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <Button 
+            android:id="@+id/button_toggle_loans"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="toggleLoans" />
+        <TextView
+            android:id="@+id/loans_heading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            style="@style/Heading"
+            android:text="@string/my_loans_heading" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loans_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1" >
     </LinearLayout>
-    
+
     <!-- My reservations -->
+
     <TextView
         android:id="@+id/reservations_heading"
         style="@style/Heading"
-        android:text="@string/my_reservations_heading"/>
-    
-    <LinearLayout android:id="@+id/reservations_list"
+        android:text="@string/my_reservations_heading" />
+
+    <LinearLayout
+        android:id="@+id/reservations_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1" >
     </LinearLayout>
-	
+
 </LinearLayout>
