@@ -1,6 +1,6 @@
 /**
     Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
-    
+
     This file is part of Bibbla.
 
     Bibbla is free software: you can redistribute it and/or modify
@@ -34,7 +34,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
-import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.backend.BackendFactory;
+import dat255.grupp06.bibbla.backend.IBackend;
 import dat255.grupp06.bibbla.frontend.LoginCallbackHandler;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
@@ -50,7 +51,8 @@ public class ProfileFragment extends SherlockFragment {
 	public final static String BOOK = "dat255.grupp06.bibbla.BOOK";
 	private BookListFragment reservationsList;
 	private BookListFragment loansList;
-	
+	private boolean dontLogin;
+
 	/**
 	 * Reference to the class that can produce a login form. Is set on attach.
 	 */
@@ -60,45 +62,45 @@ public class ProfileFragment extends SherlockFragment {
 	private boolean debtPending;
 	private boolean loansPending;
 	private boolean reservationsPending;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
 		if(reservationsList == null) {
 			reservationsList = new BookListFragment();
 			reservationsList.setReservedListStatus(true);
-	        fragmentTransaction.add(R.id.reservations_list, reservationsList);
+			fragmentTransaction.add(R.id.reservations_list, reservationsList);
 		} else {
 			fragmentTransaction.attach(reservationsList);
 		}
-		
+
 		if(loansList == null) {
 			loansList = new BookListFragment();
 			loansList.setLoanedListStatus(true);
-	        fragmentTransaction.add(R.id.loans_list, loansList);
+			fragmentTransaction.add(R.id.loans_list, loansList);
 		} else {
 			fragmentTransaction.attach(loansList);
 		}
-		
-        fragmentTransaction.commit();
-		
+
+		fragmentTransaction.commit();
+
 		return inflater.inflate(R.layout.profile_fragment, container, false);
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.detach(reservationsList);
-        fragmentTransaction.detach(loansList);
-        fragmentTransaction.commit();
-        super.onDestroyView();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.detach(reservationsList);
+		fragmentTransaction.detach(loansList);
+		fragmentTransaction.commit();
+		super.onDestroyView();
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -109,13 +111,13 @@ public class ProfileFragment extends SherlockFragment {
 					"must implement LoginCallbackHandler");
 		}
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
 		updateFromBackend();
 	}
-	
+
 	/**
 	 * Update the contents of GUI elements with information from Backend, such
 	 * as name, current debt, books on loan and pending reservations.
@@ -123,8 +125,8 @@ public class ProfileFragment extends SherlockFragment {
 	 * @see setBackend(Backend)
 	 */
 	public void updateFromBackend() throws IllegalStateException {
-		Backend backend = Backend.getBackend();
-		
+		IBackend backend = BackendFactory.getBackend();
+
 		// These backend calls need user credentials.
 		try {
 			// The lists take some time so let's use Callback.
@@ -133,40 +135,51 @@ public class ProfileFragment extends SherlockFragment {
 			backend.getUserName(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					getUserNameDone(msg);
-			}});
+				}});
 			namePending = true;
 
 			// Current debt
 			backend.fetchUserDebt(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.fetchDebtDone(msg);
-			}});
+				}});
 			debtPending = true;
-			
+
 			// Current loans
 			backend.fetchLoans(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.loansUpdateDone(msg);
-			}});
+				}});
 			loansPending = true;
-			
+
 			// Current reservations
 			backend.fetchReservations(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.reservationsUpdateDone(msg);
-			}}, true);
+				}}, true);
 			reservationsPending = true;
-			
+
 			//updateSpinnerState();
 		}
 		catch (CredentialsMissingException e) {
-			loginCallbackHandler.showCredentialsDialog(new Callback() {
-				@Override public void handleMessage(Message msg) {
-					updateFromBackend();
-			}});
+			//			
+			//			if(!dontLogin) {
+			//				loginCallbackHandler.showCredentialsDialog(new Callback() {
+			//					@Override public void handleMessage(Message msg) {
+			//						updateFromBackend();
+			//				}});
+			//			} else {
+			//				Handler handler = new Handler();
+			//				handler.post(new Runnable() {
+			//					@Override
+			//					public void run() {
+			//						((MainActivity)getSherlockActivity()).selectSearchTab();
+			//					}
+			//				});
+			//			}
 		}
 	}
-	
+
 	private void getUserNameDone(Message msg) {
 		Activity activity = getSherlockActivity();
 		String name = (String) msg.obj;
@@ -175,7 +188,7 @@ public class ProfileFragment extends SherlockFragment {
 		namePending = false;
 		//updateSpinnerState();
 	}
-	
+
 	/**
 	 * Update the debt TextView.
 	 * @param msg Backend response, 
@@ -189,7 +202,7 @@ public class ProfileFragment extends SherlockFragment {
 		debtPending = false;
 		//updateSpinnerState();
 	}
-	
+
 	/**
 	 * Update ListView of loans with results.
 	 * @param msg Backend response
@@ -206,7 +219,7 @@ public class ProfileFragment extends SherlockFragment {
 		loansPending = false;
 		//updateSpinnerState();
 	}
-	
+
 	/**
 	 * Update ListView of reservations with results.
 	 * @param msg Backend response
@@ -234,5 +247,14 @@ public class ProfileFragment extends SherlockFragment {
 		namePending = debtPending = loansPending = reservationsPending = false;
 		updateSpinnerState();
 	}
-	
+
+	public void toggleLoans() {
+		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		ft.detach(reservationsList);
+	}
+
+	public void setDontLogin(boolean choice) {
+		dontLogin = choice;
+	}
+
 }

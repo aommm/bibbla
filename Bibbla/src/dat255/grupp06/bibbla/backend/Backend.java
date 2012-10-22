@@ -36,19 +36,15 @@ import dat255.grupp06.bibbla.utils.Message;
 import dat255.grupp06.bibbla.utils.Session;
 
 /**
- * Performs tasks like searching, reserving and logging in.
- * Does all the heavy lifting.
- * 
  * @author Niklas Logren
  */
 @SuppressLint({ "NewApi", "NewApi" })
-public final class Backend {
+public final class Backend implements IBackend {
 	
 	public final static int MAX_CONNECTION_ATTEMPTS = 5;
 	public final static int CONNECTION_TIMEOUT = 2000;
 	private Settings settings;
 	private Session session;
-	private static Backend backendObject;
 	
 	// Cached results.
 	private Map<String,Book> detailedViews = new HashMap<String, Book>();
@@ -63,22 +59,11 @@ public final class Backend {
 	 * Creates a new instance of our Backend.
 	 * Initialises a new session and fetches settings.
 	 */
-	private Backend() {
+	public Backend() {
 		settings = new Settings();
 		session = new Session();
 	}
 	
-	public static Backend getBackend() {
-		if(backendObject == null) {
-			backendObject = new Backend();
-		}
-		return backendObject;
-	}
-	
-	/**
-	 *  @returns the user's username.
-	 *  If no name is saved, returns empty string.
-	 */
 	public void getUserName(Callback frontendCallback)
 	throws CredentialsMissingException {
 		final UserNameJob job = new UserNameJob(settings.getCredentials(),
@@ -93,32 +78,15 @@ public final class Backend {
 		task.execute();
 	}
 	
-	/**
-	 *  Starts fetching the user's current debt. Reports results using callback.
-	 *  Uses cached values if available; otherwise, simply runs the job.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when logging in is done.
-	 */
 	public void fetchUserDebt(final Callback frontendCallback)
 	throws CredentialsMissingException {
 		fetchUserDebt(frontendCallback, false);
 	}
 	
-	/**
-	 * Returns the logged in state of the backend.
-	 */
 	public boolean isLoggedIn() {
 		return session.isActive();
 	}
 
-	/**
-	 *  Starts fetching the user's current debt. Reports results using callback.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when logging in is done.
-	 *  @param refresh - should we run the job directly, and bypass caching? 
-	 */
 	public void fetchUserDebt(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
 		// Return cached result if it's available.
@@ -157,15 +125,6 @@ public final class Backend {
 		callback.handleMessage(message);
 	}
 
-	/**
-	 *  Searches backend for the supplied string, and reports results using callback.
-	 *  
-	 *  @param s - The string to search for.
-	 *  @param page - which page of search results to fetch.
-	 *   If too high, returns empty list.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when searching is done.
-	 */
 	public void search(final String s, final int page, final Callback frontendCallback) {
 		// Create the key identifying this list of search results.
 		// Consists of the search string and page number.
@@ -209,30 +168,10 @@ public final class Backend {
 		
 	}
 
-	/**
-	 *  Fetches the DetailedView of the supplied book.
-	 *  Sends a new book with all the additional information to the callback.
-	 *  Uses cached values if available; otherwise, simply runs the job.
-	 *  
-	 *  @param book - the book whose detailed view we're going to fetch.
-	 *   Needs to have its url set.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching detailed view is done.
-	 */
 	public void fetchDetailedView(final Book book, final Callback frontendCallback) {
 		fetchDetailedView(book, frontendCallback, false);
 	}
 	
-	/**
-	 *  Fetches the DetailedView of the supplied book.
-	 *  Sends a new book with all the additional information to the callback.
-	 *  
-	 *  @param book - the book whose detailed view we're going to fetch.
-	 *   Needs to have its url set.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching detailed view is done.
-	 *  @param refresh - should we run the job directly, and bypass caching?
-	 */
 	public void fetchDetailedView(final Book book, final Callback frontendCallback, boolean refresh) {
 		// Return cached result if it's available.
 		if (detailedViews.containsKey(book.getUrl()) && !refresh) {
@@ -280,28 +219,11 @@ public final class Backend {
 		frontendCallback.handleMessage(message);
 	}
 
-	
-	/**
-	 *  Fetches a list of the user's current reservations.
-	 *  Returns it using callback.
-	 *  Uses cached values if available; otherwise, simply runs the job.
-	 *  
-	 *  @param frontendCallback - the callback object which will be
-	 *   called when fetching reservations is done.
-	 */
 	public void fetchReservations(final Callback frontendCallback)
 	throws CredentialsMissingException {
 		fetchReservations(frontendCallback, false);
 	}
-	
-	/**
-	 *  Fetches a list of the user's current reservations.
-	 *  Returns it using callback.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *  when fetching reservations is done.
-	 *  @param refresh - should we run the job directly, and bypass caching?
-	 */
+
 	public void fetchReservations(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
 		// Return cached result if it's available.
@@ -349,24 +271,11 @@ public final class Backend {
 		
 	}
 
-	/**
-	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
-	 *  Uses cached values if available; otherwise, simply runs the job.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching loans is done.
-	 */
 	public void fetchLoans(final Callback frontendCallback)
 	throws CredentialsMissingException {
 		fetchLoans(frontendCallback, false);
 	}
-	/**
-	 *  Fetches a list of the user's currently loaned books. Returns it using callback.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching loans is done.
-	 *  @param refresh - should we run the job directly, and bypass caching?
-	 */
+
 	public void fetchLoans(final Callback frontendCallback, boolean refresh)
 	throws CredentialsMissingException {
 		// Return cached result if it's available.
@@ -414,14 +323,6 @@ public final class Backend {
 		callback.handleMessage(message);
 	}
 
-	/**
-	 *  Reserves the supplied book. Result is reported via callback.
-	 *  
-	 *  @param book - the book to reserve. Needs to have its reserveUrl property set.
-	 *  @param libraryCode - the code of the library the book should be sent to.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when reserving is done.
-	 */
 	public void reserve(final Book book, final String libraryCode,
 			final Callback frontendCallback)
 	throws CredentialsMissingException {
@@ -440,13 +341,6 @@ public final class Backend {
 		task.execute();
 	}
 
-	/**
-	 *  Unreserves the supplied book. Result is reported via callback.
-	 *  
-	 *  @param book - The book to unreserve. Needs to have its unreserveId property set.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when unreserving is done.
-	 */
 	public void unreserve(final Book book, final Callback frontendCallback)
 	throws CredentialsMissingException {
 		final UnreserveJob job = new UnreserveJob(book,
@@ -464,14 +358,6 @@ public final class Backend {
 		task.execute();
 	}
 	
-	/**
-	 *  Unreserves all supplied books. Result is reported via callback.
-	 *  
-	 *  @param books - A list of books to unreserve.
-	 *   Needs to have their unreserveIds property set.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when unreserving is done.
-	 */
 	public void unreserve(final List<Book> books, final Callback frontendCallback)
 	throws CredentialsMissingException {
 		final UnreserveJob job = new UnreserveJob(books,
@@ -488,13 +374,7 @@ public final class Backend {
 		// Start the task.
 		task.execute();
 	}
-	
-	/**
-	 *  Unreserves all reserved books. Result is reported via callback.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when unreserving is done.
-	 */
+
 	public void unreserve(final Callback frontendCallback)
 	throws CredentialsMissingException {
 		final UnreserveJob job = new UnreserveJob(settings.getCredentials(),
@@ -511,14 +391,7 @@ public final class Backend {
 		// Start the task.
 		task.execute();
 	}
-	
-	/**
-	 *  Renews the supplied book. Result is reported via callback.
-	 *  
-	 *  @param book - The book to renew. Needs to have its renewId property set.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when renewal is done.
-	 */
+
 	public void renew(final Book book, final Callback frontendCallback)
 	throws CredentialsMissingException {
 		final RenewJob job = new RenewJob(book, settings.getCredentials(),
@@ -535,14 +408,7 @@ public final class Backend {
 		// Start the task.
 		task.execute();
 	}
-	
-	/**
-	 *  Renews all supplied books. Result is reported via callback.
-	 *  
-	 *  @param books - A list of books to renew. Needs to have their renewId properties set.
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when renewal is done.
-	 */
+
 	public void renew(final List<Book> books, final Callback frontendCallback)
 	throws CredentialsMissingException {
 		final RenewJob job = new RenewJob(books, settings.getCredentials(),
@@ -560,12 +426,6 @@ public final class Backend {
 		task.execute();
 	}
 	
-	/**
-	 *  Renews all loaned books. Result is reported via callback.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when renewal is done.
-	 */
 	public void renew(final Callback frontendCallback)
 	throws CredentialsMissingException {
 		final RenewJob job = new RenewJob(settings.getCredentials(), session);
@@ -582,9 +442,6 @@ public final class Backend {
 		task.execute();
 	}
 	
-	/**
-	 * Logs the user out.
-	 */
 	public void logOut(){
 		session = new Session();
 		settings = new Settings();
@@ -604,13 +461,6 @@ public final class Backend {
 		}
 	}
 
-	/**
-	 *  Searches backend for the library information.
-	 *  Uses cached values if available; otherwise, simply runs the job.
-	 *  
-	 *  @param frontendCallback - the callback object which will be called
-	 *   when fetching library info is done.
-	 */
 	public void libInfo(final Callback frontendCallback) {
 		libInfo(frontendCallback, false);
 	}

@@ -1,5 +1,5 @@
 /**
-    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrï¿½.
     
     This file is part of Bibbla.
 
@@ -18,6 +18,7 @@
  **/
 package dat255.grupp06.bibbla.backend.tasks;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +40,16 @@ import dat255.grupp06.bibbla.utils.Session;
  * @author Niklas Logren
  */
 public class ReserveJob extends AuthorizedJob {
+
+	static final String KEY_LIBCODE = "locx00";
+	static final String KEY_YEAR = "needby_Year", VAL_YEAR = "Year";
+	static final String KEY_MONTH = "needby_Month", VAL_MONTH = "Month";
+	static final String KEY_DAY = "needby_Day", VAL_DAY = "Day";
+
 	private Book book;
 	private Session session;
-	private Message message;
 	private String libraryCode;
+	private Map<String, String> postData;
 	
 	/**
 	 * Creates a new ReserveJob which will try to reserve a book at the given library.
@@ -57,7 +64,6 @@ public class ReserveJob extends AuthorizedJob {
 		this.book = book;
 		this.libraryCode = libraryCode;
 		this.session = session;
-		this.message = new Message();
 	}
 
 	/**
@@ -68,80 +74,97 @@ public class ReserveJob extends AuthorizedJob {
 	 * detailing which library the book will be sent to.
 	 * If reservation failed, obj will be a string containing the error message.
 	 */
-	public Message run(){
+	public Message run() {
 		login();
-		
-		System.out.println("****** ReserveJob: ");
+
+		// Prepare field for paramless connect()
+		postData = createPostData(libraryCode);
+
+		// Attempt reservation
+		Response reserveResponse = null;
 		try {
-			System.out.println("*** Step 1: Post our reservation");
-			Response response = connect();
-			System.out.println("Step 1 done! ***");
-			
-			System.out.println("*** Step 2: Parse the results");
-			parseResults(response);
-			System.out.println("Step 2 done! ***");
-			
+			reserveResponse = connectAndRetry();
 		} catch (Exception e) {
-			message.error = (message.error!=null) ? message.error : Error.RESERVE_FAILED;
-			System.out.println("Failed: "+e.getMessage()+" ***");
+			Message errorMessage = new Message();
+			errorMessage.error = Error.RESERVE_FAILED;
+			return errorMessage;
 		}
 		
-		return message;
+		// Parse html from response
+		Document html;
+		try {
+			html = reserveResponse.parse();
+		} catch (IOException e) {
+			Message errorMessage = new Message();
+			errorMessage.error = Error.RESERVE_FAILED;
+			return errorMessage;
+		}
 		
+		// Identify 
+		String library;
+		try {
+			library = identifyReceivingLibrary(html);
+		} catch (JobFailedException e) {
+			Message errorMessage = new Message();
+			errorMessage.error = Error.RESERVE_FAILED;
+			return errorMessage;
+		}
+		
+		// Prepare a result message
+		Message successMessage = new Message();
+		successMessage.obj = library;
+		return successMessage;
 	}
-	
+
+	/**
+	 * Creates a map of post data to send with the reservation request.
+	 * @param libraryCode code identifying a library
+	 * @return a map modelled by { "locx00" = <var>libraryCode</var>;
+	 * "needby_Year" = "Year"; "needby_Month" = "Month"; "needby_Day" = "Day" }
+	 */
+	static Map<String, String> createPostData(final String libraryCode) {
+		Map<String,String> postData = new HashMap<String,String>() {
+			private static final long serialVersionUID = 5883265540089660691L;
+			{
+		    	put(KEY_LIBCODE, libraryCode);
+		    	put(KEY_YEAR, VAL_YEAR);
+		    	put(KEY_MONTH, VAL_MONTH);
+		    	put(KEY_DAY, VAL_DAY);
+			}
+		};
+		return postData;
+	}
+
 	@Override
 	/**
 	 * POSTs the reservation, and saves the response.
-	 * 
-	 * @throws Exception if connection failed.
+	 * @throws IOException if connection failed.
 	 */
-	protected Response connect() throws Exception {
-		
-		// Define hashMap containing post data.
-		@SuppressWarnings("serial")
-		Map<String,String> postData = new HashMap<String,String>() {{
-	    	put("locx00", libraryCode);
-	    	put("needby_Year", "Year");
-	    	put("needby_Month", "Month");
-	    	put("needby_Day", "Day");
-	    }};
+	protected final Response connect() throws IOException {
 	    
-	    // Send request and save response.
-	    Response r = Jsoup.connect(book.getReserveUrl())
+	    // Send request and return response.
+	    Response httpResponse = Jsoup.connect(book.getReserveUrl())
 			    .method(Method.POST)
 			    .cookies(session.getCookies())
 			    .data(postData)
 			    .execute();
-	    return r;
+	    return httpResponse;
 	}
-	
+
 	/**
-	 * Parses the response HTML saved by postReservation().
-	 * 
-	 * @throws Exception if reservation failed, or if parsing otherwise failed.
+	 * Find the name of the library where the book will arrive.
+	 * @param html produced from the reservation connection
+	 * @return the name of a library
+	 * @throws JobFailedException if the element of the library name could not
+	 * be found. Assume the reservation failed.
 	 */
-	private void parseResults(Response response) throws Exception {
-		
-		// Prepare for parsing.
-	    Document html = response.parse();
-
-	    // All information we need lies in this div.
-	    Element div = html.getElementById("singlecolumn");
-	    
-	    // Font tag implies error.
-	    if (div.getElementsByTag("font").size() > 0) {
-	    	message.error = Error.RESERVE_FAILED;
-	    	// The error message is inside the font tag.
-	    	String errorMessage = div.getElementsByTag("font").first().text();
-	    	message.obj = errorMessage;
-	    	throw new Exception("Reservation failed: "+errorMessage);
-	    } 
-	    // We're all set!
-	    else {
-	    	// Return which library the book will arrive in.
-	    	message.obj = div.getElementsByTag("b").first().text();
-	    }
+	static String identifyReceivingLibrary(Document html)
+	throws JobFailedException {
+		Element div = html.getElementById("singlecolumn");
+		try {
+			return div.getElementsByTag("b").first().text();
+		} catch (NullPointerException e) {
+			throw new JobFailedException(e);
+		}
 	}
-
 }

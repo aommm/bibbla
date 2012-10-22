@@ -43,6 +43,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
+import dat255.grupp06.bibbla.backend.BackendFactory;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.utils.Callback;
 import dat255.grupp06.bibbla.utils.Message;
@@ -141,7 +142,7 @@ public class SearchFragment extends SherlockFragment {
 		};
 		
 		// Call backend search.
-		Backend.getBackend().search(searchString, 0, c);
+		BackendFactory.getBackend().search(searchString, 0, c);
 		listFragment.setLastSearchString(searchString);
 	}
 	
@@ -164,7 +165,7 @@ public class SearchFragment extends SherlockFragment {
 		
 		// Call backend search.
 		Log.d("Jonis", "searching..... on page    "+page);
-		Backend.getBackend().search(searchString, page, c);
+		BackendFactory.getBackend().search(searchString, page, c);
 	}
 	
 	/**
