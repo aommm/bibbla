@@ -150,7 +150,7 @@ public class BookOverlayActivity extends SherlockActivity {
 			
 			try {
 				// TODO: Unreserves everything temporarily. Change asap!
-				Backend.getBackend().unreserve(c);
+				Backend.getBackend().unreserve(book, c);
 			} catch (CredentialsMissingException e) {
 				Toast toast = Toast.makeText(getApplicationContext(), "Du är inte inloggad", Toast.LENGTH_SHORT);
 				toast.show();

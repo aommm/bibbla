@@ -56,24 +56,12 @@
 
     <!-- My loans -->
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/loans_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-        <Button 
-            android:id="@+id/button_toggle_loans"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="toggleLoans" />
-        <TextView
-            android:id="@+id/loans_heading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            style="@style/Heading"
-            android:text="@string/my_loans_heading" />
-    </LinearLayout>
+        style="@style/Heading"
+        android:text="@string/my_loans_heading" />
 
     <LinearLayout
         android:id="@+id/loans_list"

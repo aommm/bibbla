@@ -68,6 +68,10 @@ public final class Backend {
 		session = new Session();
 	}
 	
+	/**
+	 * Getter for backend
+	 * @return a backend.
+	 */
 	public static Backend getBackend() {
 		if(backendObject == null) {
 			backendObject = new Backend();
@@ -151,7 +155,12 @@ public final class Backend {
 			task.execute();
 		}
 	}
-		
+	
+	/**
+	 * Gets called by the when debt is fetched
+	 * @param message - a message containing debt and error message
+	 * @param callback - callback object
+	 */
 	private void fetchDebtDone(Message message, Callback callback) {
 		debt = (Integer) message.obj;
 		callback.handleMessage(message);
@@ -202,6 +211,12 @@ public final class Backend {
 		}
 	}
 	
+	/**
+	 * Gets called when the search results have been fetched
+	 * @param message - message containing search results and error messages
+	 * @param callback
+	 * @param entry
+	 */
 	private void fetchSearchResultsDone(Message message,
 			Callback callback, Entry<String, Integer> entry) {
 		searchResults.put(entry, (List<Book>) message.obj);
@@ -425,6 +440,7 @@ public final class Backend {
 	public void reserve(final Book book, final String libraryCode,
 			final Callback frontendCallback)
 	throws CredentialsMissingException {
+		
 		final ReserveJob job = new ReserveJob(book, libraryCode,
 				settings.getCredentials(), session);
 		// Create a new Task and define its body.
@@ -589,13 +605,12 @@ public final class Backend {
 		session = new Session();
 		settings = new Settings();
 		this.debt = 0;
-		this.detailedViews.clear();
-		this.libraries.clear();
-		this.reservations.clear();
-		this.loanedBooks.clear();
-		this.searchResults.clear();
 	}
 	
+	/**
+	 * Save credentials
+	 * @param cred - Login credentials
+	 */
 	public void saveCredentials(Credentials cred) {
 		if (cred != null) {
 			settings.setName(cred.name);

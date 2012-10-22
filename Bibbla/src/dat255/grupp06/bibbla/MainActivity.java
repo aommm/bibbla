@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -45,8 +44,6 @@ import dat255.grupp06.bibbla.utils.Message;
 
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, LoginCallbackHandler {	
-
-	private Bundle savedInstance;
 	
 	private Backend backend;
 	
@@ -64,7 +61,6 @@ ActionBar.TabListener, LoginCallbackHandler {
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-        savedInstance = savedInstanceState;
         // We want a fancy spinner for marking progress.
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
@@ -145,6 +141,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 				} else {
 					this.saveCredentials(cred);
 					backend.saveCredentials(cred);
+					profileFragment.setDontGetCachedBooks(true);
 				}
 			}
 			
@@ -158,6 +155,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 		}
 	}
 	
+	/**
+	 * Saves the credentials to shared preferences
+	 * @param cred - The credentials ot be saved
+	 */
 	private void saveCredentials(Credentials cred) {
 		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -173,7 +174,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 		// TODO Refactor to eliminate duplicate code?
 		switch(tab.getPosition()) {
 			case 0:
-				
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
 			        ft.add(R.id.fragment_container, searchFragment);
@@ -237,9 +237,13 @@ ActionBar.TabListener, LoginCallbackHandler {
 	public void logout(View view) {
 		this.emptyPrefernces();
 		backend.logOut();
+		profileFragment.setDontGetCachedBooks(true);
 		getSupportActionBar().selectTab(searchTab);
 	}
 	
+	/**
+	 * The method name says is it all.
+	 */
 	private void emptyPrefernces() {
 		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -247,7 +251,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 		editor.putString("card", "");
 		editor.putString("pin", "");
 		editor.commit(); 
-
 	}
 
 	/**
@@ -283,6 +286,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 		startActivityForResult(intent, RESULT_LOGIN_FORM);
 	}
 	
+	/**
+	 * Selects the search tab
+	 */
 	public void selectSearchTab() {
 		getSupportActionBar().selectTab(searchTab);
 	}
