@@ -32,12 +32,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -57,9 +53,34 @@ import dat255.grupp06.bibbla.utils.Message;
 public class SearchFragment extends SherlockFragment {
 
 	SearchListFragment listFragment;
+	SearchTextFragment textFragment;
+	
 	EditText searchEdit;
 	Button searchButton;
 	ProgressBar searchProgress;
+	
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+		
+		// Create our two children.
+		listFragment  = new SearchListFragment();
+		System.out.println("bbb");
+		//textFragment  = new SearchTextFragment();
+		System.out.println("ccc");
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        System.out.println("ddd");
+        // Add children to container,
+        fragmentTransaction.add(R.id.list_container, listFragment);
+        //fragmentTransaction.add(R.id.list_container, textFragment);
+        System.out.println("eee");
+        // but hide them for now.
+        //fragmentTransaction.detach(listFragment);
+		//fragmentTransaction.detach(textFragment);
+		System.out.println("fff");
+        fragmentTransaction.commit();
+        System.out.println("ggg");
+	}
 	
 	@Override
 	/**
@@ -69,22 +90,27 @@ public class SearchFragment extends SherlockFragment {
 		
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		
-		if(listFragment == null) {
-	        listFragment = new SearchListFragment();
-	        fragmentTransaction.add(R.id.list_container, listFragment);
-		} else {
+        System.out.println("hhh");
+		// If list is empty, show textFragment.
+		if (listFragment.isEmpty()) {
+			fragmentTransaction.attach(textFragment);
+		} else { // Else, show listFragment.
 			fragmentTransaction.attach(listFragment);
 		}
-
+		System.out.println("iii");
         fragmentTransaction.commit();
+        System.out.println("jjj");
 		return inflater.inflate(R.layout.fragment_search, container, false);
 	}
 	
 	@Override
+	/**
+	 * Detaches textFragment and listFragment.
+	 */
 	public void onDestroyView() {
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.detach(textFragment);
         fragmentTransaction.detach(listFragment);
         fragmentTransaction.commit();
         super.onDestroyView();

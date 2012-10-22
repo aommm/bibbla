@@ -100,4 +100,15 @@ public class SearchListFragment extends SherlockListFragment {
     public void setLastSearchString(String s) {
     	lastSearch = s;
     }
+    
+    /**
+     * Checks whether this fragment's list is empty.
+     */
+    public boolean isEmpty() {
+    	if (currentBooks == null) {
+    		return false;
+    	} else {
+    		return (currentBooks.size() > 0);
+    	}
+    }
 }
