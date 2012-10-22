@@ -76,7 +76,7 @@ public class BookListFragment extends SherlockListFragment {
     	currentBooks.clear();
     	currentBooks.addAll(books);
 
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, false);
+    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, false, isLoanedList);
 
     	this.setListAdapter(adapter);
     }

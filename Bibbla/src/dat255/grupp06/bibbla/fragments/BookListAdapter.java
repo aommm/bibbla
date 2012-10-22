@@ -39,6 +39,7 @@ public class BookListAdapter extends BaseAdapter {
 	private final List<Book> list;
 	private final Activity activity;
 	private final boolean showAvailable;
+	private final boolean showDate;
 
 	/**
 	 * 
@@ -48,12 +49,13 @@ public class BookListAdapter extends BaseAdapter {
 	 */
 	// TODO Bad style to pass activity?
 	@SuppressWarnings("unchecked")
-	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable) {
+	public BookListAdapter(Activity activity, List<Book> list, boolean showAvailable, boolean showDate) {
 		this.list = (list != null) ?
 				(List<Book>) ((ArrayList<Book>) list).clone() :
 					new ArrayList<Book>();
 		this.activity = activity;
 		this.showAvailable = showAvailable;
+		this.showDate = showDate;
 	}
 
 	@Override
@@ -114,6 +116,11 @@ public class BookListAdapter extends BaseAdapter {
 					.setImageResource(book.getAvailable() > 0 ?
 						android.R.drawable.presence_online :
 						android.R.drawable.presence_busy);
+			}
+			
+			if (showDate) {
+				((TextView) view.findViewById(R.id.item_loan_date))
+					.setText(book.getPhysicalBook().getStatus());
 			}
 		} else {
 			view = activity.getLayoutInflater().inflate(R.layout.more_search_results, parent, false);
