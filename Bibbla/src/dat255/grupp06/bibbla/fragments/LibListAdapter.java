@@ -1,4 +1,6 @@
 /**
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+    
     This file is part of Bibbla.
 
     Bibbla is free software: you can redistribute it and/or modify
@@ -108,6 +110,3 @@ public class LibListAdapter extends BaseAdapter {
 	}
 
 }
-
-
-//Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
