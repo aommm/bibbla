@@ -27,6 +27,9 @@
 
     <!-- Searching -->
     <string name="button_search">Sök</string>
+    <string name="search_loading">Söker…</string>
+    <string name="search_no_results">Inga resultat. Var vänlig försök igen
+        med ett vanligare sökord. Om du vill.</string>
     <string name="edit_search">Boktitel etc.</string>
     <string name="available_description">Om boken går att låna</string>
     <string name="overlay_title">Lorem Ipsum</string>

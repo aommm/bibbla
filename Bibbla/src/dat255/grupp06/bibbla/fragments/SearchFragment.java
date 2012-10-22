@@ -85,21 +85,13 @@ public class SearchFragment extends SherlockFragment {
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		
-        fragmentTransaction.detach(textFragment);
-        fragmentTransaction.detach(listFragment);
-        
-        // If list is empty, show textFragment.
+		// If list is empty, show textFragment.
 		if (listFragment.isEmpty()) {
-			System.out.println("Attaching textFragment.");
-			fragmentTransaction.attach(textFragment);
-		} else { // Else, show listFragment.
-			System.out.println("Attaching listFragment.");
-			fragmentTransaction.attach(listFragment);
+			showList();
 		}
-        fragmentTransaction.commit();
+		else { // Else, show listFragment.
+			showText();
+		}
 		
         return inflater.inflate(R.layout.fragment_search, container, false);
 	}
@@ -145,6 +137,38 @@ public class SearchFragment extends SherlockFragment {
 	}
 	
 	/**
+	 * Shows the list of search results, hides the text label.
+	 */
+	public void showList() {
+		// Create a new fragment transaction.
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		
+        // Hide all fragments, show text fragment.
+        fragmentTransaction.detach(textFragment);
+        fragmentTransaction.attach(listFragment);
+        fragmentTransaction.commit();
+        
+        System.out.println("showList()");
+	}
+	
+	/**
+	 * Shows the text label, hides the list of search results. 
+	 */
+	public void showText() {
+		// Create a new fragment transaction.
+		FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		
+        // Hide all fragments, show text fragment.
+        fragmentTransaction.detach(listFragment);
+		fragmentTransaction.attach(textFragment);
+        fragmentTransaction.commit();
+        
+        System.out.println("showText()");
+	}
+	
+	/**
 	 * Starts searching procedure in backend.
 	 */
 	public void searchClicked() {
@@ -163,6 +187,10 @@ public class SearchFragment extends SherlockFragment {
 			listFragment.updateList(new ArrayList<Book>());
 			return;
 		}
+		
+		// Show "searching..." text instead of list.
+		textFragment.setText(getResources().getString(R.string.search_loading));
+		showText();
 		
 		// Create a new callback object, which refers to our searchDone(). 
 		Callback c = new Callback() {
@@ -202,7 +230,8 @@ public class SearchFragment extends SherlockFragment {
 			// Log,
 			Log.e("searching", "Searching failed: "+msg.error);
 			// And toast user.
-			Toast.makeText(getSherlockActivity().getApplicationContext(), "Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
+			Toast.makeText(getSherlockActivity().getApplicationContext(),
+					"Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
 			return;
 		}
 		// Convert results to ArrayList<Book>.  
@@ -210,7 +239,15 @@ public class SearchFragment extends SherlockFragment {
 				
 		// Did we get no results? 
 		if (books.size() == 0) {
-			Toast.makeText(getSherlockActivity().getApplicationContext(), "No results found.", Toast.LENGTH_LONG).show();
+			// Show text, hide search result list.
+			showText(); 
+			textFragment.setText(getResources()
+					.getString(R.string.search_no_results));
+			Toast.makeText(getSherlockActivity().getApplicationContext(),
+					"No results found.", Toast.LENGTH_LONG).show();
+		} else {
+			// Hide text, show search result list.
+			showList();
 		}
 		
 		// Update list with titles (empty or not).
@@ -226,7 +263,8 @@ public class SearchFragment extends SherlockFragment {
 			// Log,
 			Log.e("searching", "Searching failed: "+msg.error);
 			// And toast user.
-			Toast.makeText(getSherlockActivity().getApplicationContext(), "Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
+			Toast.makeText(getSherlockActivity().getApplicationContext(),
+					"Searching failed: "+msg.error, Toast.LENGTH_LONG).show();
 			return;
 		}
 		// Convert results to List<Book>.  
@@ -234,7 +272,15 @@ public class SearchFragment extends SherlockFragment {
 				
 		// Did we get no results? 
 		if (books.size() == 0) {
-			Toast.makeText(getSherlockActivity().getApplicationContext(), "No results found.", Toast.LENGTH_LONG).show();
+			// Show text, hide search result list.
+			showText();
+			textFragment.setText(getResources()
+					.getString(R.string.search_no_results));
+			Toast.makeText(getSherlockActivity().getApplicationContext(),
+					"No results found.", Toast.LENGTH_LONG).show();
+		} else {
+			// Hide text, show search result list.
+			showList();
 		}
 		
 		// Update list with titles (empty or not).

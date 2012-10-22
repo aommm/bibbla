@@ -19,63 +19,37 @@
 
 package dat255.grupp06.bibbla.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.app.SherlockFragment;
 
-import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
-import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
-import dat255.grupp06.bibbla.model.Book;
 
 /**
- * ListFragment that is used to display the search-results after a search.
- * 
- * @author Jonathan Orrö
- *
+ * Fragment which holds a nice-looking TextView.
+ * @author Niklas Logren
  */
-public class SearchTextFragment extends SherlockListFragment {
+public class SearchTextFragment extends SherlockFragment {
 	TextView textView;
-	public static final String DEFAULT_TEXT = "Inga resultat funna";
-	
-	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Save reference to textView.
-        textView = (TextView) getSherlockActivity().findViewById(R.id.text_search_status);
-        // Apply default text
-        System.out.println(textView!=null);
-        System.out.println(DEFAULT_TEXT);
-        textView.setText(DEFAULT_TEXT);
-        
-        System.out.println("onCreate()");
-    }
+	String text = "bobi";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
-		
-//		FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-		System.out.println("onCreateView()");
-		
 		return inflater.inflate(R.layout.fragment_search_text, container, false);
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+        textView = (TextView) getSherlockActivity().findViewById(R.id.text_search_status);
+        textView.setText(text);
+        textView.setTextColor(0xff0000ff);
+        textView.setBackgroundColor(0xffffffff);
 	}
 	
 	/**
@@ -84,7 +58,7 @@ public class SearchTextFragment extends SherlockListFragment {
 	 */
 	public void setText(String text) {
 		if (text != null) {
-			textView.setText(text);
+			this.text = text;
 		}
 	}
 
