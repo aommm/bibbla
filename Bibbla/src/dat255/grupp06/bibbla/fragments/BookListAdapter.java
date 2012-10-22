@@ -99,6 +99,12 @@ public class BookListAdapter extends BaseAdapter {
 	
 			view = activity.getLayoutInflater().inflate(
 					R.layout.list_item_book, parent, false);
+			//set Text Color.
+			((TextView) view.findViewById(R.id.search_result_title))
+			.setTextColor(0xff1e1e1e);
+			((TextView) view.findViewById(R.id.search_result_author))
+			.setTextColor(0xff1e1e1e);
+			//set Text text.
 			((TextView) view.findViewById(R.id.search_result_title))
 				.setText(book.getName());
 			((TextView) view.findViewById(R.id.search_result_author))

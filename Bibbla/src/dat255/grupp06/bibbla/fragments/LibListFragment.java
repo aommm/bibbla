@@ -47,20 +47,21 @@ public class LibListFragment extends SherlockListFragment {
 	public final static String LIB_VISIT =		"dat255.grupp06.bibbla.LIB_VISIT";
 	public final static String LIB_EMAIL =		"dat255.grupp06.bibbla.LIB_EMAIL";
 	public final static String LIB_OPENH = 		"dat255.grupp06.bibbla.LIB_OPENH";
+	
 
 	private ArrayList<Library> allLibInfo;
 	@Override
 	public void onCreate(Bundle savedInstanceState){
-		super.onActivityCreated(savedInstanceState);
+		super.onCreate(savedInstanceState);
 		allLibInfo= new ArrayList<Library>();
-	}
 
+}
 	@Override
 	/**
 	 * When an item is clicked in the list this method is called
 	 */
 	public void onListItemClick(ListView l, View v, int position, long id) {
-
+	    l.getChildAt(position).setBackgroundColor(0xff00bfff);
 		Intent intent = new Intent(getSherlockActivity(), LibraryOverlayActivity.class);
 
 		intent.putExtra(LIB_NAME, allLibInfo.get(position).getName());
@@ -72,6 +73,7 @@ public class LibListFragment extends SherlockListFragment {
 		intent.putExtra(LIB_EMAIL, allLibInfo.get(position).getEmail());
 		intent.putExtra(LIB_OPENH, allLibInfo.get(position).getOpenH());
 		startActivity(intent);
+	    l.getChildAt(position).setBackgroundColor(0xffFFFFFF);
 	}
 
 	/**
