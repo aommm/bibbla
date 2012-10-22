@@ -135,6 +135,7 @@ public class UnreserveJob extends AuthorizedJob {
 	    	
 	    	// No specified books? Unreserve everything.
 	    	if (books == null) {
+	    		// TODO Funkar inte enligt hörsägen.
 	    		put("cancelall", "JA");
 	    	}
 	    	

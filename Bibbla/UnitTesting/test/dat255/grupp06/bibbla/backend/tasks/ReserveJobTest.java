@@ -17,13 +17,9 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
 import java.util.Map;
 
 import junit.framework.TestCase;
-
-import org.jsoup.Connection.Response;
-
 import dat255.grupp06.bibbla.CredentialsFactory;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
@@ -38,11 +34,21 @@ import dat255.grupp06.bibbla.utils.Session;
  */
 public class ReserveJobTest extends TestCase {
 
-	/** Test book representing Hej mössan by Boel Werner */
-	public static final Book TEST_BOOK = new Book("", "", "", "", "https://" +
-			"www.gotlib.goteborg.se/search*swe~S6?/Xhej&searchscope=6&SORT=D" +
-			"/Xhej&searchscope=6&SORT=D&SUBKEY=hej/1%2C412%2C412%2CC/request" +
-			"browse~b1741463&FF=Xhej&searchscope=6&SORT=D&1%2C1%2C");
+	/** Test book: Hej mössan by Boel Werner */
+	public static final Book TEST_BOOK = new Book("", "", "", "",
+			"https://www.gotlib.goteborg.se/search*swe~S6?/Xhej&searchscope=" +
+			"6&SORT=D/Xhej&searchscope=6&SORT=D&SUBKEY=hej/1%2C412%2C412%2CC" +
+			"/requestbrowse~b1741463&FF=Xhej&searchscope=6&SORT=D&1%2C1%2C");
+	/** Test book: Hej det är jag... by Nina E. Grøntvedt */
+	public static final Book TEST_BOOK2 = new Book("", "", "", "",
+			"https://www.gotlib.goteborg.se/search*swe~S6?/Xhej&searchscope=" +
+			"6&SORT=D/Xhej&searchscope=6&SORT=D&SUBKEY=hej/1%2C412%2C412%2CC" +
+			"/requestbrowse~b1758572&FF=Xhej&searchscope=6&SORT=D&5%2C5%2C");
+	/** Test book: Hej Dino by Sarah Sheppard */
+	public static final Book TEST_BOOK3 = new Book("", "", "", "",
+			"https://www.gotlib.goteborg.se/search*swe~S6?/Xhej&searchscope=" +
+			"6&SORT=D/Xhej&searchscope=6&SORT=D&SUBKEY=hej/1%2C412%2C412%2CC" +
+			"/requestbrowse~b1679244&FF=Xhej&searchscope=6&SORT=D&6%2C6%2C");
 	private static final Book EMPTYURL_BOOK = new Book("", "", "", "", "");
 	private static final Book BADURL_BOOK = new Book("", "", "", "",
 			"http://google.com/");
@@ -105,22 +111,5 @@ public class ReserveJobTest extends TestCase {
 		assertEquals(data.get(ReserveJob.KEY_YEAR), ReserveJob.VAL_YEAR);
 		assertEquals(data.get(ReserveJob.KEY_MONTH), ReserveJob.VAL_MONTH);
 		assertEquals(data.get(ReserveJob.KEY_DAY), ReserveJob.VAL_DAY);
-	}
-
-	public void testConnect() throws IOException {
-		ReserveJob job = new ReserveJob(TEST_BOOK, LIBRARY_CODE, CREDENTIALS,
-				new Session()) {
-			public final Response response = connect();
-		};
-//		Response response = job.response;
-		fail("Not yet implemented");
-	}
-
-	public void testParseResults() {
-		fail("Not yet implemented");
-	}
-
-	public void testFindDiv() {
-		fail("Not yet implemented");
 	}
 }

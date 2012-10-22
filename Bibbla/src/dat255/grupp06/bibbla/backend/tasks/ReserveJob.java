@@ -83,8 +83,8 @@ public class ReserveJob extends AuthorizedJob {
 		// Attempt reservation
 		Response reserveResponse = null;
 		try {
-			reserveResponse = connect();
-		} catch (IOException e) {
+			reserveResponse = connectAndRetry();
+		} catch (Exception e) {
 			Message errorMessage = new Message();
 			errorMessage.error = Error.RESERVE_FAILED;
 			return errorMessage;
