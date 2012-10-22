@@ -21,11 +21,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-<<<<<<< HEAD
-=======
 import android.view.WindowManager;
 import android.widget.Button;
->>>>>>> 9db3ded3b3d6d065ebb09ca4ff69351984497e91
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,12 +33,9 @@ import com.actionbarsherlock.view.Window;
 
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.Backend;
-<<<<<<< HEAD
-=======
 import dat255.grupp06.bibbla.fragments.BookListFragment;
 import dat255.grupp06.bibbla.fragments.ProfileFragment;
 import dat255.grupp06.bibbla.fragments.SearchFragment;
->>>>>>> 9db3ded3b3d6d065ebb09ca4ff69351984497e91
 import dat255.grupp06.bibbla.fragments.SearchListFragment;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.CredentialsMissingException;
@@ -56,12 +50,14 @@ import dat255.grupp06.bibbla.utils.Message;
  */
 public class BookOverlayActivity extends SherlockActivity {
 
-	Book book;
-<<<<<<< HEAD
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	//Sets up some graphical stuff
+	private Book book;
+	private boolean isReserved;
+	private boolean isLoaned;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		
+		//Sets up some graphical stuff
     	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -76,32 +72,6 @@ public class BookOverlayActivity extends SherlockActivity {
         ((TextView)findViewById(R.id.overlay_book_title)).setText(book.getName());
         ((TextView)findViewById(R.id.overlay_book_author)).setText(book.getAuthor());
         ((TextView)findViewById(R.id.overlay_media_type)).setText(book.getType());
-        
-        //Then get the rest from Gotlib's servers
-        Callback c = new Callback() {
-			public void handleMessage(Message msg) {
-				BookOverlayActivity.this.setDetails(msg);
-			}
-		};
-=======
-	boolean isReserved;
-	boolean isLoaned;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		//Sets up some graphical stuff
-		setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
-		requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_book_overlay);
-		getSupportActionBar().hide();
-
-		//Get all of the data the intent sends
-		Intent intent = getIntent();
 
 		book =(Book)intent.getSerializableExtra("dat255.grupp06.bibbla.BOOK");
 		Log.d("Jonis", "unreserveid : "+book.getUnreserveId());
@@ -120,7 +90,6 @@ public class BookOverlayActivity extends SherlockActivity {
 			((Button)findViewById(R.id.button_reserve_book)).setVisibility(Button.INVISIBLE);
 			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
 		}
->>>>>>> 9db3ded3b3d6d065ebb09ca4ff69351984497e91
 		
 		//Then get the rest from Gotlib's servers
 	    if(!isReserved && !isLoaned) {
