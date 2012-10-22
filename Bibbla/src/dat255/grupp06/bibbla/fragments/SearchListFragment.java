@@ -79,7 +79,7 @@ public class SearchListFragment extends SherlockListFragment {
     		books.add(new Book());
     	}
 
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
+    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true, false);
 
     	this.setListAdapter(adapter);
     }
@@ -92,7 +92,7 @@ public class SearchListFragment extends SherlockListFragment {
     	int selection = currentBooks.size();
     	currentBooks.addAll(books);
     	currentBooks.add(new Book());
-    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), currentBooks, true);
+    	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), currentBooks, true, false);
     	currentBooks.remove(currentBooks.size()-1);
     	this.setListAdapter(adapter);
     	this.setSelection(selection);

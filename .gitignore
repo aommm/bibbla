@@ -17,3 +17,5 @@ gen/
 
 # Private credentials file, for debugging.
 Bibbla/src/dat255/grupp06/bibbla/utils/PrivateCredentials.java
+
+!bibbla.apk

@@ -92,6 +92,10 @@ public class LibraryFragment extends SherlockFragment {
 		}
 	}
 
+	/**
+	 * Makes the list appear
+	 * @param libs - list to appear
+	 */
 	private void listAppear(ArrayList<Library> libs) {
 		liblistFragment.setLibList(libs);
 	}

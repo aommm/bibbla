@@ -142,6 +142,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 				} else {
 					this.saveCredentials(cred);
 					backend.saveCredentials(cred);
+					profileFragment.setDontGetCachedBooks(true);
 				}
 			}
 			
@@ -155,6 +156,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 		}
 	}
 	
+	/**
+	 * Saves the credentials to shared preferences
+	 * @param cred - The credentials ot be saved
+	 */
 	private void saveCredentials(Credentials cred) {
 		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -170,7 +175,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 		// TODO Refactor to eliminate duplicate code?
 		switch(tab.getPosition()) {
 			case 0:
-				
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
 			        ft.add(R.id.fragment_container, searchFragment);
@@ -234,9 +238,13 @@ ActionBar.TabListener, LoginCallbackHandler {
 	public void logout(View view) {
 		this.emptyPrefernces();
 		backend.logOut();
+		profileFragment.setDontGetCachedBooks(true);
 		getSupportActionBar().selectTab(searchTab);
 	}
 	
+	/**
+	 * The method name says is it all.
+	 */
 	private void emptyPrefernces() {
 		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -244,7 +252,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 		editor.putString("card", "");
 		editor.putString("pin", "");
 		editor.commit(); 
-
 	}
 
 	/**
@@ -280,6 +287,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 		startActivityForResult(intent, RESULT_LOGIN_FORM);
 	}
 	
+	/**
+	 * Selects the search tab
+	 */
 	public void selectSearchTab() {
 		getSupportActionBar().selectTab(searchTab);
 	}
