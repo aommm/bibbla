@@ -63,11 +63,15 @@ public class LibraryFragment extends SherlockFragment {
 		if(liblistFragment == null) {
 			liblistFragment = new LibListFragment();
 			fragmentTransaction.add(R.id.lib_list, liblistFragment);
+
 		} else {
 			fragmentTransaction.attach(liblistFragment);
 		}
 		fragmentTransaction.commit();
+
 		return inflater.inflate(R.layout.fragment_library, container, false);
+		
+
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class LibraryFragment extends SherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		if(allLibrariesList.size() == 0) {
 			updateInfo();
 		}
