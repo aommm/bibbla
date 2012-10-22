@@ -1,4 +1,4 @@
-﻿/**
+/**
     This file is part of Bibbla.
 
     Bibbla is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@ package dat255.grupp06.bibbla;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -94,16 +94,6 @@ ActionBar.TabListener, LoginCallbackHandler {
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
         getSupportActionBar().addTab(libraryTab);
-        
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        String card = sharedPreferences.getString("card", "");
-    	String pin = sharedPreferences.getString("pin", "");
-    	String name = sharedPreferences.getString("name", "");
-        
-    	
-        // seet backend
-    	
-    	backend.saveCredentials(new Credentials(name,card,pin));
     }
 	
 	@Override
@@ -131,7 +121,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 				// Retry login form (recursive)
 				showCredentialsDialog(loginDoneCallback);
 			} else {
-				this.saveCredentials(cred);
 				backend.saveCredentials(cred);
 			}
 			loginDoneCallback.handleMessage(new Message());
@@ -142,15 +131,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			throw new IllegalArgumentException("onActivityResult was called "+
 					"with an unknown request code");
 		}
-	}
-	
-	private void saveCredentials(Credentials c) {
-	    SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("name", c.name);
-        editor.putString("card", c.card);
-        editor.putString("pin", c.pin);
-        editor.commit(); 
 	}
 	
 	@Override
@@ -241,6 +221,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 	public void moreSearchResultsClicked(int page, String searchString) {
 		searchFragment.getMoreSearchResults(page, searchString);
 	}
+	
 	/**
 	 * Hides the virtual keyboard.
 	 */

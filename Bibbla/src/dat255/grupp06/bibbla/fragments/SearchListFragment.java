@@ -40,7 +40,7 @@ import dat255.grupp06.bibbla.model.Book;
  *
  */
 public class SearchListFragment extends SherlockListFragment {
-	public final static String BOOK = "dat255.grupp06.bibbla.AUTHOR";
+	public final static String BOOK = "dat255.grupp06.bibbla.BOOK";
 	private ArrayList<Book> currentBooks;
 	private int currentPage;
 	private String lastSearch;
@@ -76,7 +76,9 @@ public class SearchListFragment extends SherlockListFragment {
     	//"fetch more search results"-message
     	currentBooks.clear();
     	currentBooks.addAll(books);
-    	books.add(new Book());
+    	if(currentBooks.size()==50) {
+    		books.add(new Book());
+    	}
 
     	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
 
