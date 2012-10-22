@@ -10,9 +10,14 @@ import dat255.grupp06.bibbla.utils.Session;
 public class UnreserveJobTest extends TestCase {
 	
 	private final Session SESSION = new Session();
+	private final Book TEST_BOOK = ReserveJobTest.TEST_BOOK;
 	private final ReserveJob reserveJob = new ReserveJob(
-			ReserveJobTest.TEST_BOOK, ReserveJobTest.LIBRARY_CODE,
+			TEST_BOOK, ReserveJobTest.LIBRARY_CODE,
 			ReserveJobTest.CREDENTIALS, SESSION);
+	
+	public UnreserveJobTest() {
+		TEST_BOOK.setUnreserveId("canceli4058195x01");
+	}
 
 	public void testConnect() {
 		fail("Not yet implemented");
@@ -28,7 +33,7 @@ public class UnreserveJobTest extends TestCase {
 		assertNull(reserveMessage.error);
 		
 		// Method call
-		UnreserveJob job = new UnreserveJob(ReserveJobTest.TEST_BOOK,
+		UnreserveJob job = new UnreserveJob(TEST_BOOK,
 				ReserveJobTest.CREDENTIALS, SESSION);
 		Message message = job.run();
 		
@@ -36,7 +41,7 @@ public class UnreserveJobTest extends TestCase {
 		assertNull(message.error);
 		@SuppressWarnings("unchecked")
 		List<Book> myBooksAfterUnreserve = (List<Book>) message.obj;
-		assertFalse(myBooksAfterUnreserve.contains(ReserveJobTest.TEST_BOOK));
+		assertFalse(myBooksAfterUnreserve.contains(TEST_BOOK));
 
 		@SuppressWarnings("unchecked")
 		int afterUnreserveSize = ((List<Book>) booksJob.run().obj).size();
