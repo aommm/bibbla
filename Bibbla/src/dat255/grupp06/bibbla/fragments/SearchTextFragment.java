@@ -1,5 +1,5 @@
 /**
-    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan OrrÃ¶.
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
     
     This file is part of Bibbla.
 
@@ -45,7 +45,7 @@ import dat255.grupp06.bibbla.model.Book;
 /**
  * ListFragment that is used to display the search-results after a search.
  * 
- * @author Jonathan Orrï¿½
+ * @author Jonathan Orrö
  *
  */
 public class SearchTextFragment extends SherlockListFragment {
@@ -55,28 +55,26 @@ public class SearchTextFragment extends SherlockListFragment {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         // Save reference to textView.
         textView = (TextView) getSherlockActivity().findViewById(R.id.text_search_status);
         // Apply default text
+        System.out.println(textView!=null);
+        System.out.println(DEFAULT_TEXT);
         textView.setText(DEFAULT_TEXT);
+        
+        System.out.println("onCreate()");
     }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
 		
-		FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        
-/**
-	    fragmentTransaction.add(R.id.list_container, listFragment);
-		} else {
-			fragmentTransaction.attach(listFragment);
-		}
+//		FragmentManager fragmentManager = getFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.commit();
-        
-        **/
+		System.out.println("onCreateView()");
+		
 		return inflater.inflate(R.layout.fragment_search_text, container, false);
 	}
 	
