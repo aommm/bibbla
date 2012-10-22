@@ -115,8 +115,12 @@ public class BookOverlayActivity extends SherlockActivity {
 	}
 	
 	public void renewLoanDone(Message msg) {
+		if(msg.error == null) {
 		((TextView)findViewById(R.id.text_reserve_book)).setText("Lånet är längre än förut?!");
 		setSupportProgressBarIndeterminateVisibility(false);
+		} else {
+			Log.d("Jonis", msg.error.toString());
+		}
 	}
 
 	/**
