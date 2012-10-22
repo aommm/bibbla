@@ -73,6 +73,12 @@
     <string name="reservations_list_error">Kunde inte hämta listan med reservationer</string>
     
     <!-- Book overlay -->
+    <string name="book_header">Detaljerad Information</string>
+    <string name="title_book_title">Titel</string>
+        <string name="title_book_authour">Författare</string>
+        <string name="title_book_isbn">ISBN</string>
+        <string name="title_media_type">Typ av media</string>
+        <string name="title_physical_info">Fysisk information</string>
     <string name="button_reserve">Reservera</string>
     <string name="library_prompt">Choose a country</string>
  
