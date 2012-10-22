@@ -161,7 +161,7 @@ public class ProfileFragment extends SherlockFragment {
 			}});
 			reservationsPending = true;
 			
-			updateSpinnerState();
+			//updateSpinnerState();
 		}
 		catch (CredentialsMissingException e) {
 			loginCallbackHandler.showCredentialsDialog(new Callback() {
@@ -177,7 +177,7 @@ public class ProfileFragment extends SherlockFragment {
 		TextView nameHeading = (TextView) activity.findViewById(R.id.name_heading);
 		if (nameHeading != null) nameHeading.setText(name);
 		namePending = false;
-		updateSpinnerState();
+		//updateSpinnerState();
 	}
 	
 	/**
@@ -191,7 +191,7 @@ public class ProfileFragment extends SherlockFragment {
 		if (debtView != null) debtView.setText(String.
 				format(getString(R.string.debt_view_text), debt));
 		debtPending = false;
-		updateSpinnerState();
+		//updateSpinnerState();
 	}
 	
 	/**
@@ -208,7 +208,7 @@ public class ProfileFragment extends SherlockFragment {
 			Toast.makeText(activity, R.string.loans_list_error, Toast.LENGTH_SHORT).show();
 		}
 		loansPending = false;
-		updateSpinnerState();
+		//updateSpinnerState();
 	}
 	
 	/**
@@ -225,7 +225,7 @@ public class ProfileFragment extends SherlockFragment {
 			Toast.makeText(activity, R.string.reservations_list_error, Toast.LENGTH_SHORT).show();
 		}
 		reservationsPending = false;
-		updateSpinnerState();
+		//updateSpinnerState();
 	}
 
 	/** Hide loading spinner if all fetching is done. */

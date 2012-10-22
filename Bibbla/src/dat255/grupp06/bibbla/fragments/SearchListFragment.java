@@ -76,7 +76,9 @@ public class SearchListFragment extends SherlockListFragment {
     	//"fetch more search results"-message
     	currentBooks.clear();
     	currentBooks.addAll(books);
-    	books.add(new Book());
+    	if(currentBooks.size()==50) {
+    		books.add(new Book());
+    	}
 
     	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, true);
 

@@ -35,10 +35,7 @@ public class BookListFragment extends SherlockListFragment {
     	
     	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
     	
-    	Log.d("Jonis", currentBooks.get(position).getUnreserveId()+"");
-    	Book book = (Book) currentBooks.get(position).clone();
-    	
-    	intent.putExtra(BOOK, book);
+    	intent.putExtra(BOOK, currentBooks.get(position));
     	intent.putExtra(RESERVED, true);
     	intent.putExtra(LOANED, false);
     	
