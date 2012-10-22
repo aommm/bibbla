@@ -10,13 +10,9 @@ import dat255.grupp06.bibbla.utils.Session;
 public class UnreserveJobTest extends TestCase {
 	
 	private final Session SESSION = new Session();
-	private final ReserveJob reserveJob;
-
-	protected void setUp() throws Exception {
-		super.setUp();
-		reserveJob = new ReserveJob(ReserveJobTest.TEST_BOOK, ReserveJobTest.
-				LIBRARY_CODE, ReserveJobTest.CREDENTIALS, SESSION);
-	}
+	private final ReserveJob reserveJob = new ReserveJob(
+			ReserveJobTest.TEST_BOOK, ReserveJobTest.LIBRARY_CODE,
+			ReserveJobTest.CREDENTIALS, SESSION);
 
 	public void testConnect() {
 		fail("Not yet implemented");
