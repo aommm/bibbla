@@ -1,5 +1,5 @@
 /**
-    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrï¿½.
 
     This file is part of Bibbla.
 
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import dat255.grupp06.bibbla.MainActivity;
 import dat255.grupp06.bibbla.R;
 import dat255.grupp06.bibbla.backend.BackendFactory;
 import dat255.grupp06.bibbla.backend.IBackend;
@@ -162,21 +164,20 @@ public class ProfileFragment extends SherlockFragment {
 			//updateSpinnerState();
 		}
 		catch (CredentialsMissingException e) {
-			//			
-			//			if(!dontLogin) {
-			//				loginCallbackHandler.showCredentialsDialog(new Callback() {
-			//					@Override public void handleMessage(Message msg) {
-			//						updateFromBackend();
-			//				}});
-			//			} else {
-			//				Handler handler = new Handler();
-			//				handler.post(new Runnable() {
-			//					@Override
-			//					public void run() {
-			//						((MainActivity)getSherlockActivity()).selectSearchTab();
-			//					}
-			//				});
-			//			}
+			if(!dontLogin) {
+				loginCallbackHandler.showCredentialsDialog(new Callback() {
+					@Override public void handleMessage(Message msg) {
+						updateFromBackend();
+				}});
+			} else {
+				Handler handler = new Handler();
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						((MainActivity)getSherlockActivity()).selectSearchTab();
+					}
+				});
+			}
 		}
 	}
 
