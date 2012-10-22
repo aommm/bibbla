@@ -21,6 +21,7 @@ package dat255.grupp06.bibbla;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -100,6 +101,14 @@ ActionBar.TabListener, LoginCallbackHandler {
         getSupportActionBar().addTab(searchTab);
         getSupportActionBar().addTab(profileTab);
         getSupportActionBar().addTab(libraryTab);
+        
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String card = sharedPreferences.getString("card", "");
+        String pin = sharedPreferences.getString("pin", "");
+        String name = sharedPreferences.getString("name", "");
+        
+        backend.saveCredentials(new Credentials(name, card,pin));
+
     }
 	
 	@Override
@@ -134,6 +143,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 					// Retry login form (recursive)
 					showCredentialsDialog(loginDoneCallback);
 				} else {
+					this.saveCredentials(cred);
 					backend.saveCredentials(cred);
 				}
 			}
@@ -141,11 +151,6 @@ ActionBar.TabListener, LoginCallbackHandler {
 			loginDoneCallback.handleMessage(new Message());
 			// The callback should not be handled more than once.
 			loginDoneCallback = null;
-			
-			
-			
-			Log.d("Jonis", "hej2");
-			
 			break;
 		default:
 			throw new IllegalArgumentException("onActivityResult was called "+
@@ -153,6 +158,16 @@ ActionBar.TabListener, LoginCallbackHandler {
 		}
 	}
 	
+	private void saveCredentials(Credentials cred) {
+		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("name", cred.name);
+		editor.putString("card", cred.card);
+		editor.putString("pin", cred.pin);
+		editor.commit(); 
+
+	}
+
 	@Override
 	public void onTabSelected(final Tab tab, final FragmentTransaction ft) {
 		// TODO Refactor to eliminate duplicate code?
@@ -220,23 +235,21 @@ ActionBar.TabListener, LoginCallbackHandler {
 	 * @param view
 	 */
 	public void logout(View view) {
+		this.emptyPrefernces();
 		backend.logOut();
 		getSupportActionBar().selectTab(searchTab);
-		
-		/*
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		if (searchFragment == null) {
-			searchFragment = new SearchFragment();
-			ft.add(R.id.fragment_container, searchFragment);
-		} else {
-			ft.attach(searchFragment);
-			// TODO detach...?
-		}
-		ft.detach(profileFragment);
-		ft.commit();
-		*/
 	}
 	
+	private void emptyPrefernces() {
+		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("name", "");
+		editor.putString("card", "");
+		editor.putString("pin", "");
+		editor.commit(); 
+
+	}
+
 	/**
 	 * Is called when the Search button is clicked.
 	 * @param view - The view the click came from.

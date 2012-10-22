@@ -141,19 +141,15 @@ public class UnreserveJob extends AuthorizedJob {
 	    	// Unreserve only the specified books.
 	    	else {
 	    		put("updateholdssome", "JA");
-	    		// (The duplicated line is necessary. Don't ask.)
-	    		put("currentsortorder", "current_pickup");
-				put("currentsortorder", "current_pickup");  
 		    	// Loop through the supplied books and add to post. 
 		    	for (int i=0; i<books.size(); i++) {
 					put(books.get(i).getUnreserveId(), "on");
-					put(books.get(i).getFreezeId(), "off");
 				}
 	    	}
 	    }};
 	    
 	    System.out.println(postData);
-	    
+
 	    // Send POST request to user url and save response.
 	    Response r = Jsoup.connect(userUrl)
 			    .method(Method.POST)

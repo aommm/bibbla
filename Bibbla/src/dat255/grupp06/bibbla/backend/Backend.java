@@ -588,6 +588,12 @@ public final class Backend {
 	public void logOut(){
 		session = new Session();
 		settings = new Settings();
+		this.debt = 0;
+		this.detailedViews.clear();
+		this.libraries.clear();
+		this.reservations.clear();
+		this.loanedBooks.clear();
+		this.searchResults.clear();
 	}
 	
 	public void saveCredentials(Credentials cred) {

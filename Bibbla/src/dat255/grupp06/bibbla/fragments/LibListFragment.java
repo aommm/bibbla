@@ -1,6 +1,6 @@
 /**
     Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
-    
+
     This file is part of Bibbla.
 
     Bibbla is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ import dat255.grupp06.bibbla.model.Library;
 /**
  * ListFragment that is used to display the available Libraries.
  * 
- * 
  *@author Malla
  */
 public class LibListFragment extends SherlockListFragment {
@@ -50,45 +49,40 @@ public class LibListFragment extends SherlockListFragment {
 	public final static String LIB_OPENH = 		"dat255.grupp06.bibbla.LIB_OPENH";
 
 	private ArrayList<Library> allLibInfo;
-
-	
 	@Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        
-        allLibInfo = new ArrayList<Library>();
-    }
+	public void onCreate(Bundle savedInstanceState){
+		super.onActivityCreated(savedInstanceState);
+		allLibInfo= new ArrayList<Library>();
+	}
 
-    @Override
-    /**
-     * When an item is clicked in the list this method is called
-     */
-    public void onListItemClick(ListView l, View v, int position, long id) {
+	@Override
+	/**
+	 * When an item is clicked in the list this method is called
+	 */
+	public void onListItemClick(ListView l, View v, int position, long id) {
 
-	    	Intent intent = new Intent(getSherlockActivity(), LibraryOverlayActivity.class);
+		Intent intent = new Intent(getSherlockActivity(), LibraryOverlayActivity.class);
 
-	    	intent.putExtra(LIB_NAME, allLibInfo.get(position).getName());
-	    	intent.putExtra(LIB_ADDRESS, allLibInfo.get(position).getAddress());
-	    	intent.putExtra(LIB_POSTCODE, allLibInfo.get(position).getPostCode());
-	    	intent.putExtra(LIB_AREA, allLibInfo.get(position).getArea());
-	    	intent.putExtra(LIB_PHONE, allLibInfo.get(position).getPhoneNr());
-	    	intent.putExtra(LIB_VISIT, allLibInfo.get(position).getVisAdr());
-	    	intent.putExtra(LIB_EMAIL, allLibInfo.get(position).getEmail());
-	    	intent.putExtra(LIB_OPENH, allLibInfo.get(position).getOpenH());
-	    	startActivity(intent);
+		intent.putExtra(LIB_NAME, allLibInfo.get(position).getName());
+		intent.putExtra(LIB_ADDRESS, allLibInfo.get(position).getAddress());
+		intent.putExtra(LIB_POSTCODE, allLibInfo.get(position).getPostCode());
+		intent.putExtra(LIB_AREA, allLibInfo.get(position).getArea());
+		intent.putExtra(LIB_PHONE, allLibInfo.get(position).getPhoneNr());
+		intent.putExtra(LIB_VISIT, allLibInfo.get(position).getVisAdr());
+		intent.putExtra(LIB_EMAIL, allLibInfo.get(position).getEmail());
+		intent.putExtra(LIB_OPENH, allLibInfo.get(position).getOpenH());
+		startActivity(intent);
+	}
 
-    }
-    
-    /**
-     * Receives the search-results and swaps the contents in the list with them.
-     */
-    public void updateList(List<Library> libs) {
-    	allLibInfo.clear();
-    	allLibInfo.addAll(libs);
-    	libs.add(new Library());
+	/**
+	 * Receives the search-results and swaps the contents in the list with them.
+	 */
+	public void setLibList(List<Library> libs) {
+		allLibInfo.clear();
+		allLibInfo.addAll(libs);
 
-    	ListAdapter adapter = new LibListAdapter(getSherlockActivity(), libs);
+		ListAdapter adapter = new LibListAdapter(getSherlockActivity(), libs);
 
-    	this.setListAdapter(adapter);
-    }    
+		this.setListAdapter(adapter);
+	}    
 }
