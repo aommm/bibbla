@@ -19,10 +19,6 @@ public class UnreserveJobTest extends TestCase {
 		TEST_BOOK.setUnreserveId("canceli4058195x01");
 	}
 
-	public void testConnect() {
-		fail("Not yet implemented");
-	}
-
 	public void testRun() {
 		// Prepare: Get number of reservations and reserve the test book.
 		MyReservationsJob booksJob = new MyReservationsJob(

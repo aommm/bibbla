@@ -17,13 +17,9 @@
 
 package dat255.grupp06.bibbla.backend.tasks;
 
-import java.io.IOException;
 import java.util.Map;
 
 import junit.framework.TestCase;
-
-import org.jsoup.Connection.Response;
-
 import dat255.grupp06.bibbla.CredentialsFactory;
 import dat255.grupp06.bibbla.model.Book;
 import dat255.grupp06.bibbla.model.Credentials;
@@ -105,22 +101,5 @@ public class ReserveJobTest extends TestCase {
 		assertEquals(data.get(ReserveJob.KEY_YEAR), ReserveJob.VAL_YEAR);
 		assertEquals(data.get(ReserveJob.KEY_MONTH), ReserveJob.VAL_MONTH);
 		assertEquals(data.get(ReserveJob.KEY_DAY), ReserveJob.VAL_DAY);
-	}
-
-	public void testConnect() throws IOException {
-		ReserveJob job = new ReserveJob(TEST_BOOK, LIBRARY_CODE, CREDENTIALS,
-				new Session()) {
-			public final Response response = connect();
-		};
-//		Response response = job.response;
-		fail("Not yet implemented");
-	}
-
-	public void testParseResults() {
-		fail("Not yet implemented");
-	}
-
-	public void testFindDiv() {
-		fail("Not yet implemented");
 	}
 }
