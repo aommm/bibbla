@@ -91,11 +91,17 @@ public class LibListAdapter extends BaseAdapter {
 		Library lib = list.get(position);
 
 		View view;
-
+		
 		if(position < list.size()-1 || list.size() < 50) {
 
 			view = activity.getLayoutInflater().inflate(
 					R.layout.list_item_library, parent, false);
+			//Set Text Color.
+			((TextView) view.findViewById(R.id.lib_name))
+			.setTextColor(0xff1e1e1e);
+			((TextView) view.findViewById(R.id.lib_area))
+			.setTextColor(0xff1e1e1e);
+			//Set Text text.
 			((TextView) view.findViewById(R.id.lib_name))
 								.setText(lib.getName());
 			((TextView) view.findViewById(R.id.lib_area))

@@ -15,7 +15,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
+    along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -73,7 +73,7 @@
         <TextView
             style="@style/OverlayTitle"
             android:text="@string/title_book_isbn" />
-       
+
         <TextView
             android:id="@+id/overlay_book_isbn"
             style="@style/OverlayText" />

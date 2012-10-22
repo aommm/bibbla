@@ -53,7 +53,7 @@ public class BookListFragment extends SherlockListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-    	
+	    l.getChildAt(position).setBackgroundColor(0xff00bfff);
     	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
     	
     	Log.d("Jonis", "url :"+currentBooks.get(position).getUrl());
@@ -63,6 +63,7 @@ public class BookListFragment extends SherlockListFragment {
     	intent.putExtra(LOANED, isLoanedList);
     	
     	startActivity(intent);
+	    l.getChildAt(position).setBackgroundColor(0xffFFFFFF);
     }
     
     /**

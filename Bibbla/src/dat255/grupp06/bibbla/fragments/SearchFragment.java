@@ -93,6 +93,9 @@ public class SearchFragment extends SherlockFragment {
 		// Get our GUI elements.
 		searchButton = (Button)getSherlockActivity().findViewById(R.id.button_search);
 		searchEdit = (EditText)getSherlockActivity().findViewById(R.id.edit_search);
+		
+		searchEdit.setTextColor(0xff00ff00);
+
 		searchProgress = (ProgressBar)getSherlockActivity().findViewById(R.id.progress_search);
 		
 		// Create a listener for keyboard "enter" button.
@@ -182,6 +185,7 @@ public class SearchFragment extends SherlockFragment {
 			return;
 		}
 		// Convert results to ArrayList<Book>.  
+		@SuppressWarnings("unchecked")
 		ArrayList<Book> books = (ArrayList<Book>) msg.obj;
 				
 		// Did we get no results? 
@@ -213,6 +217,7 @@ public class SearchFragment extends SherlockFragment {
 			return;
 		}
 		// Convert results to List<Book>.  
+		@SuppressWarnings("unchecked")
 		ArrayList<Book> books = (ArrayList<Book>) msg.obj;
 				
 		// Did we get no results? 
