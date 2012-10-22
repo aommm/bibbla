@@ -15,7 +15,7 @@
 
     You should have received a copy of the GNU General Public License
     along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
- **//
+ **/
 
 package dat255.grupp06.bibbla.backend.tasks;
 
