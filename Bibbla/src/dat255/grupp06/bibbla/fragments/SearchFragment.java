@@ -51,7 +51,6 @@ import dat255.grupp06.bibbla.utils.Message;
  * 
  * @author Jonathan Orrö
  */
-
 public class SearchFragment extends SherlockFragment {
 
 	SearchListFragment listFragment;
@@ -60,9 +59,6 @@ public class SearchFragment extends SherlockFragment {
 	ProgressBar searchProgress;
 	
 	@Override
-	/**
-	 * Inflates the view and sets up the ListFragment.
-	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		FragmentManager fragmentManager = getFragmentManager();
@@ -89,9 +85,6 @@ public class SearchFragment extends SherlockFragment {
 	}
 	
 	@Override
-	/**
-	 * Makes keyboard "enter" start searching procedure.
-	 */
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
@@ -147,6 +140,12 @@ public class SearchFragment extends SherlockFragment {
 		listFragment.setLastSearchString(searchString);
 	}
 	
+	/**
+	 * Is used to get more search results after the first page has already been
+	 * fetched.
+	 * @param page - What page do you want?
+	 * @param searchString - What are you searching for?
+	 */
 	public void getMoreSearchResults(int page, String searchString) {
 		
 		setProgressBarVisibility(true);
@@ -163,7 +162,11 @@ public class SearchFragment extends SherlockFragment {
 		Backend.getBackend().search(searchString, page, c);
 	}
 	
-	/** Is called when backend searching is done.**/
+	/**
+	 * Is called from a callback object when backend searching is done.
+	 * @param msg - Message object that contains all the books that searchJob
+	 * 				finds. Also the occasional error message.
+	 */
 	public void searchDone(Message msg) {
 		// Hide progress bar.
 		setProgressBarVisibility(false);
@@ -188,6 +191,13 @@ public class SearchFragment extends SherlockFragment {
 		listFragment.updateList(books);
 	}
 	
+	/**
+	 * Is called from a callback object when backend searching is done.
+	 * It is different from searchDone since we want to append the search
+	 * results to the current list instead of replacing it.
+	 * @param msg - Contains the books found by the search job and also
+	 * 				an error message if there was an error.
+	 */
 	public void moreSearchDone(Message msg) {
 		// Hide progress bar.
 		setProgressBarVisibility(false);

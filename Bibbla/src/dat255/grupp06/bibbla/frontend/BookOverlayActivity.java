@@ -79,30 +79,17 @@ public class BookOverlayActivity extends SherlockActivity {
 		((TextView)findViewById(R.id.overlay_book_author)).setText(book.getAuthor());
 		isReserved = intent.getBooleanExtra(BookListFragment.RESERVED, false);
 		isLoaned = intent.getBooleanExtra(BookListFragment.LOANED, false);
-
-		if(isReserved) {
-			((Button)findViewById(R.id.button_reserve_book)).setHint("Avreservera");
-			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
-		} else if(isLoaned) {
-			((Button)findViewById(R.id.button_reserve_book)).setHint("Förläng lån");
-			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
-		} else if(!Backend.getBackend().isLoggedIn()) {
-			((Button)findViewById(R.id.button_reserve_book)).setVisibility(Button.INVISIBLE);
-			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
-		}
+		
+		updateGui();
 		
 		//Then get the rest from Gotlib's servers
-	    if(!isReserved && !isLoaned) {
-			Callback c = new Callback() {
-				public void handleMessage(Message msg) {
-					BookOverlayActivity.this.setDetails(msg);
-				}
-			};
-	    
-			Backend.getBackend().fetchDetailedView(book, c);
-	    }
-		
-		
+		Callback c = new Callback() {
+			public void handleMessage(Message msg) {
+				BookOverlayActivity.this.setDetails(msg);
+			}
+		};
+    
+		Backend.getBackend().fetchDetailedView(book, c);
 	}
 
 	/**
@@ -110,10 +97,18 @@ public class BookOverlayActivity extends SherlockActivity {
 	 * @param msg - A message object that will contain any eventual error messages
 	 */
 	public void reserveDone(Message msg) {
-		((TextView)findViewById(R.id.text_reserve_book)).setText("Reservation klar!");
-		setSupportProgressBarIndeterminateVisibility(false);
+		if(msg.error == null) {
+			((TextView)findViewById(R.id.text_reserve_book)).setText("Reservation klar!");
+			setSupportProgressBarIndeterminateVisibility(false);
+			isReserved = true;
+			updateGui();
+		}
 	}
 	
+	/**
+	 * This method will be called by a callback object when a unReservation is done.
+	 * @param msg - A message object that will contain any eventual error messages
+	 */
 	public void unReserveDone(Message msg) {	
 		if(msg.error == null) {
 			((TextView)findViewById(R.id.text_reserve_book)).setText("Avreservation klar!");
@@ -123,6 +118,10 @@ public class BookOverlayActivity extends SherlockActivity {
 		}
 	}
 	
+	/**
+	 * This method will be called by a callback object when a renewal is done.
+	 * @param msg - A message object that will contain any eventual error messages
+	 */
 	public void renewLoanDone(Message msg) {
 		if(msg.error == null) {
 		((TextView)findViewById(R.id.text_reserve_book)).setText("Lånet är förlängt!");
@@ -212,11 +211,27 @@ public class BookOverlayActivity extends SherlockActivity {
 		((TextView)findViewById(R.id.overlay_book_isbn)).setText(book.getIsbn());
 		((TextView)findViewById(R.id.overlay_book_physical)).setText(book.getPhysicalDescription());
 	}
+	
+	/**
+	 * Updates the GUI. Sets the correct text on the button and hides the spinner if it need to. 
+	 */
+	private void updateGui() {
+		if(isReserved) {
+			((Button)findViewById(R.id.button_reserve_book)).setHint("Avreservera");
+			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
+		} else if(isLoaned) {
+			((Button)findViewById(R.id.button_reserve_book)).setHint("Förläng lån");
+			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
+		} else if(!Backend.getBackend().isLoggedIn()) {
+			((Button)findViewById(R.id.button_reserve_book)).setVisibility(Button.INVISIBLE);
+			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
+		}
+	}
 
 	/**
-	 * 
-	 * @param library
-	 * @return
+	 * A method to convert a library name to the code equivalent to be used in the backend.
+	 * @param library - Name of the library
+	 * @return A short code, usually consisting of 2 characters, that represents a library.
 	 */
 	public String libraryToCode(String library) {
 		if(library.equals("Askim"))

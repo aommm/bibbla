@@ -85,7 +85,7 @@ public class LibListFragment extends SherlockListFragment {
     	allLibInfo.addAll(libs);
     	libs.add(new Library());
 
-    	ListAdapter adapter = new LibListAdapter(getSherlockActivity(), libs, true);
+    	ListAdapter adapter = new LibListAdapter(getSherlockActivity(), libs);
 
     	this.setListAdapter(adapter);
     }    

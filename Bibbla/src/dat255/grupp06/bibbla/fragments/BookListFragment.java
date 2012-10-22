@@ -15,6 +15,10 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import dat255.grupp06.bibbla.frontend.BookOverlayActivity;
 import dat255.grupp06.bibbla.model.Book;
 
+/**
+ * A listFragment used to hold books in the profile tab.
+ * @author Jonathan Orrö
+ */
 public class BookListFragment extends SherlockListFragment {
 	public final static String BOOK = "dat255.grupp06.bibbla.BOOK";
 	public final static String RESERVED = "dat255.grupp06.bibbla.RESERVED";
@@ -30,9 +34,6 @@ public class BookListFragment extends SherlockListFragment {
     }
 
     @Override
-    /**
-     * When an item is clicked in the list this method is called
-     */
     public void onListItemClick(ListView l, View v, int position, long id) {
     	
     	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
@@ -48,6 +49,7 @@ public class BookListFragment extends SherlockListFragment {
     
     /**
      * Receives the search-results and swaps the contents in the list with them.
+     * @param books - list of books to replace the current list with.
      */
     public void updateList(List<Book> books) {
     	//Adds a book to act as a placeholder for the 
@@ -60,10 +62,18 @@ public class BookListFragment extends SherlockListFragment {
     	this.setListAdapter(adapter);
     }
     
+    /**
+     * Sets if the list is a list of reserved books or not
+     * @param reserved  - true or false
+     */
     public void setReservedListStatus(boolean reserved) {
     	isReservedList = reserved;
     }
     
+    /**
+     * Sets if the list is a list of loaned books or not
+     * @param loaned - true or false
+     */
     public void setLoanedListStatus(boolean loaned) {
     	isLoanedList = loaned;
     }

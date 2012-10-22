@@ -36,7 +36,7 @@ import dat255.grupp06.bibbla.model.Book;
 /**
  * ListFragment that is used to display the search-results after a search.
  * 
- * @author Jonathan Orr�
+ * @author Jonathan Orrö
  *
  */
 public class SearchListFragment extends SherlockListFragment {
@@ -54,9 +54,6 @@ public class SearchListFragment extends SherlockListFragment {
     }
 
     @Override
-    /**
-     * When an item is clicked in the list this method is called
-     */
     public void onListItemClick(ListView l, View v, int position, long id) {
     	if(position < currentBooks.size()) {
 	    	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
@@ -70,6 +67,7 @@ public class SearchListFragment extends SherlockListFragment {
     
     /**
      * Receives the search-results and swaps the contents in the list with them.
+     * @param books - a list of books that you want to replace the current list of books with.
      */
     public void updateList(List<Book> books) {
     	//Adds a book to act as a placeholder for the 
@@ -85,6 +83,10 @@ public class SearchListFragment extends SherlockListFragment {
     	this.setListAdapter(adapter);
     }
     
+    /**
+     * Adds a list of books to the current list of books
+     * @param books - list of books to add to the current list of books
+     */
     public void appendList(List<Book> books) {
     	int selection = currentBooks.size();
     	currentBooks.addAll(books);
@@ -95,6 +97,11 @@ public class SearchListFragment extends SherlockListFragment {
     	this.setSelection(selection);
     }
     
+    /**
+     * Sets the last string the user searched for, so it knows what to search for if the user
+     * wants more search results.
+     * @param s - search string.
+     */
     public void setLastSearchString(String s) {
     	lastSearch = s;
     }

@@ -86,7 +86,10 @@ public class LibraryFragment extends SherlockFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		//listAppear(tempLibList());
-		updateInfo();
+		
+		if(tempList.size() == 0) {
+			updateInfo();
+		}
 	}
 
 	private void listAppear(ArrayList<Library> libs) {
@@ -132,11 +135,10 @@ public class LibraryFragment extends SherlockFragment {
 			return;
 		}
 		// Convert results to List<Library>.  
-		@SuppressWarnings("unchecked")
-		ArrayList<Library> libs = (ArrayList<Library>) msg.obj;
-
+		tempList = (ArrayList<Library>) msg.obj;
+		
 		// Update list with titles (empty or not).
-		listAppear(libs);
+		listAppear(tempList);
 	}
 
 	public void setBackend(Backend b) {

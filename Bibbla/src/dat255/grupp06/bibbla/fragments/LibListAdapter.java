@@ -45,7 +45,7 @@ public class LibListAdapter extends BaseAdapter {
 	 */
 	// TODO Bad style to pass activity?
 	@SuppressWarnings("unchecked")
-	public LibListAdapter(Activity activity, List<Library> list, boolean showAvailable) {
+	public LibListAdapter(Activity activity, List<Library> list) {
 		// TODO Clone needed?
 		this.list = (List<Library>) ((ArrayList<Library>) list).clone();
 		this.activity = activity;
