@@ -78,8 +78,6 @@ public class BookOverlayActivity extends SherlockActivity {
 		isReserved = intent.getBooleanExtra(BookListFragment.RESERVED, false);
 		isLoaned = intent.getBooleanExtra(BookListFragment.LOANED, false);
 
-		
-		
 		if(isReserved) {
 			((Button)findViewById(R.id.button_reserve_book)).setHint("Avreservera");
 			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
@@ -88,16 +86,14 @@ public class BookOverlayActivity extends SherlockActivity {
 			((Spinner)findViewById(R.id.library_spinner)).setVisibility(Spinner.INVISIBLE);
 		}
 		
-		if(!isReserved && !isLoaned) {
-			//Then get the rest from Gotlib's servers
-		    Callback c = new Callback() {
-				public void handleMessage(Message msg) {
-					BookOverlayActivity.this.setDetails(msg);
-				}
-			};
-			
-			Backend.getBackend().fetchDetailedView(book, c);
-		}
+		//Then get the rest from Gotlib's servers
+	    Callback c = new Callback() {
+			public void handleMessage(Message msg) {
+				BookOverlayActivity.this.setDetails(msg);
+			}
+		};
+		
+		Backend.getBackend().fetchDetailedView(book, c);
 	}
 
 	/**
