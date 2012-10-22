@@ -56,7 +56,6 @@ public class ProfileFragment extends SherlockFragment {
 	private BookListFragment reservationsList;
 	private BookListFragment loansList;
 	
-	
 	/**
 	 * Reference to the class that can produce a login form. Is set on attach.
 	 */
@@ -160,7 +159,7 @@ public class ProfileFragment extends SherlockFragment {
 			backend.fetchReservations(new Callback() {
 				@Override public void handleMessage(Message msg) {
 					ProfileFragment.this.reservationsUpdateDone(msg);
-			}});
+			}}, true);
 			reservationsPending = true;
 			
 			//updateSpinnerState();

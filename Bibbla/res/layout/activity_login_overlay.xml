@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/login_card_hint"
+        android:password="true"
         android:inputType="textCapCharacters" />
     
     <EditText
@@ -52,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/login_pin_hint"
+        android:password="true"
         android:inputType="number|phone" />
     
     <!-- Submit -->
