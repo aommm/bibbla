@@ -1,5 +1,5 @@
 /**
-    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
+    Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrï¿½.
     
     This file is part of Bibbla.
 
@@ -31,6 +31,8 @@ import java.util.List;
  */ 
 public class Book implements Serializable {
 	
+	private static final long serialVersionUID = 1805317909520218810L;
+
 	private String name;
 	private String author;
 	private int available;
