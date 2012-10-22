@@ -41,7 +41,7 @@ import dat255.grupp06.bibbla.model.Credentials;
  */
 // TODO Make sure back button does something swell.
 public class LoginOverlayActivity extends SherlockActivity {
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
     	setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples

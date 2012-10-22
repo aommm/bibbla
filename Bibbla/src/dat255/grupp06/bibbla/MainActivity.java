@@ -220,6 +220,11 @@ ActionBar.TabListener, LoginCallbackHandler {
 		searchFragment.searchClicked();
 	}
 	
+	/**
+	 * Tunnel method from searchListFragment to searchFragment
+	 * @param page - what page to fetch
+	 * @param searchString - what to search for
+	 */
 	public void moreSearchResultsClicked(int page, String searchString) {
 		searchFragment.getMoreSearchResults(page, searchString);
 	}
