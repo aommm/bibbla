@@ -79,4 +79,10 @@ public class LoginOverlayActivity extends SherlockActivity {
 		setResult(Activity.RESULT_OK, resultIntent);
 		finish();
 	}
+	
+	/*
+	@Override
+	public void onBackPressed() {
+	}
+	*/
 }

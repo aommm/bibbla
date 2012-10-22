@@ -45,6 +45,8 @@ import dat255.grupp06.bibbla.utils.Message;
 public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, LoginCallbackHandler {	
 
+	private Bundle savedInstance;
+	
 	private Backend backend;
 	
 	public static final int RESULT_LOGIN_FORM = 0;
@@ -54,12 +56,14 @@ ActionBar.TabListener, LoginCallbackHandler {
 	ProfileFragment profileFragment;
 	LibraryFragment libraryFragment;
 	private Callback loginDoneCallback;
+	
+	ActionBar.Tab searchTab;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(com.actionbarsherlock.R.style.Theme_Sherlock); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-        
+        savedInstance = savedInstanceState;
         // We want a fancy spinner for marking progress.
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
@@ -75,7 +79,7 @@ ActionBar.TabListener, LoginCallbackHandler {
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         
         //Create the tabs
-        ActionBar.Tab searchTab = getSupportActionBar().newTab();
+        searchTab = getSupportActionBar().newTab();
         ActionBar.Tab profileTab = getSupportActionBar().newTab();
         ActionBar.Tab libraryTab = getSupportActionBar().newTab();
         
@@ -115,19 +119,33 @@ ActionBar.TabListener, LoginCallbackHandler {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == RESULT_CANCELED) {
+			profileFragment.setDontLogin(true);
+		}
+		
 		switch (requestCode) {
 		case RESULT_LOGIN_FORM:
 			// Get credentials
-			Credentials cred = (Credentials) data.getSerializableExtra(EXTRA_CREDENTIALS);
-			if (cred == null) {
-				// Retry login form (recursive)
-				showCredentialsDialog(loginDoneCallback);
-			} else {
-				backend.saveCredentials(cred);
+			
+			if(resultCode != RESULT_CANCELED) {
+				Credentials cred = (Credentials) data.getSerializableExtra(EXTRA_CREDENTIALS);
+				if (cred == null) {
+					// Retry login form (recursive)
+					showCredentialsDialog(loginDoneCallback);
+				} else {
+					backend.saveCredentials(cred);
+				}
 			}
+			
 			loginDoneCallback.handleMessage(new Message());
 			// The callback should not be handled more than once.
 			loginDoneCallback = null;
+			
+			
+			
+			Log.d("Jonis", "hej2");
+			
 			break;
 		default:
 			throw new IllegalArgumentException("onActivityResult was called "+
@@ -140,11 +158,13 @@ ActionBar.TabListener, LoginCallbackHandler {
 		// TODO Refactor to eliminate duplicate code?
 		switch(tab.getPosition()) {
 			case 0:
+				
 				if(searchFragment == null) {
 			        searchFragment = new SearchFragment();
 			        ft.add(R.id.fragment_container, searchFragment);
 				} else {
 					ft.attach(searchFragment);
+					profileFragment.setDontLogin(false);
 				}
 				break;
 			case 1:
@@ -163,6 +183,7 @@ ActionBar.TabListener, LoginCallbackHandler {
 			        ft.add(R.id.fragment_container, libraryFragment);
 				} else {
 					ft.attach(libraryFragment);
+					profileFragment.setDontLogin(false);
 				}
 				break;
 		}
@@ -200,6 +221,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 	 */
 	public void logout(View view) {
 		backend.logOut();
+		getSupportActionBar().selectTab(searchTab);
+		
+		/*
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		if (searchFragment == null) {
 			searchFragment = new SearchFragment();
@@ -208,7 +232,9 @@ ActionBar.TabListener, LoginCallbackHandler {
 			ft.attach(searchFragment);
 			// TODO detach...?
 		}
+		ft.detach(profileFragment);
 		ft.commit();
+		*/
 	}
 	
 	/**
@@ -242,6 +268,10 @@ ActionBar.TabListener, LoginCallbackHandler {
 		this.loginDoneCallback = callback;
 		Intent intent = new Intent(this, LoginOverlayActivity.class);
 		startActivityForResult(intent, RESULT_LOGIN_FORM);
+	}
+	
+	public void selectSearchTab() {
+		getSupportActionBar().selectTab(searchTab);
 	}
 }
 
