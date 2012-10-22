@@ -76,6 +76,7 @@ public class ProfileFragment extends SherlockFragment {
 		
 		if(reservationsList == null) {
 			reservationsList = new BookListFragment();
+			reservationsList.setReservedListStatus(true);
 	        fragmentTransaction.add(R.id.reservations_list, reservationsList);
 		} else {
 			fragmentTransaction.attach(reservationsList);
@@ -83,6 +84,7 @@ public class ProfileFragment extends SherlockFragment {
 		
 		if(loansList == null) {
 			loansList = new BookListFragment();
+			loansList.setLoanedListStatus(true);
 	        fragmentTransaction.add(R.id.loans_list, loansList);
 		} else {
 			fragmentTransaction.attach(loansList);

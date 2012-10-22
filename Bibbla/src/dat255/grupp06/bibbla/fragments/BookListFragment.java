@@ -20,6 +20,8 @@ public class BookListFragment extends SherlockListFragment {
 	public final static String RESERVED = "dat255.grupp06.bibbla.RESERVED";
 	public final static String LOANED = "dat255.grupp06.bibbla.LOANED";
 	private ArrayList<Book> currentBooks;
+	private boolean isReservedList;
+	private boolean isLoanedList;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,11 @@ public class BookListFragment extends SherlockListFragment {
     	
     	Intent intent = new Intent(getSherlockActivity(), BookOverlayActivity.class);
     	
+    	Log.d("Jonis", "url :"+currentBooks.get(position).getUrl());
+    	
     	intent.putExtra(BOOK, currentBooks.get(position));
-    	intent.putExtra(RESERVED, true);
-    	intent.putExtra(LOANED, false);
+    	intent.putExtra(RESERVED, isReservedList);
+    	intent.putExtra(LOANED, isLoanedList);
     	
     	startActivity(intent);
     }
@@ -54,5 +58,13 @@ public class BookListFragment extends SherlockListFragment {
     	ListAdapter adapter = new BookListAdapter(getSherlockActivity(), books, false);
 
     	this.setListAdapter(adapter);
+    }
+    
+    public void setReservedListStatus(boolean reserved) {
+    	isReservedList = reserved;
+    }
+    
+    public void setLoanedListStatus(boolean loaned) {
+    	isLoanedList = loaned;
     }
 }

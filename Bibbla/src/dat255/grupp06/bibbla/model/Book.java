@@ -162,9 +162,12 @@ public class Book implements Serializable {
 		newBook.type = type;
 		newBook.reserveUrl = reserveUrl;
 		newBook.renewId = renewId;
+		newBook.unreserveId = unreserveId;
+		newBook.freezeId = freezeId;
 		newBook.publisher = publisher;
 		newBook.physicalDescription = physicalDescription;
 		newBook.notes = notes;
+		newBook.isbn = isbn;
 		
 		List<PhysicalBook> newPhysicalBooks = new ArrayList<PhysicalBook>();
 		for(PhysicalBook pb : physicalBooks ) {
