@@ -106,9 +106,10 @@ public class SearchListFragment extends SherlockListFragment {
      */
     public boolean isEmpty() {
     	if (currentBooks == null) {
-    		return false;
+    		return true;
     	} else {
-    		return (currentBooks.size() > 0);
+    		System.out.println(currentBooks.size());
+    		return (currentBooks.size() == 0);
     	}
     }
 }

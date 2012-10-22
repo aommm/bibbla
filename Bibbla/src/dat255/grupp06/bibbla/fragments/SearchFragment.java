@@ -61,25 +61,22 @@ public class SearchFragment extends SherlockFragment {
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
 		// Create our two children.
 		listFragment  = new SearchListFragment();
-		System.out.println("bbb");
-		//textFragment  = new SearchTextFragment();
-		System.out.println("ccc");
+		textFragment  = new SearchTextFragment();
+		
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        System.out.println("ddd");
         // Add children to container,
         fragmentTransaction.add(R.id.list_container, listFragment);
-        //fragmentTransaction.add(R.id.list_container, textFragment);
-        System.out.println("eee");
+        fragmentTransaction.add(R.id.list_container, textFragment);
         // but hide them for now.
-        //fragmentTransaction.detach(listFragment);
-		//fragmentTransaction.detach(textFragment);
-		System.out.println("fff");
-        fragmentTransaction.commit();
-        System.out.println("ggg");
+        fragmentTransaction.detach(listFragment);
+		fragmentTransaction.detach(textFragment);
+		
+		fragmentTransaction.commit();
 	}
 	
 	@Override
@@ -87,20 +84,24 @@ public class SearchFragment extends SherlockFragment {
 	 * Inflates the view and sets up the ListFragment.
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		
+
 		FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        System.out.println("hhh");
-		// If list is empty, show textFragment.
+		
+        fragmentTransaction.detach(textFragment);
+        fragmentTransaction.detach(listFragment);
+        
+        // If list is empty, show textFragment.
 		if (listFragment.isEmpty()) {
+			System.out.println("Attaching textFragment.");
 			fragmentTransaction.attach(textFragment);
 		} else { // Else, show listFragment.
+			System.out.println("Attaching listFragment.");
 			fragmentTransaction.attach(listFragment);
 		}
-		System.out.println("iii");
         fragmentTransaction.commit();
-        System.out.println("jjj");
-		return inflater.inflate(R.layout.fragment_search, container, false);
+		
+        return inflater.inflate(R.layout.fragment_search, container, false);
 	}
 	
 	@Override
