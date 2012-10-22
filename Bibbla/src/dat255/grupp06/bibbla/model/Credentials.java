@@ -70,3 +70,6 @@ public final class Credentials implements Serializable {
 
 	// TODO Implement clone, equals, etc.
 }
+
+
+//Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.

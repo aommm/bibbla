@@ -100,3 +100,5 @@ public class SearchListFragment extends SherlockListFragment {
     }
 }
 
+
+//Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.

@@ -62,3 +62,5 @@ public abstract class Task extends AsyncTask<String, String, Void> {
 	}
 	
 }
+
+//Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.

@@ -44,3 +44,5 @@ public abstract class AuthorizedJob extends Job {
 		}
 	}
 }
+
+//Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.

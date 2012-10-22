@@ -66,3 +66,6 @@ public class LibraryOverlayActivity extends SherlockActivity {
 		((TextView)findViewById(R.id.overlay_post_info)).setText(postInfo);
 	}
 }
+
+
+//Copyright 2012 Fahad Al-Khameesi, Madeleine Appert, Niklas Logren, Arild Matsson and Jonathan Orrö.
