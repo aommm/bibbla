@@ -1,12 +1,41 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="${relativePackage}.${activityClass}" >
+    android:orientation="vertical"
+    tools:context="${relativePackage}.${activityClass}">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    <LinearLayout 
+        android:id="@+id/main_button_row1"
+        style="@style/main_menu_row">
+        <Button 
+            android:id="@+id/search_button"
+            android:text="@string/search"
+            style="@style/main_menu_button"/>
+        <Button
+            android:id="@+id/reservations_button"
+            android:text="@string/reservations"
+            style="@style/main_menu_button"/>
+        <Button 
+            android:id="@+id/loans_button"
+            android:text="@string/loans"
+            style="@style/main_menu_button"/>
+    </LinearLayout>
+    <LinearLayout 
+        android:id="@+id/main_button_row2"
+        style="@style/main_menu_row">
+        <Button 
+            android:id="@+id/user_button"
+            android:text="@string/my_pages"
+            style="@style/main_menu_button"/>
+        <Button 
+            android:id="@+id/libraries_button"
+            android:text="@string/libraries"
+            style="@style/main_menu_button"/>
+        <Button 
+            android:id="@+id/settings_button"
+            android:text="@string/settings"
+            style="@style/main_menu_button"/>
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

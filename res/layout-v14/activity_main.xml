@@ -1,0 +1,35 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:context=".GridXMLActivity"
+	android:columnCount="3"
+	android:rowCount="2"
+	android:useDefaultMargins="true"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="horizontal">
+	<Button 
+        android:id="@+id/search_button"
+        android:text="@string/search"
+        style="@style/main_menu_button"/>
+    <Button
+        android:id="@+id/reservations_button"
+        android:text="@string/reservations"
+        style="@style/main_menu_button"/>
+    <Button 
+        android:id="@+id/loans_button"
+        android:text="@string/loans"
+        style="@style/main_menu_button"/>
+    <Button 
+        android:id="@+id/user_button"
+        android:text="@string/my_pages"
+        style="@style/main_menu_button"/>
+    <Button 
+        android:id="@+id/libraries_button"
+        android:text="@string/libraries"
+        style="@style/main_menu_button"/>
+    <Button 
+        android:id="@+id/settings_button"
+        android:text="@string/settings"
+        style="@style/main_menu_button"/>
+</GridLayout>
+
