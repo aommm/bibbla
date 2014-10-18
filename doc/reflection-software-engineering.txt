@@ -1,9 +1,0 @@
-Reflection Software Engineering
-
-* Planering innan: I gruppen lade vi gemensamt ganska mycket tid på att bestämma vilka metoder som skulle finnas i de backend-klasser. Därefter diskuterade vi i gruppen hur de olika klasserna skulle implementeras. Den processen visade sig att vara väldigt belönande, dels för att det har  fått igång sammarbetet i gruppen, men dels också att det fick alla att engagera sig i hur backenden byggdes. Det är trots allt en stor del av programmet.
-
-* Hitta JSoup: Att hitta detta bibliotek var det bästa momentet under hela projektet! Det var som 1+1 = 2! Det var en perfekt lösning till våra problem (nämligen så att vi inte hade tillgång till API från GotLib utan vi var tvungna att skrapa hemsidan ). Med Jsoup gick det att hitta rätt data på några raders parse-anrop.
-
-* AsyncTask som de olika jobbsen körs under känns som ett bra val. Trådar brukar ställa till problem och krångligheter med sin livscykel men detta har inte inträffats
-
-* Vad gäller Scrum tänkte vi oss först att vi kontinuerligt skulle uppdatera Excel-dokument över Product och Sprint backlog. Sedan flyttade vi över till webbverktyget Pivotal Tracker, och gjorde samtidigt om hela PB så att den var baserad på User Stories. Under projektets gång hade vi lite svårt för att sätta Pivotal Tracker i centrum, så den blev lite sporadiskt uppdaterad.

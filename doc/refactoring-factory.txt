@@ -1,8 +1,0 @@
-Refaktorering: Backend interface
-Fahad A, 2012-10-22
-
-Ett skäl till att vi hade tankesättet frontend/backend från början av projektet var att, om kommunikationen med servern någon dag skulle ändras, så skulle vi lätt hantera detta på ett smidigt sätt genom att helt enkelt byta ut backend-implementationen.
-
-Detta gör vi med den här refaktoreringen. Vi skapar en IBackend som backend-klassen implementerar, och det interfacet ersätter själva backend-objektet i frontenden. På så sätt så har frontenden ingen direkt koppling till backend och dess implementation utan den kör mot ett interface istället. Så om något händer och backend implementationen skulle behöva ändras, då skulle detta kunna göras utan att behöva ändra någonting i frontenden.
-
-För att möjliggöra detta på ett bra sätt, skapar vi en BackendFactory klass som ser till att returnera singleton backend-objekt. Detta ger bra utvecklingsmöjligheter i framtiden också ifall vi skulle flera olika backend-typer; att vi ber BackendFactory efter en viss typ av backend-typ.

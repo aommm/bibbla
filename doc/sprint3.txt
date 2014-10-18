@@ -1,7 +1,0 @@
-Om sprint #3
-Arild Matsson 2012-10-01
-
-Vi arbetar fortfarande på att etablera scrumrutiner, men jag tror att vi kan konstatera att detta är vår tredje sprint. Vi har just börjat använda Pivotal Tracker, och idag skapade vi Product Backlog och Sprint Backlog. Våra tidigare Excel-dokument, med samma syfte, kunde vi knappt utgå ifrån eftersom vi sedan dess har lärt oss mer om hur backloggarna bör se ut.
-
-Backloggarna samt därmed resultatet av dagens sprintplanering finns tillgängliga på http://www.pivotaltracker.com/projects/651449 (Där finns tidigare historia men det är bara utprovning av verktyget.)
-
