@@ -1,15 +1,13 @@
 package se.gotlib.bibbla;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.example.bibblatemp.R;
-
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
 	private Button searchButton, reservationsButton, loansButton, userButton, librariesButton, settingsButton;
 	
@@ -17,22 +15,26 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch(v.getId()) {
-			case R.id.search_button:
-				Intent i = new Intent(this, SearchActivity.class);
+			case R.id.search_button: {
+				Intent i = new Intent(MainActivity.this, SearchActivity.class);
+				startActivity(i);
 				break;
-				
-			case R.id.reservations_button:
-				Intent i = new Intent(this, ReservationsActivity.class);
+			}
+			case R.id.reservations_button: {
+				Intent i = new Intent(MainActivity.this, ReservationsActivity.class);
+				startActivity(i);
 				break;
-			
-			case R.id.loans_button:
-				Intent i = new Intent(this, LoansActivity.class);
+			}
+			case R.id.loans_button: {
+				Intent i = new Intent(MainActivity.this, LoansActivity.class);
+				startActivity(i);
 				break;
-				
-			case R.id.user_button:
-				Intent i = new Intent(this, UserActivity.class);
+			}
+			case R.id.user_button: {
+				Intent i = new Intent(MainActivity.this, UserActivity.class);
+				startActivity(i);
 				break;
-				
+			}
 			case R.id.libraries_button:
 				break;
 				
