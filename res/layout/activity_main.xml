@@ -1,13 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="${relativePackage}.${activityClass}">
+    android:layout_height="wrap_content"
+    android:stretchColumns="*">
 
-    <LinearLayout 
-        android:id="@+id/main_button_row1"
-        style="@style/main_menu_row">
+    <TableRow android:layout_weight="1" > 
         <Button 
             android:id="@+id/search_button"
             android:text="@string/search"
@@ -20,10 +16,8 @@
             android:id="@+id/loans_button"
             android:text="@string/loans"
             style="@style/main_menu_button"/>
-    </LinearLayout>
-    <LinearLayout 
-        android:id="@+id/main_button_row2"
-        style="@style/main_menu_row">
+    </TableRow>
+	<TableRow android:layout_weight="1" > 
         <Button 
             android:id="@+id/user_button"
             android:text="@string/my_pages"
@@ -36,6 +30,6 @@
             android:id="@+id/settings_button"
             android:text="@string/settings"
             style="@style/main_menu_button"/>
-    </LinearLayout>
+    </TableRow>
 
-</LinearLayout>
+</TableLayout>

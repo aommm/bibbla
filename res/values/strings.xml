@@ -7,10 +7,10 @@
     
     <!-- Text on the buttons in the main menu -->
     <string name="search">Sök</string>
-    <string name="reservations">Mina reservationer</string>
+    <string name="reservations">Mina</string>
     <string name="loans">Mina lån</string>
     <string name="my_pages">Mina sidor</string>
-    <string name="libraries">Bibliotek</string>
-    <string name="settings">Inställningar</string>
+    <string name="libraries">Bib</string>
+    <string name="settings">Instäl</string>
 
 </resources>
