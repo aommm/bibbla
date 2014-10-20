@@ -20,11 +20,4 @@
     <style name="main_menu_button">
         <item name="android:layout_weight">1</item>
     </style>
-    
-    <style name="main_menu_row">
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_weight">1</item>
-    </style>
-
 </resources>

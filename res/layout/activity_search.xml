@@ -9,8 +9,12 @@
     tools:context="se.gotlib.bibbla.activities.SearchActivity" >
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    android:id="@+id/my_textview"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/title_activity_search"
+    android:background="@color/white"
+    android:elevation="5dp" />
+
 
 </RelativeLayout>
