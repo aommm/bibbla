@@ -1,0 +1,165 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Manifest Merging:
+-----------------
+Your project uses libraries that provide manifests, and your Eclipse
+project did not explicitly turn on manifest merging. In Android Gradle
+projects, manifests are always merged (meaning that contents from your
+libraries' manifests will be merged into the app manifest. If you had
+manually copied contents from library manifests into your app manifest
+you may need to remove these for the app to build correctly.
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* ic_launcher-web.png
+* oldRes\
+* oldRes\drawable-hdpi\
+* oldRes\drawable-hdpi\bibbla_icon.png
+* oldRes\drawable-hdpi\ic_action_search.png
+* oldRes\drawable-hdpi\ic_launcher.png
+* oldRes\drawable-hdpi\lib_icon.png
+* oldRes\drawable-hdpi\profile_icon.png
+* oldRes\drawable-hdpi\search_icon.png
+* oldRes\drawable-ldpi\
+* oldRes\drawable-ldpi\bibbla_icon.png
+* oldRes\drawable-ldpi\ic_launcher.png
+* oldRes\drawable-ldpi\lib_icon.png
+* oldRes\drawable-ldpi\profile_icon.png
+* oldRes\drawable-ldpi\search_icon.png
+* oldRes\drawable-mdpi\
+* oldRes\drawable-mdpi\bibbla_icon.png
+* oldRes\drawable-mdpi\ic_action_search.png
+* oldRes\drawable-mdpi\ic_launcher.png
+* oldRes\drawable-mdpi\lib_icon.png
+* oldRes\drawable-mdpi\profile_icon.png
+* oldRes\drawable-mdpi\search_icon.png
+* oldRes\drawable-xhdpi\
+* oldRes\drawable-xhdpi\bibbla_icon.png
+* oldRes\drawable-xhdpi\ic_action_search.png
+* oldRes\drawable-xhdpi\ic_launcher.png
+* oldRes\layout\
+* oldRes\layout\activity_book_overlay.xml
+* oldRes\layout\activity_library_overlay.xml
+* oldRes\layout\activity_login_overlay.xml
+* oldRes\layout\activity_main.xml
+* oldRes\layout\fragment_library.xml
+* oldRes\layout\fragment_search.xml
+* oldRes\layout\list_item_book.xml
+* oldRes\layout\list_item_library.xml
+* oldRes\layout\more_search_results.xml
+* oldRes\layout\profile_fragment.xml
+* oldRes\menu\
+* oldRes\menu\activity_book_overlay.xml
+* oldRes\menu\activity_main.xml
+* oldRes\values\
+* oldRes\values\strings.xml
+* oldRes\values\styles.xml
+* oldSrc\
+* oldSrc\bibbla\
+* oldSrc\bibbla\MainActivity.java
+* oldSrc\bibbla\backend\
+* oldSrc\bibbla\backend\Backend.java
+* oldSrc\bibbla\backend\BackendFactory.java
+* oldSrc\bibbla\backend\IBackend.java
+* oldSrc\bibbla\backend\Settings.java
+* oldSrc\bibbla\backend\library-codes.txt
+* oldSrc\bibbla\backend\tasks\
+* oldSrc\bibbla\backend\tasks\AuthorizedJob.java
+* oldSrc\bibbla\backend\tasks\DetailedViewJob.java
+* oldSrc\bibbla\backend\tasks\Job.java
+* oldSrc\bibbla\backend\tasks\JobFailedException.java
+* oldSrc\bibbla\backend\tasks\LibInfoJob.java
+* oldSrc\bibbla\backend\tasks\LoginJob.java
+* oldSrc\bibbla\backend\tasks\MyBooksJob.java
+* oldSrc\bibbla\backend\tasks\MyDebtJob.java
+* oldSrc\bibbla\backend\tasks\MyReservationsJob.java
+* oldSrc\bibbla\backend\tasks\RenewJob.java
+* oldSrc\bibbla\backend\tasks\ReserveJob.java
+* oldSrc\bibbla\backend\tasks\SearchJob.java
+* oldSrc\bibbla\backend\tasks\Task.java
+* oldSrc\bibbla\backend\tasks\UnreserveJob.java
+* oldSrc\bibbla\backend\tasks\UserNameJob.java
+* oldSrc\bibbla\fragments\
+* oldSrc\bibbla\fragments\BookListAdapter.java
+* oldSrc\bibbla\fragments\BookListFragment.java
+* oldSrc\bibbla\fragments\LibListAdapter.java
+* oldSrc\bibbla\fragments\LibListFragment.java
+* oldSrc\bibbla\fragments\LibraryFragment.java
+* oldSrc\bibbla\fragments\ProfileFragment.java
+* oldSrc\bibbla\fragments\SearchFragment.java
+* oldSrc\bibbla\fragments\SearchListFragment.java
+* oldSrc\bibbla\frontend\
+* oldSrc\bibbla\frontend\BookOverlayActivity.java
+* oldSrc\bibbla\frontend\LibraryOverlayActivity.java
+* oldSrc\bibbla\frontend\LoginCallbackHandler.java
+* oldSrc\bibbla\frontend\LoginOverlayActivity.java
+* oldSrc\bibbla\model\
+* oldSrc\bibbla\model\Book.java
+* oldSrc\bibbla\model\Credentials.java
+* oldSrc\bibbla\model\CredentialsMissingException.java
+* oldSrc\bibbla\model\Library.java
+* oldSrc\bibbla\model\PhysicalBook.java
+* oldSrc\bibbla\utils\
+* oldSrc\bibbla\utils\Callback.java
+* oldSrc\bibbla\utils\CommonParsing.java
+* oldSrc\bibbla\utils\Error.java
+* oldSrc\bibbla\utils\Message.java
+* oldSrc\bibbla\utils\Session.java
+* proguard-project.txt
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:+
+android-support-v7-appcompat.jar => com.android.support:appcompat-v7:+
+
+Replaced Libraries with Dependencies:
+-------------------------------------
+The importer recognized the following library projects as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the source files in your project were of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the library replacement in the import wizard and try
+again:
+
+android-support-v7-appcompat => [com.android.support:appcompat-v7:+]
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app\src\main\AndroidManifest.xml
+* assets\ => app\src\main\assets\
+* res\ => app\src\main\res\
+* src\ => app\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

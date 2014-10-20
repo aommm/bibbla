@@ -19,7 +19,7 @@ public class Library implements PropertyChangeListener{
 	private PropertyChangeSupport pcs;
 	
 	/*
-	 * Dummy-variabler för prototypen
+	 * Dummy-variabler fï¿½r prototypen
 	 */
 	private ArrayList<Book> books;
 	private ArrayList<Book> loanedBooks;
@@ -32,7 +32,7 @@ public class Library implements PropertyChangeListener{
 		
 		pcs = new PropertyChangeSupport(this);
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if(event.getPropertyName().equals("loginSucceeded")) {
