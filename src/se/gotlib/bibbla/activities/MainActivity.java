@@ -1,9 +1,8 @@
-package se.gotlib.bibbla;
+package se.gotlib.bibbla.activities;
 
-import se.gotlib.bibbla.activities.LoansActivity;
-import se.gotlib.bibbla.activities.ReservationsActivity;
-import se.gotlib.bibbla.activities.SearchActivity;
-import se.gotlib.bibbla.activities.UserActivity;
+import se.gotlib.bibbla.R;
+import se.gotlib.bibbla.R.id;
+import se.gotlib.bibbla.R.layout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

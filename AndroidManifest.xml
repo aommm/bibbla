@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,19 +23,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SearchActivity"
+            android:name="se.gotlib.bibbla.activities.SearchActivity"
             android:label="@string/title_activity_search" >
         </activity>
         <activity
-            android:name=".ReservationsActivity"
-            android:label="@string/title_activity_reservations" >
+            android:name="se.gotlib.bibbla.activities.ReservationsActivity"
+            android:label="@string/title_activity_reservations">
         </activity>
         <activity
-            android:name=".LoansActivity"
-            android:label="@string/title_activity_loans" >
+            android:name="se.gotlib.bibbla.activities.LoansActivity"
+            android:label="@string/title_activity_loans">
         </activity>
         <activity
-            android:name=".UserActivity"
+            android:name="se.gotlib.bibbla.activities.UserActivity"
             android:label="@string/title_activity_user" >
         </activity>
     </application>

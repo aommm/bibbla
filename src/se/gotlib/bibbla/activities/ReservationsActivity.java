@@ -1,22 +1,23 @@
-package se.gotlib.bibbla;
+package se.gotlib.bibbla.activities;
 
-import android.support.v7.app.ActionBarActivity;
+import se.gotlib.bibbla.R;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class UserActivity extends ActionBarActivity {
+public class ReservationsActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_user);
+		setContentView(R.layout.activity_reservations);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.user, menu);
+		getMenuInflater().inflate(R.menu.reservations, menu);
 		return true;
 	}
 
