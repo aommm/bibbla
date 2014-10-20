@@ -15,11 +15,11 @@ import se.gotlib.bibbla.backend.model.Book;
  * @author Master
  *
  */
-public class Library implements PropertyChangeListener{
+public class Library implements PropertyChangeListener, Observer{
 	private PropertyChangeSupport pcs;
 	
 	/*
-	 * Dummy-variabler f�r prototypen
+	 * Dummy-variabler för prototypen
 	 */
 	private ArrayList<Book> books;
 	private ArrayList<Book> loanedBooks;
@@ -29,9 +29,31 @@ public class Library implements PropertyChangeListener{
 		books = new ArrayList<Book>();
 		loanedBooks = new ArrayList<Book>();
 		reservedBooks = new ArrayList<Book>();
-		
+
+        initBooks();
+
 		pcs = new PropertyChangeSupport(this);
 	}
+
+    private void initBooks() {
+        books.add(new Book("Hej då- kalas på Miinibiblioteket", "", ""));
+        books.add(new Book("Hej trottoar!", "",""));
+        books.add(new Book("Hej klimakteriet - lite vallningar har väl ingen dött av, texter om livet kring 50 [Elektronisk resurs]", "","Albinsson, Åsa"));
+        books.add(new Book("Hej igen! : samlade sagor / av Ulf Nilsson, Eva Eriksson", "","Nilsson, Ulf, 1948-"));
+        books.add(new Book("Hej Flugo!", "","Arnold, Tedd"));
+        books.add(new Book("Hej! : kreativa hem / av Moa Samuelsson & Christina Breeze ; foto: Alexander Lagergren & Bobo Olsson", "","Samuelsson, Moa, 1975-"));
+        books.add(new Book("Hej och hå kläder på / Stina Kjellgren ; Lotta Geffenblad", "","Kjellgren, Stina, 1973-"));
+        books.add(new Book("\"Hej och kram, Signe\" [Ljudupptagning] : en berättelse / Anne Marie Bjerg ; översättning av Sven Lindner.", "","Bjerg, Anne Marie."));
+        books.add(new Book("Hej mage! [Ljudupptagning] : [för dig som vill må bättre i magen] / författare: Maria Jernsdotter Björklund.", "","Jernsdotter Björklund, Maria."));
+        books.add(new Book("Hej då nappen / text av Mercè Seix och Meritxell Noguera ; illustrationer av Rocio Bonilla ; [översättning: Anna Henriksson]", "","Seix, Mercè"));
+        books.add(new Book("Hej litteraturen! : en resa genom litteraturhistorien / Pia Cederholm ; [faktagranskning: Anna Nordlund]", "","Cederholm, Pia, 1970-"));
+
+        reservedBooks.add(books.get(0));
+        reservedBooks.add(books.get(4));
+        reservedBooks.add(books.get(2));
+        reservedBooks.add(books.get(5));
+        reservedBooks.add(books.get(3));
+    }
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
@@ -91,4 +113,8 @@ public class Library implements PropertyChangeListener{
 		}
 		pcs.firePropertyChange("searchDone", null, searchResult);
 	}
+
+    public void addListener(PropertyChangeListener pcl) {
+        pcs.addPropertyChangeListener(pcl);
+    }
 }
