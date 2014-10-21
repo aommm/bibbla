@@ -5,7 +5,10 @@ import se.gotlib.bibbla.backend.model.Book;
 import se.gotlib.bibbla.backend.model.BookAdapter;
 import se.gotlib.bibbla.backend.singletons.Library;
 import se.gotlib.bibbla.backend.singletons.Singletons;
+import se.gotlib.bibbla.fragments.BookFragment;
+import se.gotlib.bibbla.fragments.RecyclerFragment;
 
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +23,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-public class ReservationsActivity extends ActionBarActivity implements PropertyChangeListener {
+public class ReservationsActivity extends ActionBarActivity implements RecyclerFragment.OnBookSelectedListener {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -34,31 +37,12 @@ public class ReservationsActivity extends ActionBarActivity implements PropertyC
         setContentView(R.layout.activity_reservations);
 
         library = ((Singletons)getApplication()).getLibraryInstance();
-        library.addListener(this);
 
-        myDataset = new ArrayList<Book>();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.reserved_books_recycler);
-
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mAdapter = new BookAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
-
-        Log.d("jonis", "1");
-        library.getReservationsAsync();
-        Log.d("jonis", "2");
-    }
-
-    public void push(View v) {
-        int pos = Integer.parseInt(((TextView) findViewById(R.id.pos_text)).getText().toString());
-        String tit = ((TextView)findViewById(R.id.tit_text)).getText().toString();
-        String auth = ((TextView)findViewById(R.id.auth_text)).getText().toString();
-        myDataset.add(pos, new Book(tit, Math.random()+"auth", auth));
-        mAdapter.notifyItemInserted(pos);
+        RecyclerFragment newFragment = new RecyclerFragment();
+        transaction.add(R.id.fragment_container, newFragment);
+        transaction.commit();
     }
 
 	@Override
@@ -81,18 +65,24 @@ public class ReservationsActivity extends ActionBarActivity implements PropertyC
 	}
 
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
-        Log.d("jonis", "belo");
-        if(event.getPropertyName().equals("getReservations")) {
-            Log.d("jonis", "helo");
-            ArrayList<Book> books = (ArrayList<Book>)event.getNewValue();
-            Log.d("jonis", books.size()+"");
-            for(Book b : books) {
-                Log.d("jonis", "data"+myDataset);
-                Log.d("jonis", "adapter"+mAdapter);
-                myDataset.add(b);
-                mAdapter.notifyItemInserted(myDataset.size());
-            }
-        }
+    public void onBookSelected(String isbn) {
+
+        BookFragment newFragment = new BookFragment();
+
+        Bundle args = new Bundle();
+        args.putString("isbn", isbn);
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+    public void push(View v) {
+        RecyclerFragment rf = (RecyclerFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        rf.push(v);
     }
 }

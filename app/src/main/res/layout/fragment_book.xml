@@ -1,13 +1,25 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="se.gotlib.bibbla.fragments.BookFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/book_fragment_title"
+        style="@style/book_text"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/book_fragment_author"
+        style="@style/book_text"/>
+
+    <TextView
+        android:id="@+id/book_fragment_isbn"
+        style="@style/book_text"/>
+
+    <TextView
+        android:id="@+id/book_fragment_desc"
+        style="@style/book_text"/>
+</LinearLayout>
+
