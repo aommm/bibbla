@@ -27,16 +27,15 @@ public class GotlibSession implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
 	private static final String COOKIE_LOGGED_IN = "PAT_LOGGED_IN";
+
 	private String name;
 	private String userUrl; // The URL to the user's profile page.
 	private Map<String, String> cookies;
-	private boolean loggedIn;
-	
+
 	/**
 	 * Creates a new session, using the data from the supplied GotlibCredentials.
 	 */
 	public GotlibSession(GotlibCredentials gotlibCredentials) {
-		loggedIn = false;
 		this.name = gotlibCredentials.name;
 		this.userUrl = "";
 		
@@ -47,7 +46,6 @@ public class GotlibSession implements Serializable {
 	 * Creates a new anonymous session.
 	 */
 	public GotlibSession() {
-		loggedIn = false;
 		this.name = "";
 		this.userUrl = "";
 		
@@ -71,27 +69,9 @@ public class GotlibSession implements Serializable {
 		synchronized(this.cookies) {
 			// Save our new cookies.
 			this.cookies = cookies;
-			if (cookies != null) {
-				String value = cookies.get(COOKIE_LOGGED_IN);
-				if (value != null && value.equals("true")) {
-					this.loggedIn = true;
-					return;
-				}
-			}
-			// else
-			this.loggedIn = false;
 		}
 	}
-	
-	/**
-	 * Simply return whether logged in.
-	 * @return true if logged in, false if not (e.g. session expired)
-	 */
-	// TODO This should actually check whether cookie has expired.
-	public boolean isActive() {
-		return loggedIn;
-	}
-	
+
 	/**
 	 * Returns the URL to the user's profile page.
 	 * @returns empty string if something went wrong.
@@ -111,7 +91,7 @@ public class GotlibSession implements Serializable {
 		}
 	}
 
-	public void setUserName(String name) {
+	public void setName(String name) {
 		synchronized(this.name) {
 			this.name = name;
 		}

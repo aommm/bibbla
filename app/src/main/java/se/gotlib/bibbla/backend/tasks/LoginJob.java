@@ -60,7 +60,7 @@ public class LoginJob {
 				String url = parseUserUrl(response);
                 gotlibSession.setUserUrl(url);
 				String name = parseUserName(response);
-                gotlibSession.setUserName(name);
+                gotlibSession.setName(name);
 				System.out.print("succeeded! *\n");
 				System.out.print("****** LoginJob done \n");
 				// We made it through.

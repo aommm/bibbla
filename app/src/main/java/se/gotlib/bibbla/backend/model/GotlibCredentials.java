@@ -19,15 +19,12 @@
 
 package se.gotlib.bibbla.backend.model;
 
-import java.io.Serializable;
-
-
 /**
  * Holds a set of credentials used to login with Gotlib. GotlibCredentials are
  * supplied with registration of library cards.
  * @author arla
  */
-public final class GotlibCredentials implements Serializable {
+public final class GotlibCredentials {
 	private static final long serialVersionUID = -5535338463939136870L;
 	/** Card number regexp: 9 numbers and possibly a letter; spaces ignored. */
 	public static final String CARD_REGEXP = "^\\s*([0-9]\\s*){9,10}[A-Za-z]?\\s*$";
@@ -57,11 +54,7 @@ public final class GotlibCredentials implements Serializable {
 			String pin) {
 		return isLegalName(name) && isLegalCard(card) && isLegalPin(pin);
 	}
-	
-	private static boolean stringEmpty(String string) {
-		return (string == null || string.length() == 0);
-	}
-	
+
 	/**
 	 * Check if a name is not empty. 
 	 * @param name Name of user.
@@ -87,5 +80,11 @@ public final class GotlibCredentials implements Serializable {
 		return (pin != null && pin.matches(PIN_REGEXP));
 	}
 
-	// TODO Implement clone, equals, etc.
+    /**
+     * helper method. Checks if string is null or of length 0.
+     */
+    private static boolean stringEmpty(String string) {
+        return (string == null || string.length() == 0);
+    }
+
 }
