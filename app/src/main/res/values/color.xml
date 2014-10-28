@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color 
-        name="white">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- MainActivity logged in/out indicator -->
+    <color name="logged_out_background">#AAFF0000</color>
+    <color name="logged_out_text">#FFFFFF</color>
+    <color name="logged_in_background">#AA00FF00</color>
+    <color name="logged_in_text">#000000</color>
+
+    <!-- Error message text -->
+    <color name="error_background">#AAFF0000</color>
+    <color name="error_text">#FFFFFF</color>
+
 </resources>

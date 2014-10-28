@@ -17,10 +17,18 @@
         android:layout_marginBottom="20dp"
         android:text="@string/login_help"/>
 
+    <TextView
+        android:id="@+id/login_error_text"
+        android:layout_below="@id/login_help_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/incorrect_login_credentials"
+        style="@style/error_text" />
 
     <EditText
         android:id="@+id/name_edit"
-        android:layout_below="@id/login_help_text"
+        android:layout_below="@id/login_error_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/name"

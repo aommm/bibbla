@@ -24,6 +24,7 @@ import java.beans.PropertyChangeSupport;
 
 import se.gotlib.bibbla.backend.model.GotlibCredentials;
 import se.gotlib.bibbla.backend.model.GotlibSession;
+import se.gotlib.bibbla.util.Message;
 import se.gotlib.bibbla.util.Observable;
 
 /**
@@ -36,7 +37,7 @@ import se.gotlib.bibbla.util.Observable;
  * 
  * @author Niklas Logren
  */
-public class LoginTask extends Task<GotlibCredentials, Void, GotlibSession> implements Observable {
+public class LoginTask extends Task<GotlibCredentials, Void, Message<GotlibSession>> implements Observable {
 
     private PropertyChangeSupport pcs;
 
@@ -46,7 +47,7 @@ public class LoginTask extends Task<GotlibCredentials, Void, GotlibSession> impl
 	}
 
     @Override
-    protected GotlibSession doInBackground(GotlibCredentials... gotlibCredentials) {
+    protected Message<GotlibSession> doInBackground(GotlibCredentials... gotlibCredentials) {
         if (gotlibCredentials.length==0) return null;
 
         LoginJob job = new LoginJob(gotlibCredentials[0]);
@@ -58,8 +59,8 @@ public class LoginTask extends Task<GotlibCredentials, Void, GotlibSession> impl
     }
 
     @Override
-    protected void onPostExecute(GotlibSession session) {
-        pcs.firePropertyChange("loginDone", null, session);
+    protected void onPostExecute(Message<GotlibSession> message) {
+        pcs.firePropertyChange("loginDone", null, message);
     }
 
     @Override

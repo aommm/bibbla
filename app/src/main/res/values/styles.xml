@@ -20,4 +20,36 @@
     <style name="main_menu_button">
         <item name="android:layout_weight">1</item>
     </style>
+
+    <!-- Incorrect credentials error message -->
+    <style name="error_text">
+        <item name="android:background">@color/error_background</item>
+        <item name="android:textColor">@color/error_text</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <!-- Logged in/out indicator on main screen -->
+    <style name="logged_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:paddingLeft">20dp</item>
+    </style>
+    <style name="logged_out_button" parent="logged_button">
+        <item name="android:background">@color/logged_out_background</item>
+        <item name="android:textColor">@color/logged_out_text</item>
+        <item name="android:text">@string/not_logged_in</item>
+        <!-- TODO: lägg in fin bild här -->
+        <!-- <item name="android:drawableLeft">@drawable/button_icon</item> -->
+    </style>
+    <style name="logged_in_button" parent="logged_button">
+        <item name="android:background">@color/logged_in_background</item>
+        <item name="android:textColor">@color/logged_in_text</item>
+        <item name="android:text">@string/logged_in</item>
+        <!-- TODO: lägg in fin bild här -->
+        <!-- <item name="android:drawableLeft">@drawable/button_icon</item> -->
+    </style>
+
+
 </resources>

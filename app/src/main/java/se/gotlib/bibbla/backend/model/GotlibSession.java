@@ -26,6 +26,7 @@ import java.util.Map;
 public class GotlibSession implements Serializable {
 
 	private static final long serialVersionUID = 1290665641023286320L;
+
 	private static final String COOKIE_LOGGED_IN = "PAT_LOGGED_IN";
 
 	private String name;

@@ -87,4 +87,16 @@ public final class GotlibCredentials {
         return (string == null || string.length() == 0);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "GotlibCredentials{" +
+                "name='" + name + '\'' +
+                ", card='" + card + '\'' +
+                ", pin='" + pin + '\'' +
+                '}';
+    }
 }

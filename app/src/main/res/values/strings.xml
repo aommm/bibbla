@@ -20,6 +20,9 @@
     <string name="card">Bibliotekskortsnummer</string>
     <string name="pin">PIN-kod</string>
     <string name="login">Logga in</string>
+    <!-- Login status -->
+    <string name="not_logged_in">Inte inloggad</string>
+    <string name="logged_in">Inloggad</string>
 
     <!-- titles -->
     <string name="title_activity_search">SearchActivity</string>
@@ -28,5 +31,7 @@
     <string name="title_activity_loans">LoansActivity</string>
     <string name="title_activity_user">UserActivity</string>
     <string name="title_activity_login">Logga in</string>
+    <string name="incorrect_login_credentials">Inloggningsuppgifterna stämmer inte!</string>
+
 
 </resources>

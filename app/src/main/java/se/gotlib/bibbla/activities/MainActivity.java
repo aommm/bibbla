@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,14 +14,21 @@ import java.beans.PropertyChangeListener;
 
 import se.gotlib.bibbla.R;
 import se.gotlib.bibbla.R.id;
+import se.gotlib.bibbla.backend.model.GotlibSession;
 import se.gotlib.bibbla.backend.singletons.Library;
 import se.gotlib.bibbla.backend.singletons.Singletons;
+import se.gotlib.bibbla.backend.singletons.User;
+import se.gotlib.bibbla.util.*;
 
 public class MainActivity extends ActionBarActivity implements PropertyChangeListener {
 
 	private Button searchButton, reservationsButton, loansButton, userButton, librariesButton, settingsButton, testJsoupButton;
-
+    private Button loginButton;
     private Library library;
+    private User user;
+
+    // Whether we display the user as logged in or not
+    private boolean loggedIn;
 
 	private OnClickListener buttonListener = new OnClickListener() {
 		@Override
@@ -52,10 +60,14 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
                 case R.id.settings_button:
                     break;
 
-                case id.test_jsoup_button: {
+                case id.test_jsoup_button:
                     library.testJsoupAsync();
                     break;
-                }
+
+                case id.login_button:
+                    login();
+                    break;
+
             }
 		}
 	};
@@ -68,6 +80,8 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
     	initButtons();
         library = ((Singletons)getApplication()).getLibraryInstance();
         library.addListener(this);
+        user = ((Singletons)getApplication()).getUserInstance();
+        user.addListener(this);
     }
 
     private void initButtons() {
@@ -79,6 +93,8 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
     	settingsButton = (Button)findViewById(R.id.settings_button);
     	settingsButton = (Button)findViewById(R.id.settings_button);
         testJsoupButton = (Button) findViewById(id.test_jsoup_button);
+        loginButton = (Button) findViewById(id.login_button);
+
     	searchButton.setOnClickListener(buttonListener);
     	reservationsButton.setOnClickListener(buttonListener);
     	loansButton.setOnClickListener(buttonListener);
@@ -86,6 +102,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
     	librariesButton.setOnClickListener(buttonListener);
     	settingsButton.setOnClickListener(buttonListener);
     	testJsoupButton.setOnClickListener(buttonListener);
+    	loginButton.setOnClickListener(buttonListener);
     }
 
 
@@ -94,13 +111,20 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      * Test method - receives JsoupTestDone
      */
     public void propertyChange(PropertyChangeEvent pcs) {
-        if (pcs.getPropertyName().equals("testJsoupDone")) {
+        String eventName = pcs.getPropertyName();
+        if ("testJsoupDone".equals(eventName)) {
             testJsoupDone((String)pcs.getNewValue());
+        }
+        else if ("loginDone".equals(eventName)) {
+            loginDone((Message<GotlibSession>)pcs.getNewValue());
         }
     }
 
+    /**
+     * Test method
+     * @param result
+     */
     private void testJsoupDone(String result) {
-        // Log.d("bibbla", "MainActivity: testJsoupDone, result: " + pcs.getNewValue());
         testJsoupButton.setText(testJsoupButton.getText().toString() + " - "+result);
         AsyncTask<Void, Void, Void> timer = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -117,5 +141,44 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             }
         };
         timer.execute();
+    }
+
+    /**
+     * Called when login button is clicked.
+     * If user is not logged in: trigger login
+     * If user is logged in:     show profile
+     */
+    private void login() {
+        if (loggedIn) {
+            Log.d("bibbla", "MainActivity: already logged in");
+        } else {
+            Log.d("bibbla", "MainActivity: log in, switching to LoginActivity");
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+        }
+    }
+
+    /**
+     * Callback method, called when login is done.
+     * May have failed or succeeded
+     */
+    private void loginDone(Message<GotlibSession> message) {
+        if (message.error == null) {
+            loggedIn = true;
+            // TODO there's no way to change theme dynamically :(
+            String name = user.getName();
+            loginButton.setText(getString(R.string.logged_in)+" - "+name);
+        } else {
+            loggedIn = false;
+            loginButton.setText(getString(R.string.not_logged_in));
+            /*
+            Don't care about the specific error
+            switch(message.error) {
+                case se.gotlib.bibbla.util.Error.INCORRECT_LOGIN_CREDENTIALS:
+
+                    break;
+            }
+            */
+        }
     }
 }

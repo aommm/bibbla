@@ -11,7 +11,8 @@ import java.util.Map;
 
 import se.gotlib.bibbla.backend.model.GotlibCredentials;
 import se.gotlib.bibbla.backend.model.GotlibSession;
-import se.gotlib.bibbla.util.Constants;
+import se.gotlib.bibbla.util.*;
+import se.gotlib.bibbla.util.Error;
 
 /**
  * Logs the user into gotlib.
@@ -23,31 +24,37 @@ import se.gotlib.bibbla.util.Constants;
  */
 public class LoginJob {
 
-	// Global throughout the whole program. In GotlibSession-class later on.
-	Map<String, String> sessionCookies;
-	// Needed only in LoginJob.
-	Map<String, String> sessionVariables;
     // User name, card and pin
     GotlibCredentials gotlibCredentials;
     // Session
     GotlibSession gotlibSession;
 
-	public LoginJob(GotlibCredentials gotlibCredentials) {
+    // (Needed only in between methods in LoginJob)
+    Map<String, String> sessionVariables;
+    Map<String, String> sessionCookies;
+
+
+    public LoginJob(GotlibCredentials gotlibCredentials) {
         this.gotlibCredentials = gotlibCredentials;
+        this.gotlibSession = new GotlibSession();
+
 		// Initialise maps.
 		sessionVariables = new HashMap<String, String>();
 		sessionCookies = new HashMap<String, String>();
+        System.out.println("LoginJob(): "+gotlibCredentials);
 	}
 	
 	/**
 	 * Starts logging in.
 	 * @return the success of the operation.
 	 */
-	public GotlibSession login() {
+	public Message<GotlibSession> login() {
 
-		// Retry login job a specified number of times. 
-		int failureCounter = 0;
-		while(failureCounter < Constants.MAX_CONNECTION_ATTEMPTS) {
+		// Retry login job:
+		int failureCounter = 0; //  a specified number of times.
+        Error error = null; // Until a specific error occurs
+
+		while(error == null && failureCounter < Constants.MAX_CONNECTION_ATTEMPTS) {
 			try {					
 				System.out.print("\n****** LoginJob \n");
 				System.out.print("* getLoginForm(): ");
@@ -66,21 +73,28 @@ public class LoginJob {
 				// We made it through.
                 gotlibSession.setCookies(sessionCookies);
 				break; // Break if we succeed.
-			} catch (Exception e) {
+			}
+            // Specific error, which should abort immediately
+            catch (ErrorException e) {
+                // (Will be Error.INCORRECT_LOGIN_CREDENTIALS)
+                System.out.print("failed. very much.");
+                return new Message<GotlibSession>(e.getError());
+            }
+            // Generic error (network/parse), continue retrying
+            catch (Exception e) {
 				failureCounter++;
+				System.out.print("failed."+e.getMessage());
 				System.out.print("failed. retrying... ");
 			}
 		}
 		// Did we fail?
 		if (failureCounter >= Constants.MAX_CONNECTION_ATTEMPTS) {
 			System.out.print("\n****** LoginJob failed.\n");
-            return null;
+            return new Message<GotlibSession>(Error.CONNECTION_ATTEMPTS_EXCEEDED);
 		}
 		else { // Nope!
-			System.out.print("\n****** LoginJob done.\n");
+			return new Message<GotlibSession>(gotlibSession);
 		}
-
-		return gotlibSession;
 	}
 
 	/**
@@ -151,12 +165,12 @@ public class LoginJob {
 
 	    // These new cookies are all we'll need. 
 	    sessionCookies = response.cookies();
-	    
+
 		// Tests.
 		if ((sessionVariables.get("lt") == null) ||
 		   (sessionCookies.get("JSESSIONID") == null) ||
 		   (sessionCookies.get("III_SESSION_ID") == null)) {
-			throw new Exception("missing cookies/variables.");
+			throw new ErrorException(Error.INCORRECT_LOGIN_CREDENTIALS);
 		}
 		return response;
 	}
