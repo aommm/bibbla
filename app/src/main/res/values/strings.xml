@@ -11,6 +11,9 @@
     <string name="my_pages">Mina sidor</string>
     <string name="libraries">Bib</string>
     <string name="settings">Instäl</string>
+    <string name="test_jsoup">Testa jsoup</string>
+
+
     <string name="title_activity_search">SearchActivity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_reservations">Reserverade böcker</string>

@@ -31,5 +31,11 @@
             android:text="@string/settings"
             style="@style/main_menu_button"/>
     </TableRow>
+    <TableRow android:layout_weight="1" >
+        <Button
+            android:id="@+id/test_jsoup_button"
+            android:text="@string/test_jsoup"
+            style="@style/main_menu_button"/>
+    </TableRow>
 
 </TableLayout>

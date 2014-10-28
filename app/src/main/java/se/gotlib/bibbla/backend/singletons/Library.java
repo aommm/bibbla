@@ -1,11 +1,15 @@
 package se.gotlib.bibbla.backend.singletons;
 
+import android.util.Log;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 import se.gotlib.bibbla.backend.model.Book;
+import se.gotlib.bibbla.backend.tasks.TestTask;
+import se.gotlib.bibbla.util.Observable;
 
 /**
  * Singleton that handles all the tasks you would want to do with the library.
@@ -15,7 +19,7 @@ import se.gotlib.bibbla.backend.model.Book;
  * @author Master
  *
  */
-public class Library implements PropertyChangeListener, Observer{
+public class Library implements PropertyChangeListener, Observable {
 	private PropertyChangeSupport pcs;
 	
 	/*
@@ -57,12 +61,18 @@ public class Library implements PropertyChangeListener, Observer{
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if(event.getPropertyName().equals("loginSucceeded")) {
+        String eventName = event.getPropertyName();
+		if(eventName.equals("loginSucceeded")) {
 			
-		} else if(event.getPropertyName().equals("loginFailed")) {
-			
-		}
-	}
+		} else if(eventName.equals("loginFailed")) {
+
+        } else if(eventName.equals("testJsoupDone")) {
+            // Simply forward event to frontend
+            Log.d("bibbla", "Library: testJsoupDone, result: "+event.getNewValue());
+            pcs.firePropertyChange(event);
+
+        }
+    }
 	
 	public void getReservationsAsync() {
 		pcs.firePropertyChange("getReservations", null, reservedBooks);
@@ -113,6 +123,17 @@ public class Library implements PropertyChangeListener, Observer{
 		}
 		pcs.firePropertyChange("searchDone", null, searchResult);
 	}
+
+    /**
+     * Test method.
+     * Runs async task which does some JSoupy stuff
+     */
+    public void testJsoupAsync() {
+        TestTask tt = new TestTask();
+        tt.addListener(this);
+        tt.execute();
+    }
+
 
     public void addListener(PropertyChangeListener pcl) {
         pcs.addPropertyChangeListener(pcl);

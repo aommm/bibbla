@@ -2,7 +2,8 @@ package se.gotlib.bibbla.backend.singletons;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.*;
+
+import se.gotlib.bibbla.util.Observable;
 
 /**
  * Singleton that handles all the async tasks you would want to do for a user.
@@ -10,7 +11,7 @@ import java.util.*;
  * @author Master
  *
  */
-public class User implements Observer{
+public class User implements Observable {
 	private PropertyChangeSupport pcs;
 	
 	private String cardNumber, pinNumber;
