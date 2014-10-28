@@ -14,10 +14,19 @@
     <string name="test_jsoup">Testa jsoup</string>
 
 
+    <!-- Login screen -->
+    <string name="login_help">Skriv in dina inloggningsuppgifter till Göteborgs bibliotek här:</string>
+    <string name="name">Efternamn</string>
+    <string name="card">Bibliotekskortsnummer</string>
+    <string name="pin">PIN-kod</string>
+    <string name="login">Logga in</string>
+
+    <!-- titles -->
     <string name="title_activity_search">SearchActivity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_reservations">Reserverade böcker</string>
     <string name="title_activity_loans">LoansActivity</string>
     <string name="title_activity_user">UserActivity</string>
+    <string name="title_activity_login">Logga in</string>
 
 </resources>

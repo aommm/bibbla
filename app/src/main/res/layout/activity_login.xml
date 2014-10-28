@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="se.gotlib.bibbla.activities.LoginActivity">
+
+    <!-- Input fields -->
+
+    <TextView
+        android:id="@+id/login_help_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/login_help"/>
+
+
+    <EditText
+        android:id="@+id/name_edit"
+        android:layout_below="@id/login_help_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/name"
+        android:inputType="textCapWords|textPersonName" />
+
+    <EditText
+        android:id="@+id/card_edit"
+        android:layout_below="@id/name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/card"
+        android:inputType="textCapCharacters" />
+
+    <EditText
+        android:id="@+id/pin_edit"
+        android:layout_below="@id/card_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/pin"
+        android:password="true"
+        android:inputType="number|phone" />
+
+    <!-- Submit -->
+    <Button android:id="@+id/login_button"
+        android:layout_below="@id/pin_edit"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/login"/>
+
+</RelativeLayout>
