@@ -168,9 +168,13 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             // TODO there's no way to change theme dynamically :(
             String name = user.getName();
             loginButton.setText(getString(R.string.logged_in)+" - "+name);
+            loginButton.setBackgroundColor(getResources().getColor(R.color.logged_in_background));
+            loginButton.setTextColor(getResources().getColor(R.color.logged_in_text));
         } else {
             loggedIn = false;
             loginButton.setText(getString(R.string.not_logged_in));
+            loginButton.setBackgroundColor(getResources().getColor(R.color.logged_out_background));
+            loginButton.setTextColor(getResources().getColor(R.color.logged_out_text));
             /*
             Don't care about the specific error
             switch(message.error) {
