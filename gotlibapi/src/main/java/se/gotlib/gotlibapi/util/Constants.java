@@ -1,4 +1,4 @@
-package se.gotlib.bibbla.util;
+package se.gotlib.gotlibapi.util;
 
 /**
  * Created by Niklas on 2014-10-28.

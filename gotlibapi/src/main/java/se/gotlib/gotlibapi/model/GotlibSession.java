@@ -17,7 +17,7 @@
     along with Bibbla.  If not, see <http://www.gnu.org/licenses/>.    
  **/
 
-package se.gotlib.bibbla.backend.model;
+package se.gotlib.gotlibapi.model;
 
 import java.io.Serializable;
 import java.util.HashMap;

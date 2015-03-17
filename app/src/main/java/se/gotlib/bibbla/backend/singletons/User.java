@@ -4,10 +4,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import se.gotlib.bibbla.backend.model.GotlibCredentials;
-import se.gotlib.bibbla.backend.model.GotlibSession;
+import se.gotlib.gotlibapi.model.GotlibCredentials;
+import se.gotlib.gotlibapi.model.GotlibSession;
 import se.gotlib.bibbla.backend.tasks.LoginTask;
-import se.gotlib.bibbla.util.Message;
+import se.gotlib.gotlibapi.util.Message;
 import se.gotlib.bibbla.util.Observable;
 
 /**

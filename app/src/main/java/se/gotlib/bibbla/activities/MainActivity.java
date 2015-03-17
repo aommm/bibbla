@@ -14,11 +14,11 @@ import java.beans.PropertyChangeListener;
 
 import se.gotlib.bibbla.R;
 import se.gotlib.bibbla.R.id;
-import se.gotlib.bibbla.backend.model.GotlibSession;
+import se.gotlib.gotlibapi.model.GotlibSession;
 import se.gotlib.bibbla.backend.singletons.Library;
 import se.gotlib.bibbla.backend.singletons.Singletons;
 import se.gotlib.bibbla.backend.singletons.User;
-import se.gotlib.bibbla.util.*;
+import se.gotlib.gotlibapi.util.Message;
 
 public class MainActivity extends ActionBarActivity implements PropertyChangeListener {
 
@@ -178,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             /*
             Don't care about the specific error
             switch(message.error) {
-                case se.gotlib.bibbla.util.Error.INCORRECT_LOGIN_CREDENTIALS:
+                case se.gotlib.gotlibapi.util.Error.INCORRECT_LOGIN_CREDENTIALS:
 
                     break;
             }

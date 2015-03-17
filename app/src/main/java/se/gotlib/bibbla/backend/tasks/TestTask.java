@@ -16,6 +16,7 @@ public class TestTask extends Task<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
+
         // Create a request, and retrieve the response.
         Response response = null;
         try {

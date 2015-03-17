@@ -1,4 +1,4 @@
-package se.gotlib.bibbla.backend.tasks;
+package se.gotlib.gotlibapi.jobs;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import se.gotlib.bibbla.backend.model.GotlibCredentials;
-import se.gotlib.bibbla.backend.model.GotlibSession;
-import se.gotlib.bibbla.util.*;
-import se.gotlib.bibbla.util.Error;
+import se.gotlib.gotlibapi.model.GotlibCredentials;
+import se.gotlib.gotlibapi.model.GotlibSession;
+import se.gotlib.gotlibapi.util.Error;
+import se.gotlib.gotlibapi.util.*;
 
 /**
  * Logs the user into gotlib.
@@ -33,6 +33,7 @@ public class LoginJob {
     Map<String, String> sessionVariables;
     Map<String, String> sessionCookies;
 
+    public int x;
 
     public LoginJob(GotlibCredentials gotlibCredentials) {
         this.gotlibCredentials = gotlibCredentials;
@@ -154,7 +155,7 @@ public class LoginJob {
 	    	put("lt", sessionVariables.get("lt"));
 	    	put("_eventId", "submit");
 	    }};
-	    
+
 	    // Send POST request and save response.
 	    Response response = Jsoup.connect(url)
 			    .method(Method.POST)
@@ -166,7 +167,11 @@ public class LoginJob {
 	    // These new cookies are all we'll need. 
 	    sessionCookies = response.cookies();
 
-		// Tests.
+        System.out.println("lt: "+sessionCookies.get("lt"));
+        System.out.println("lt: "+sessionCookies.get("JSESSIONID"));
+        System.out.println("lt: "+sessionCookies.get("III_SESSION_ID"));
+
+        // Tests.
 		if ((sessionVariables.get("lt") == null) ||
 		   (sessionCookies.get("JSESSIONID") == null) ||
 		   (sessionCookies.get("III_SESSION_ID") == null)) {
@@ -184,6 +189,7 @@ public class LoginJob {
 	 */
 	private static String parseUserUrl(Response response) throws IOException {
 		Document html = response.parse();
+        //System.out.println(html.toString());
 		String url = html.select(".myAccountLink").attr("href");
 		if (url.equals("")) throw new IOException("no link found");
 		// Replace http://...:80/... by https://.../...

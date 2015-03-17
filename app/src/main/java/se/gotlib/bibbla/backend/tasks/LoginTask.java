@@ -22,10 +22,11 @@ package se.gotlib.bibbla.backend.tasks;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import se.gotlib.bibbla.backend.model.GotlibCredentials;
-import se.gotlib.bibbla.backend.model.GotlibSession;
-import se.gotlib.bibbla.util.Message;
+import se.gotlib.gotlibapi.model.GotlibCredentials;
+import se.gotlib.gotlibapi.model.GotlibSession;
+import se.gotlib.gotlibapi.util.Message;
 import se.gotlib.bibbla.util.Observable;
+import se.gotlib.gotlibapi.jobs.LoginJob;
 
 /**
  * Logs the user into gotlib.

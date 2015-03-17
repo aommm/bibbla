@@ -87,3 +87,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+# Secret file =)
+gotlibapi/src/main/java/se/gotlib/gotlibapi/SecretCredentials.java

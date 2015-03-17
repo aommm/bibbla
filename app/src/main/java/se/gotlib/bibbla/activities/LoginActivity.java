@@ -13,10 +13,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import se.gotlib.bibbla.R;
-import se.gotlib.bibbla.backend.model.GotlibSession;
+import se.gotlib.gotlibapi.model.GotlibSession;
 import se.gotlib.bibbla.backend.singletons.Singletons;
 import se.gotlib.bibbla.backend.singletons.User;
-import se.gotlib.bibbla.util.Message;
+import se.gotlib.gotlibapi.util.Message;
 
 public class LoginActivity extends ActionBarActivity implements PropertyChangeListener {
 
