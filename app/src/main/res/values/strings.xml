@@ -16,8 +16,8 @@
 
     <!-- Login screen -->
     <string name="login_help">Skriv in dina inloggningsuppgifter till Göteborgs bibliotek här:</string>
-    <string name="name">Efternamn</string>
-    <string name="card">Bibliotekskortsnummer</string>
+    <string name="username">Efternamn</string>
+    <string name="password">Bibliotekskortsnummer</string>
     <string name="pin">PIN-kod</string>
     <string name="login">Logga in</string>
     <!-- Login status -->
@@ -31,7 +31,7 @@
     <string name="title_activity_loans">LoansActivity</string>
     <string name="title_activity_user">UserActivity</string>
     <string name="title_activity_login">Logga in</string>
-    <string name="incorrect_login_credentials">Inloggningsuppgifterna stämmer inte!</string>
+    <string name="incorrect_bibbla_credentials">Inloggningsuppgifterna stämmer inte!</string>
 
 
 </resources>

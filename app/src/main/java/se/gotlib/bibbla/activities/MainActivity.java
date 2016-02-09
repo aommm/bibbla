@@ -17,6 +17,7 @@ import se.gotlib.bibbla.R.id;
 import se.gotlib.bibbla.backend.singletons.Library;
 import se.gotlib.bibbla.backend.singletons.Singletons;
 import se.gotlib.bibbla.backend.singletons.User;
+import se.gotlib.bibbla.util.Error;
 
 public class MainActivity extends ActionBarActivity implements PropertyChangeListener {
 
@@ -76,9 +77,9 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
         setContentView(R.layout.activity_main);
         
     	initButtons();
-        library = ((Singletons)getApplication()).getLibraryInstance();
+        library = Singletons.getInstance(getApplicationContext()).getLibraryInstance();
         library.addListener(this);
-        user = ((Singletons)getApplication()).getUserInstance();
+        user = Singletons.getInstance(getApplicationContext()).getUserInstance();
         user.addListener(this);
     }
 
@@ -114,7 +115,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             testJsoupDone((String)pcs.getNewValue());
         }
         else if ("loginDone".equals(eventName)) {
-//            loginDone((Message<GotlibSession>)pcs.getNewValue());
+            loginDone((Error) pcs.getNewValue());
         }
     }
 
@@ -148,6 +149,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      */
     private void login() {
         if (loggedIn) {
+            // TODO show "me" screen?
             Log.d("bibbla", "MainActivity: already logged in");
         } else {
             Log.d("bibbla", "MainActivity: log in, switching to LoginActivity");
@@ -160,8 +162,9 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      * Callback method, called when login is done.
      * May have failed or succeeded
      */
-    private void loginDone(/*Message<GotlibSession> message*/) {
-/*        if (message.error == null) {
+    private void loginDone(Error e) {
+        Log.d("frontend", "MainActivity loginDone");
+        if (e == null) {
             loggedIn = true;
             // TODO there's no way to change theme dynamically :(
             String name = user.getName();
@@ -173,14 +176,14 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             loginButton.setText(getString(R.string.not_logged_in));
             loginButton.setBackgroundColor(getResources().getColor(R.color.logged_out_background));
             loginButton.setTextColor(getResources().getColor(R.color.logged_out_text));
-            *//*
-            Don't care about the specific error
-            switch(message.error) {
+
+            // Don't care about the specific error
+            /*switch(message.error) {
                 case se.gotlib.gotlibapi.util.Error.INCORRECT_LOGIN_CREDENTIALS:
 
                     break;
-            }
-            *//*
-        }*/
+            }*/
+
+        }
     }
 }

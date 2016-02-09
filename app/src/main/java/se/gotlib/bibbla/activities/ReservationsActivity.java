@@ -33,7 +33,7 @@ public class ReservationsActivity extends ActionBarActivity implements PropertyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reservations);
 
-        library = ((Singletons)getApplication()).getLibraryInstance();
+        library = Singletons.getInstance(getApplicationContext()).getLibraryInstance();
         library.addListener(this);
 
         myDataset = new ArrayList<Book>();

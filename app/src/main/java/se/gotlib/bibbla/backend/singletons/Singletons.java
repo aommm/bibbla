@@ -1,6 +1,10 @@
 package se.gotlib.bibbla.backend.singletons;
 
 import android.app.Application;
+import android.content.Context;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
 /**
  * Class that extends Application so it runs when the application is started.
@@ -8,19 +12,31 @@ import android.app.Application;
  * @author Jonathan Orro
  *
  */
-public class Singletons extends Application {
+public class Singletons {
 	private Library library;
 	private User user;
-	
-	/**
-	 * Initializes all the singletons
-	 */
-	@Override
-	public void onCreate() {
+	private RequestQueue requestQueue;
+
+	private static Singletons instance;
+	private static Context ctx;
+
+
+	public static final String API_URL = "http://192.168.0.5:3000";
+
+	private Singletons(Context context) {
+		ctx = context;
+		requestQueue = getRequestQueue();
 		library = new Library();
-		user = new User();
+		user = new User(ctx);
 	}
-	
+
+	public static synchronized Singletons getInstance(Context context) {
+		if (instance == null) {
+			instance = new Singletons(context);
+		}
+		return instance;
+	}
+
 	/**
 	 * Getter for our instance of the library singleton.
 	 * @return Library instance
@@ -36,4 +52,15 @@ public class Singletons extends Application {
 	public User getUserInstance() {
 		return user;
 	}
+
+	public RequestQueue getRequestQueue() {
+		if (requestQueue == null) {
+			// getApplicationContext() is key, it keeps you from leaking the
+			// Activity or BroadcastReceiver if someone passes one in.
+			requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
+		}
+		return requestQueue;
+	}
+
+
 }

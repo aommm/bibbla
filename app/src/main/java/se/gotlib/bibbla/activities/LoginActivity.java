@@ -2,6 +2,7 @@ package se.gotlib.bibbla.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.beans.PropertyChangeListener;
 import se.gotlib.bibbla.R;
 import se.gotlib.bibbla.backend.singletons.Singletons;
 import se.gotlib.bibbla.backend.singletons.User;
+import se.gotlib.bibbla.util.Error;
 
 public class LoginActivity extends ActionBarActivity implements PropertyChangeListener {
 
@@ -31,7 +33,7 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
     };
 
     private Button loginButton;
-    private EditText nameEdit, cardEdit, pinEdit;
+    private EditText usernameEdit, passwordEdit;
     private TextView loginErrorText;
 
     private User user;
@@ -44,15 +46,14 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initButtons();
-        user = ((Singletons)getApplication()).getUserInstance();
+        user = Singletons.getInstance(getApplicationContext()).getUserInstance();
         user.addListener(this);
     }
 
     private void initButtons() {
         loginButton = (Button)findViewById(R.id.login_button);
-        nameEdit = (EditText)findViewById(R.id.name_edit);
-        cardEdit = (EditText)findViewById(R.id.card_edit);
-        pinEdit = (EditText)findViewById(R.id.pin_edit);
+        usernameEdit = (EditText)findViewById(R.id.username_edit);
+        passwordEdit = (EditText)findViewById(R.id.password_edit);
         loginErrorText = (TextView)findViewById(R.id.login_error_text);
         loginButton.setOnClickListener(buttonListener);
     }
@@ -62,17 +63,16 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
      * Starts the login process
      */
     private void login() {
-        String name = nameEdit.getText().toString();
-        String card = cardEdit.getText().toString();
-        String pin = pinEdit.getText().toString();
+        String name = usernameEdit.getText().toString();
+        String card = passwordEdit.getText().toString();
         // TODO basic validation of credentials here
-        user.loginAsync(name, card, pin);
+        user.loginAsync(name, card);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent e) {
         if ("loginDone".equals(e.getPropertyName())) {
-//            loginDone((Message<GotlibSession>) e.getNewValue());
+            loginDone((Error) e.getNewValue());
         }
     }
 
@@ -80,8 +80,11 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
      * (Callback method)
      * Is called when login task is done
      */
-    private void loginDone(/*Message<GotlibSession> message*/) {
-/*        if (message.error == null) {
+    private void loginDone(Error e) {
+
+        Log.d("frontend", "LoginActivity loginDone, "+e);
+
+        if (e == null) {
             loggedIn = true;
             // TODO show green success, and finish after ~300ms
             loginErrorText.setVisibility(View.GONE);
@@ -89,12 +92,12 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
         } else {
             loggedIn = false;
             loginErrorText.setVisibility(View.VISIBLE);
-            switch(message.error) {
-                case INCORRECT_LOGIN_CREDENTIALS:
-                    loginErrorText.setText(R.string.incorrect_login_credentials);
+            switch(e) {
+                case INCORRECT_BIBBLA_CREDENTIALS:
+                    loginErrorText.setText(R.string.incorrect_bibbla_credentials);
                     break;
             }
-        }*/
+        }
     }
 
 
