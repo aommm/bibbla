@@ -2,9 +2,9 @@ package se.gotlib.bibbla.backend.tasks;
 
 import android.util.Log;
 
-import org.jsoup.Connection.Method;
-import org.jsoup.Connection.Response;
-import org.jsoup.Jsoup;
+//import org.jsoup.Connection.Method;
+//import org.jsoup.Connection.Response;
+//import org.jsoup.Jsoup;
 
 import java.io.IOException;
 
@@ -17,6 +17,7 @@ public class TestTask extends Task<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
 
+/*
         // Create a request, and retrieve the response.
         Response response = null;
         try {
@@ -30,6 +31,8 @@ public class TestTask extends Task<Void, Void, String> {
         if (response != null)
             return response.statusMessage();
         return null;
+*/
+    return null;
     }
 
     @Override

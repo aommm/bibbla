@@ -5,7 +5,7 @@ import android.app.Application;
 /**
  * Class that extends Application so it runs when the application is started.
  * Acts as the wrapper-class for the singletons.
- * @author Jonathan Orrö
+ * @author Jonathan Orro
  *
  */
 public class Singletons extends Application {

@@ -1,4 +1,4 @@
-package se.gotlib.bibbla.backend.singletons;
+package se.gotlib.bibbla.backend;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,8 +15,8 @@ import se.gotlib.bibbla.util.Observable;
 public class User implements PropertyChangeListener, Observable {
 	private PropertyChangeSupport pcs;
 
-//    private GotlibCredentials gotlibCredentials; // Gotlib login credentials (name, card, pin)
-//    private GotlibSession gotlibSession;         // Gotlib session (cookies etc)
+    //private GotlibCredentials gotlibCredentials; // Gotlib login credentials (name, card, pin)
+    //private GotlibSession gotlibSession;         // Gotlib session (cookies etc)
 
 	private String name;      // User's name
     private boolean loggedIn; // Logged in or not?
@@ -44,8 +44,8 @@ public class User implements PropertyChangeListener, Observable {
             // TODO save timeout, and  create Timer using it which re-launches login here
         }
         // Forward event to frontend
+        pcs.firePropertyChange("loginDone", null, message);
 */
-//        pcs.firePropertyChange("loginDone", null, message);
     }
 	
 	public boolean isLoggedIn() {
@@ -81,9 +81,11 @@ public class User implements PropertyChangeListener, Observable {
      * Receive events, e.g. from LoginTask
      */
     public void propertyChange(PropertyChangeEvent e) {
-        /*if ("loginDone".equals(e.getPropertyName())) {
+/*
+        if ("loginDone".equals(e.getPropertyName())) {
             loginDone((Message<GotlibSession>)e.getNewValue());
-        }*/
+        }
+*/
     }
 
     /**

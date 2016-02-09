@@ -14,11 +14,9 @@ import java.beans.PropertyChangeListener;
 
 import se.gotlib.bibbla.R;
 import se.gotlib.bibbla.R.id;
-import se.gotlib.gotlibapi.model.GotlibSession;
 import se.gotlib.bibbla.backend.singletons.Library;
 import se.gotlib.bibbla.backend.singletons.Singletons;
 import se.gotlib.bibbla.backend.singletons.User;
-import se.gotlib.gotlibapi.util.Message;
 
 public class MainActivity extends ActionBarActivity implements PropertyChangeListener {
 
@@ -116,7 +114,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             testJsoupDone((String)pcs.getNewValue());
         }
         else if ("loginDone".equals(eventName)) {
-            loginDone((Message<GotlibSession>)pcs.getNewValue());
+//            loginDone((Message<GotlibSession>)pcs.getNewValue());
         }
     }
 
@@ -162,8 +160,8 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      * Callback method, called when login is done.
      * May have failed or succeeded
      */
-    private void loginDone(Message<GotlibSession> message) {
-        if (message.error == null) {
+    private void loginDone(/*Message<GotlibSession> message*/) {
+/*        if (message.error == null) {
             loggedIn = true;
             // TODO there's no way to change theme dynamically :(
             String name = user.getName();
@@ -175,14 +173,14 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
             loginButton.setText(getString(R.string.not_logged_in));
             loginButton.setBackgroundColor(getResources().getColor(R.color.logged_out_background));
             loginButton.setTextColor(getResources().getColor(R.color.logged_out_text));
-            /*
+            *//*
             Don't care about the specific error
             switch(message.error) {
                 case se.gotlib.gotlibapi.util.Error.INCORRECT_LOGIN_CREDENTIALS:
 
                     break;
             }
-            */
-        }
+            *//*
+        }*/
     }
 }

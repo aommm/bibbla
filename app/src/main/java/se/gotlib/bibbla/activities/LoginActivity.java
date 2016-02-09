@@ -13,10 +13,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import se.gotlib.bibbla.R;
-import se.gotlib.gotlibapi.model.GotlibSession;
 import se.gotlib.bibbla.backend.singletons.Singletons;
 import se.gotlib.bibbla.backend.singletons.User;
-import se.gotlib.gotlibapi.util.Message;
 
 public class LoginActivity extends ActionBarActivity implements PropertyChangeListener {
 
@@ -74,7 +72,7 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
     @Override
     public void propertyChange(PropertyChangeEvent e) {
         if ("loginDone".equals(e.getPropertyName())) {
-            loginDone((Message<GotlibSession>) e.getNewValue());
+//            loginDone((Message<GotlibSession>) e.getNewValue());
         }
     }
 
@@ -82,8 +80,8 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
      * (Callback method)
      * Is called when login task is done
      */
-    private void loginDone(Message<GotlibSession> message) {
-        if (message.error == null) {
+    private void loginDone(/*Message<GotlibSession> message*/) {
+/*        if (message.error == null) {
             loggedIn = true;
             // TODO show green success, and finish after ~300ms
             loginErrorText.setVisibility(View.GONE);
@@ -96,7 +94,7 @@ public class LoginActivity extends ActionBarActivity implements PropertyChangeLi
                     loginErrorText.setText(R.string.incorrect_login_credentials);
                     break;
             }
-        }
+        }*/
     }
 
 
