@@ -27,8 +27,15 @@ import se.gotlib.bibbla.util.Error;
 public class User implements Observable {
 	private PropertyChangeSupport pcs;
 
-	private String name;      // User's name
     private boolean loggedIn; // Logged in or not?
+
+    private String username;
+    private String password;
+    private String gotlibSurname;
+    private String gotlibCode;
+    private String gotlibPin;
+
+    private String token;
 
     private Context ctx;
 
@@ -39,8 +46,7 @@ public class User implements Observable {
 	}
 	
 	public void loginAsync(String username, String password) {
-        Log.d("login", "loginAsync called");
-        this.name = username;
+        Log.d("backend", "loginAsync called");
 
         String url = Singletons.API_URL + "/login";
         JSONObject data = null;
@@ -48,6 +54,7 @@ public class User implements Observable {
             data = new JSONObject(String.format("{username: %s, password: %s}", username, password));
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.d("backend", "loginAsync error, input");
             pcs.firePropertyChange("loginDone", null, Error.INPUT);
             return;
         }
@@ -55,13 +62,20 @@ public class User implements Observable {
             (Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Log.d("login", "loginAsync done");
-                    pcs.firePropertyChange("loginDone", null, null);
+                    try {
+                        parseJson(response);
+                        Log.d("backend", "loginAsync done"+User.this.username+" , "+User.this.gotlibSurname);
+                        pcs.firePropertyChange("loginDone", null, null);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("backend", "loginAsync failed");
+                        pcs.firePropertyChange("loginDone", null, Error.PARSE);
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d("login", "loginAsync error, " + error.networkResponse.statusCode);
+                    Log.d("backend", "loginAsync error, " + error.networkResponse.statusCode);
                     switch (error.networkResponse.statusCode) {
                         case 401:
                             pcs.firePropertyChange("loginDone", null, Error.INCORRECT_BIBBLA_CREDENTIALS);
@@ -74,6 +88,20 @@ public class User implements Observable {
             });
         Singletons.getInstance(ctx).getRequestQueue().add(r);
 	}
+
+    private void parseJson(JSONObject response) throws JSONException {
+
+        this.token = response.getString("token");
+        JSONObject user = response.getJSONObject("user");
+
+        this.username = user.getString("username");
+        this.password = user.getString("password");
+        this.gotlibSurname = user.getString("gotlib_surname");
+        this.gotlibCode = user.getString("gotlib_code");
+        this.gotlibPin = user.getString("gotlib_pin");
+
+        this.loggedIn = true;
+    }
 
     /**
      * @deprecated what do we use this for?
@@ -105,11 +133,30 @@ public class User implements Observable {
      */
     public String getName() {
         // TODO return full name, if fetched sometime
-        return name;
+        return username;
     }
 
     public boolean isLoggedIn() {
         return loggedIn;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getGotlibSurname() {
+        return gotlibSurname;
+    }
+
+    public String getGotlibCode() {
+        return gotlibCode;
+    }
+
+    public String getGotlibPin() {
+        return gotlibPin;
+    }
 }

@@ -26,9 +26,6 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
     private Library library;
     private User user;
 
-    // Whether we display the user as logged in or not
-    private boolean loggedIn;
-
 	private OnClickListener buttonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -148,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      * If user is logged in:     show profile
      */
     private void login() {
-        if (loggedIn) {
+        if (user.isLoggedIn()) {
             // TODO show "me" screen?
             Log.d("bibbla", "MainActivity: already logged in");
         } else {
@@ -165,14 +162,12 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
     private void loginDone(Error e) {
         Log.d("frontend", "MainActivity loginDone");
         if (e == null) {
-            loggedIn = true;
             // TODO there's no way to change theme dynamically :(
             String name = user.getName();
             loginButton.setText(getString(R.string.logged_in)+" - "+name);
             loginButton.setBackgroundColor(getResources().getColor(R.color.logged_in_background));
             loginButton.setTextColor(getResources().getColor(R.color.logged_in_text));
         } else {
-            loggedIn = false;
             loginButton.setText(getString(R.string.not_logged_in));
             loginButton.setBackgroundColor(getResources().getColor(R.color.logged_out_background));
             loginButton.setTextColor(getResources().getColor(R.color.logged_out_text));

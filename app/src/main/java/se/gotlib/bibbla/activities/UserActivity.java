@@ -1,17 +1,41 @@
 package se.gotlib.bibbla.activities;
 
 import se.gotlib.bibbla.R;
+import se.gotlib.bibbla.backend.singletons.Singletons;
+import se.gotlib.bibbla.backend.singletons.User;
+import se.gotlib.bibbla.util.*;
+
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
-public class UserActivity extends ActionBarActivity {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class UserActivity extends ActionBarActivity implements PropertyChangeListener {
+
+	private User user;
+	private EditText gotlibSurnameEdit, gotlibCodeEdit, gotlibPinEdit;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user);
+		user = Singletons.getInstance(getApplicationContext()).getUserInstance();
+		user.addListener(this);
+		gotlibCodeEdit = (EditText) findViewById(R.id.gotlib_code_edit);
+		gotlibSurnameEdit = (EditText) findViewById(R.id.gotlib_surname_edit);
+		gotlibPinEdit = (EditText) findViewById(R.id.gotlib_pin_edit);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		gotlibSurnameEdit.setText(user.getGotlibSurname());
+		gotlibCodeEdit.setText(user.getGotlibCode());
+		gotlibPinEdit.setText(user.getGotlibPin());
 	}
 
 	@Override
@@ -31,5 +55,13 @@ public class UserActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		// don't care
+//		if ("loginDone".equals(event.getPropertyName())) {
+//			loginDone((se.gotlib.bibbla.util.Error) pcs.getNewValue());
+//		}
 	}
 }

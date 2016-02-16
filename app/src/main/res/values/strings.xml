@@ -32,6 +32,9 @@
     <string name="title_activity_user">UserActivity</string>
     <string name="title_activity_login">Logga in</string>
     <string name="incorrect_bibbla_credentials">Inloggningsuppgifterna stämmer inte!</string>
+    <string name="gotlib_surname">Efternamn</string>
+    <string name="gotlib_code">Bibliotekskortsnummer</string>
+    <string name="gotlib_pin">PIN-kod</string>
 
 
 </resources>

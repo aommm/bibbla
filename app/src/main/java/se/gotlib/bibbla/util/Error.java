@@ -17,6 +17,7 @@ public enum Error {
 	// Generic errors
 	NETWORK,
 	INPUT,
+	PARSE,
 
 	// Network related
 //    CONNECTION_ATTEMPTS_EXCEEDED,
