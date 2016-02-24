@@ -21,12 +21,12 @@ public class Singletons {
 	private static Context ctx;
 
 
-	public static final String API_URL = "http://192.168.1.73:3000";
+	public static final String API_URL = "http://192.168.1.65:3000";
 
 	private Singletons(Context context) {
 		ctx = context;
 		requestQueue = getRequestQueue();
-		library = new Library();
+		library = new Library(ctx);
 		user = new User(ctx);
 	}
 

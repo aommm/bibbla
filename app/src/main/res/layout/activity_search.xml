@@ -8,13 +8,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="se.gotlib.bibbla.activities.SearchActivity" >
 
-    <TextView
-    android:id="@+id/my_textview"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/title_activity_search"
-    android:background="@color/white"
-    android:elevation="5dp" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/book_list"
+        android:scrollbars="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/search_field" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_field"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/search_button"
+        android:layout_toEndOf="@+id/search_button" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_button"
+        android:id="@+id/search_button"
+        android:layout_alignTop="@+id/search_field"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

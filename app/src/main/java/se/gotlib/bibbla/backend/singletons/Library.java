@@ -1,11 +1,24 @@
 package se.gotlib.bibbla.backend.singletons;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import se.gotlib.bibbla.backend.model.Book;
 import se.gotlib.bibbla.backend.tasks.TestTask;
@@ -28,13 +41,17 @@ public class Library implements PropertyChangeListener, Observable {
 	private ArrayList<Book> books;
 	private ArrayList<Book> loanedBooks;
 	private ArrayList<Book> reservedBooks;
-	
-	public Library() {
+
+	private Context ctx;
+
+	public Library(Context ctx) {
 		books = new ArrayList<Book>();
 		loanedBooks = new ArrayList<Book>();
 		reservedBooks = new ArrayList<Book>();
 
         initBooks();
+
+		this.ctx = ctx;
 
 		pcs = new PropertyChangeSupport(this);
 	}
@@ -115,13 +132,39 @@ public class Library implements PropertyChangeListener, Observable {
 	}
 	
 	public void searchAsync(String s) {
-		ArrayList<Book> searchResult = new ArrayList<Book>();
-		for(Book b : books) {
-			if(b.getAuthor().contains(s) || b.getIsbn().contains(s) || b.getTitle().contains(s)) {
-				searchResult.add(b);
+		String url = Singletons.API_URL +"/search/"+s;
+
+		JsonArrayRequest r = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+			@Override
+			public void onResponse(JSONArray response) {
+				try {
+					Log.d("jonis", "Got "+response.length()+" books!");
+					ArrayList<Book> searchResult = new ArrayList<Book>();
+
+					for(int i=0; i<response.length(); i++) {
+						JSONObject book = response.getJSONObject(i);
+						searchResult.add(new Book(book.getString("title"), "meh", book.getString("author")));
+					}
+
+					pcs.firePropertyChange("searchDone", null, searchResult);
+				} catch(JSONException e) {
+					Log.d("jonis", "Exception in json");
+				}
 			}
-		}
-		pcs.firePropertyChange("searchDone", null, searchResult);
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.d("jonis", "errir :"+error.getLocalizedMessage());
+				Log.d("jonis", "errir :"+error.networkResponse);
+				Log.d("jonis", "errir :"+error.toString());
+				Log.d("jonis", "errir :"+ error.getNetworkTimeMs());
+			}
+		});
+
+		r.setRetryPolicy(new DefaultRetryPolicy(10000, 1, 1));
+
+		Log.d("jonis", "just searched bb "+ url);
+		Singletons.getInstance(ctx).getRequestQueue().add(r);
 	}
 
     /**

@@ -13,6 +13,8 @@
     <string name="settings">Instäl</string>
     <string name="test_jsoup">Testa jsoup</string>
 
+    <!-- Search screen -->
+    <string name="search_button">Sök</string>
 
     <!-- Login screen -->
     <string name="login_help">Skriv in dina inloggningsuppgifter till Göteborgs bibliotek här:</string>
