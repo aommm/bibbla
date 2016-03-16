@@ -36,7 +36,7 @@ public class ReservationsActivity extends ActionBarActivity implements PropertyC
         library = Singletons.getInstance(getApplicationContext()).getLibraryInstance();
         library.addListener(this);
 
-        myDataset = new ArrayList<Book>();
+        myDataset = new ArrayList<>();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.reserved_books_recycler);
 
@@ -48,9 +48,7 @@ public class ReservationsActivity extends ActionBarActivity implements PropertyC
         mAdapter = new BookAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
-        Log.d("jonis", "1");
         library.getReservationsAsync();
-        Log.d("jonis", "2");
     }
 
     public void push(View v) {
@@ -82,14 +80,10 @@ public class ReservationsActivity extends ActionBarActivity implements PropertyC
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        Log.d("jonis", "belo");
-        if(event.getPropertyName().equals("getReservations")) {
-            Log.d("jonis", "helo");
+        if(event.getPropertyName().equals("getReservationsDone")) {
+            Log.d("frontend", "ReservationsActivity, got books");
             ArrayList<Book> books = (ArrayList<Book>)event.getNewValue();
-            Log.d("jonis", books.size()+"");
             for(Book b : books) {
-                Log.d("jonis", "data"+myDataset);
-                Log.d("jonis", "adapter"+mAdapter);
                 myDataset.add(b);
                 mAdapter.notifyItemInserted(myDataset.size());
             }

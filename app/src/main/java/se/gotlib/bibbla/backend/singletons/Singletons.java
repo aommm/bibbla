@@ -6,6 +6,9 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+
 /**
  * Class that extends Application so it runs when the application is started.
  * Acts as the wrapper-class for the singletons.
@@ -21,7 +24,7 @@ public class Singletons {
 	private static Context ctx;
 
 
-	public static final String API_URL = "http://192.168.1.65:3000";
+	public static final String API_URL = "http://192.168.1.73:3000";
 
 	private Singletons(Context context) {
 		ctx = context;
@@ -55,6 +58,17 @@ public class Singletons {
 
 	public RequestQueue getRequestQueue() {
 		if (requestQueue == null) {
+
+			// CookieStore is just an interface, you can implement it and do things like
+			// save the cookies to disk or what ever.
+//			CookieStore cookieStore = new MyCookieStore();
+//			CookieManager manager = new CookieManager( cookieStore, CookiePolicy.ACCEPT_ALL );
+//			CookieHandler.setDefault( manager  );
+
+			// Optionally, you can just use the default CookieManager
+			CookieManager manager = new CookieManager();
+			CookieHandler.setDefault(manager);
+
 			// getApplicationContext() is key, it keeps you from leaking the
 			// Activity or BroadcastReceiver if someone passes one in.
 			requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());

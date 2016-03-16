@@ -3,6 +3,7 @@ package se.gotlib.bibbla.backend.singletons;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -11,7 +12,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -31,7 +31,7 @@ public class User implements Observable {
 
     private String username;
     private String password;
-    private String gotlibSurname;
+    private String gotlibName;
     private String gotlibCode;
     private String gotlibPin;
 
@@ -45,10 +45,59 @@ public class User implements Observable {
 		pcs = new PropertyChangeSupport(this);
 	}
 	
-	public void loginAsync(String username, String password) {
+	public void loginGotlibAsync(String gotlibName, String gotlibCode, String gotlibPin) {
+        String url = Singletons.API_URL + "/login";
+        final String event = "loginGotlibDone";
+        Log.d("backend", event+" called");
+        this.username   = gotlibName; // TODO do not set this when login system in place
+        this.gotlibName = gotlibName;
+        this.gotlibCode = gotlibCode;
+        this.gotlibPin  = gotlibPin;
+
+        JSONObject data = null;
+        try {
+            data = new JSONObject(String.format("{name: %s, code: %s, pin: %s}", gotlibName, gotlibCode, gotlibPin));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("backend", event+" error, input");
+            pcs.firePropertyChange(event, null, Error.INPUT);
+            return;
+        }
+        JsonObjectRequest r = new JsonObjectRequest
+            (Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d("backend", event+" done"+User.this.username+" , "+User.this.gotlibName);
+                    pcs.firePropertyChange(event, null, null);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (error == null || error.networkResponse == null) {
+                        Log.d("backend", event+" error");
+                        pcs.firePropertyChange(event, null, Error.NETWORK);
+                        return;
+                    }
+                    Log.d("backend", event+" error, " + error.networkResponse.statusCode);
+                    switch (error.networkResponse.statusCode) {
+                        case 401:
+                            pcs.firePropertyChange(event, null, Error.INCORRECT_BIBBLA_CREDENTIALS);
+                            break;
+                        default:
+                            pcs.firePropertyChange(event, null, Error.NETWORK);
+                            break;
+                    }
+                }
+            });
+        r.setRetryPolicy(new DefaultRetryPolicy(5000, 0, 1));
+        Singletons.getInstance(ctx).getRequestQueue().add(r);
+	}
+
+
+    public void loginAsync(String username, String password) {
         Log.d("backend", "loginAsync called");
 
-        String url = Singletons.API_URL + "/login";
+        String url = Singletons.API_URL + "/me/login";
         JSONObject data = null;
         try {
             data = new JSONObject(String.format("{username: %s, password: %s}", username, password));
@@ -59,35 +108,41 @@ public class User implements Observable {
             return;
         }
         JsonObjectRequest r = new JsonObjectRequest
-            (Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        parseJson(response);
-                        Log.d("backend", "loginAsync done"+User.this.username+" , "+User.this.gotlibSurname);
-                        pcs.firePropertyChange("loginDone", null, null);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.d("backend", "loginAsync failed");
-                        pcs.firePropertyChange("loginDone", null, Error.PARSE);
+                (Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            parseJson(response);
+                            Log.d("backend", "loginAsync done"+User.this.username+" , "+User.this.gotlibName);
+                            pcs.firePropertyChange("loginDone", null, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("backend", "loginAsync failed");
+                            pcs.firePropertyChange("loginDone", null, Error.PARSE);
+                        }
                     }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d("backend", "loginAsync error, " + error.networkResponse.statusCode);
-                    switch (error.networkResponse.statusCode) {
-                        case 401:
-                            pcs.firePropertyChange("loginDone", null, Error.INCORRECT_BIBBLA_CREDENTIALS);
-                            break;
-                        default:
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error == null || error.networkResponse == null) {
+                            Log.d("backend", "loginAsync error");
                             pcs.firePropertyChange("loginDone", null, Error.NETWORK);
-                            break;
+                            return;
+                        }
+                        Log.d("backend", "loginAsync error, " + error.networkResponse.statusCode);
+                        switch (error.networkResponse.statusCode) {
+                            case 401:
+                                pcs.firePropertyChange("loginDone", null, Error.INCORRECT_BIBBLA_CREDENTIALS);
+                                break;
+                            default:
+                                pcs.firePropertyChange("loginDone", null, Error.NETWORK);
+                                break;
+                        }
                     }
-                }
-            });
+                });
         Singletons.getInstance(ctx).getRequestQueue().add(r);
-	}
+    }
+
 
     private void parseJson(JSONObject response) throws JSONException {
 
@@ -96,7 +151,7 @@ public class User implements Observable {
 
         this.username = user.getString("username");
         this.password = user.getString("password");
-        this.gotlibSurname = user.getString("gotlib_surname");
+        this.gotlibName = user.getString("gotlib_surname");
         this.gotlibCode = user.getString("gotlib_code");
         this.gotlibPin = user.getString("gotlib_pin");
 
@@ -148,8 +203,8 @@ public class User implements Observable {
         return password;
     }
 
-    public String getGotlibSurname() {
-        return gotlibSurname;
+    public String getGotlibName() {
+        return gotlibName;
     }
 
     public String getGotlibCode() {

@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
                     break;
 
                 case id.login_button:
-                    login();
+                    loginGotlib();
                     break;
 
             }
@@ -111,8 +111,8 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
         if ("testJsoupDone".equals(eventName)) {
             testJsoupDone((String)pcs.getNewValue());
         }
-        else if ("loginDone".equals(eventName)) {
-            loginDone((Error) pcs.getNewValue());
+        else if ("loginGotlibDone".equals(eventName)) {
+            loginGotlibDone((Error) pcs.getNewValue());
         }
     }
 
@@ -144,13 +144,15 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      * If user is not logged in: trigger login
      * If user is logged in:     show profile
      */
-    private void login() {
+    private void loginGotlib() {
         if (user.isLoggedIn()) {
             // TODO show "me" screen?
-            Log.d("bibbla", "MainActivity: already logged in");
+            Log.d("frontend", "MainActivity: already logged in");
         } else {
-            Log.d("bibbla", "MainActivity: log in, switching to LoginActivity");
-            Intent i = new Intent(this, LoginActivity.class);
+//            Log.d("frontend", "MainActivity: log in, switching to LoginActivity");
+//            Intent i = new Intent(this, LoginActivity.class);
+            Log.d("frontend", "MainActivity: log in, switching to UserActivity");
+            Intent i = new Intent(this, UserActivity.class);
             startActivity(i);
         }
     }
@@ -159,8 +161,8 @@ public class MainActivity extends ActionBarActivity implements PropertyChangeLis
      * Callback method, called when login is done.
      * May have failed or succeeded
      */
-    private void loginDone(Error e) {
-        Log.d("frontend", "MainActivity loginDone");
+    private void loginGotlibDone(Error e) {
+        Log.d("frontend", "MainActivity loginGotlibDone");
         if (e == null) {
             // TODO there's no way to change theme dynamically :(
             String name = user.getName();

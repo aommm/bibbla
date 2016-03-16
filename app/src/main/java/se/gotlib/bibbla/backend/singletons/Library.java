@@ -23,6 +23,7 @@ import java.util.Iterator;
 import se.gotlib.bibbla.backend.model.Book;
 import se.gotlib.bibbla.backend.tasks.TestTask;
 import se.gotlib.bibbla.util.Observable;
+import se.gotlib.bibbla.util.Error;
 
 /**
  * Singleton that handles all the tasks you would want to do with the library.
@@ -92,9 +93,48 @@ public class Library implements PropertyChangeListener, Observable {
     }
 	
 	public void getReservationsAsync() {
-		pcs.firePropertyChange("getReservations", null, reservedBooks);
+		String url = Singletons.API_URL +"/reservations";
+		final String event = "getReservations";
+
+		JsonArrayRequest r = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+			@Override
+			public void onResponse(JSONArray response) {
+				Log.d("backend", event+": got "+response.length()+" books");
+				try {
+					getReservationsAsyncDone(response);
+					pcs.firePropertyChange("getReservationsDone", null, reservedBooks);
+				} catch(JSONException e) {
+					Log.d("backend", event+" Exception in json");
+					pcs.firePropertyChange("getReservationsDone", null, Error.PARSE);
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.d("backend", "errir :"+error.getLocalizedMessage());
+				Log.d("backend", "errir :"+error.networkResponse);
+				Log.d("backend", "errir :"+error.toString());
+				Log.d("backend", "errir :"+ error.getNetworkTimeMs());
+			}
+		});
+
+		r.setRetryPolicy(new DefaultRetryPolicy(10000, 1, 1));
+
+		Log.d("backend", "just reservations bb "+ url);
+		Singletons.getInstance(ctx).getRequestQueue().add(r);
 	}
-	
+
+	public void getReservationsAsyncDone(JSONArray response) throws JSONException {
+		reservedBooks = new ArrayList<>();
+		for(int i=0; i<response.length(); i++) {
+			// TODO: don't create Book
+			JSONObject book = response.getJSONObject(i);
+			Book b = new Book(book.getString("name"), "meh", "meh 2");
+			reservedBooks.add(b);
+		}
+	}
+
+
 	public void getLoansAsync() {
 		pcs.firePropertyChange("getLoans", null, loanedBooks);
 	}

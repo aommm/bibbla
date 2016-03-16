@@ -15,19 +15,28 @@
         android:id="@+id/textView2" />
 
     <TextView
+        android:id="@+id/gotlib_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Gotlib-stuff:"
-        android:id="@+id/gotlib_text"
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:id="@+id/login_error_text"
+        android:layout_below="@id/gotlib_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/incorrect_bibbla_credentials"
+        style="@style/error_text" />
+
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/gotlib_surname_edit"
-        android:layout_below="@+id/gotlib_text"
+        android:id="@+id/gotlib_name_edit"
+        android:layout_below="@+id/login_error_text"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="@string/gotlib_surname" />
@@ -36,7 +45,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/gotlib_code_edit"
-        android:layout_below="@+id/gotlib_surname_edit"
+        android:layout_below="@+id/gotlib_name_edit"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="@string/gotlib_code" />
